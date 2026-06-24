@@ -1,12 +1,4 @@
-DROP TABLE IF EXISTS reportes_dashboard CASCADE;
-DROP TABLE IF EXISTS alertas_stock CASCADE;
-DROP TABLE IF EXISTS unidades_sangre CASCADE;
-DROP TABLE IF EXISTS stock_sangre CASCADE;
-DROP TABLE IF EXISTS donaciones CASCADE;
-DROP TABLE IF EXISTS campanias CASCADE;
-DROP TABLE IF EXISTS donantes CASCADE;
-DROP TABLE IF EXISTS usuarios_sistema CASCADE;
-DROP TABLE IF EXISTS tipos_sangre CASCADE;
+CREATE DATABASE blood
 
 CREATE TABLE tipos_sangre (
     id_tipo_sangre SERIAL PRIMARY KEY,
@@ -232,50 +224,3 @@ INSERT INTO reportes_dashboard (
 )
 VALUES
 ('2026-06', 5, 1, 7, CURRENT_TIMESTAMP);
-
-SELECT 
-    'Conexión exitosa con PostgreSQL' AS mensaje,
-    'BloodCare DSS' AS sistema,
-    COUNT(*) AS total_donantes
-FROM donantes;
-
-SELECT 
-    ts.grupo || ts.factor_rh AS tipo_sangre,
-    ss.cantidad_unidades,
-    ss.estado_stock,
-    ss.fecha_actualizacion
-FROM stock_sangre ss
-INNER JOIN tipos_sangre ts 
-    ON ss.id_tipo_sangre = ts.id_tipo_sangre
-ORDER BY ts.grupo, ts.factor_rh;
-
-SELECT 
-    d.id_donacion,
-    dn.nombre_completo AS donante,
-    ts.grupo || ts.factor_rh AS tipo_sangre,
-    d.fecha_donacion,
-    d.cantidad_ml,
-    d.estado
-FROM donaciones d
-INNER JOIN donantes dn 
-    ON d.id_donante = dn.id_donante
-INNER JOIN tipos_sangre ts 
-    ON d.id_tipo_sangre = ts.id_tipo_sangre
-ORDER BY d.fecha_donacion DESC;
-
-SELECT 
-    dn.nombre_completo,
-    COUNT(d.id_donacion) AS total_donaciones
-FROM donantes dn
-INNER JOIN donaciones d 
-    ON dn.id_donante = d.id_donante
-GROUP BY dn.nombre_completo
-HAVING COUNT(d.id_donacion) > 1;
-
-SELECT 
-    COUNT(DISTINCT d.id_donacion) AS total_donaciones,
-    COUNT(DISTINCT d.id_donante) AS total_donantes,
-    COUNT(DISTINCT d.id_campania) AS campanias_con_donaciones,
-    COUNT(DISTINCT CASE WHEN ss.estado_stock = 'critico' THEN ss.id_tipo_sangre END) AS grupos_criticos
-FROM donaciones d
-CROSS JOIN stock_sangre ss;
