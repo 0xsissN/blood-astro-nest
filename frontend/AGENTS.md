@@ -100,3 +100,17 @@ The following naming conventions MUST be followed:
 - Use fetch for API communication
 - Maintain separation between frontend and backend logic
 - Write clean, modular, and maintainable code
+
+---
+
+## Frontend Data Model
+
+The frontend data models are defined in:
+
+/docs/data-model.ts
+
+Always read this file before:
+
+- creating components
+- building pages
+- implementing API calls

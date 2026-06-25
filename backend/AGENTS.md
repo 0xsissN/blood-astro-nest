@@ -203,3 +203,17 @@ Example:
 - Prefer clean architecture principles
 - Ensure separation of concerns at all times
 - Keep APIs predictable and consistent
+
+---
+
+## Database
+
+The database schema is located in:
+
+/database/schema.sql
+
+Always read this file before:
+
+- creating entities
+- building services
+- writing queries
