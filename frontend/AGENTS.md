@@ -114,3 +114,9 @@ Always read this file before:
 - creating components
 - building pages
 - implementing API calls
+
+---
+
+## Design
+
+Always read DESIGN.md
