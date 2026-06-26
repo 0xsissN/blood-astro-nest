@@ -160,4 +160,15 @@ CREATE INDEX idx_unidad_activa ON unidad_sangre(activa);
 CREATE INDEX idx_stock_estado ON stock_sangre(estado_stock);
 CREATE INDEX idx_alerta_abierta ON alerta_stock(abierta);
 
-INSERT INTO rol(nombre) VALUES ('ADMIN'),('MEDICO'),('LABORISTA'),('RECEPCIONISTA')
+INSERT INTO rol(nombre) VALUES ('ADMIN'),('MEDICO'),('LABORISTA'),('RECEPCIONISTA');
+
+INSERT INTO tipo_sangre (grupo, factor_rh, descripcion, nivel_critico)
+VALUES
+    ('A',  '+', 'Grupo sanguíneo A positivo', 10),
+    ('A',  '-', 'Grupo sanguíneo A negativo', 5),
+    ('B',  '+', 'Grupo sanguíneo B positivo', 10),
+    ('B',  '-', 'Grupo sanguíneo B negativo', 5),
+    ('AB', '+', 'Grupo sanguíneo AB positivo', 8),
+    ('AB', '-', 'Grupo sanguíneo AB negativo', 3),
+    ('O',  '+', 'Grupo sanguíneo O positivo', 15),
+    ('O',  '-', 'Grupo sanguíneo O negativo (donante universal)', 5);
