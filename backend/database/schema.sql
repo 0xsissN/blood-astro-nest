@@ -159,3 +159,5 @@ CREATE INDEX idx_donacion_tipo_sangre ON donacion(id_tipo_sangre);
 CREATE INDEX idx_unidad_activa ON unidad_sangre(activa);
 CREATE INDEX idx_stock_estado ON stock_sangre(estado_stock);
 CREATE INDEX idx_alerta_abierta ON alerta_stock(abierta);
+
+INSERT INTO rol(nombre) VALUES ('ADMIN'),('MEDICO'),('LABORISTA'),('RECEPCIONISTA')
