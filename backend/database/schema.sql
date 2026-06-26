@@ -39,6 +39,11 @@ CREATE TABLE campania (
     CONSTRAINT chk_fechas_campania CHECK (fecha_fin >= fecha_inicio)
 );
 
+CREATE TABLE rol (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(30) UNIQUE NOT NULL
+);
+
 CREATE TABLE usuario (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -51,11 +56,6 @@ CREATE TABLE usuario (
         REFERENCES rol(id)
         ON UPDATE CASCADE
         ON DELETE RESTRICT
-);
-
-CREATE TABLE rol (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(30) UNIQUE NOT NULL
 );
 
 CREATE TABLE donacion (
