@@ -1,0 +1,212 @@
+---
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/';
+const navLinks = [
+  { href: isHome ? '#stock' : '/#stock', label: 'Stock' },
+  { href: isHome ? '#centros' : '/#centros', label: 'Centros' },
+  { href: isHome ? '#campanas' : '/#campanas', label: 'Campañas' },
+  { href: isHome ? '#como-donar' : '/#como-donar', label: '¿Cómo Donar?' },
+];
+---
+
+<header class="topbar" id="topbar">
+  <div class="topbar__inner container">
+    <a href="/" class="topbar__brand">
+      <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="20" cy="20" r="20" fill="#bc002d" />
+        <path d="M20 8C15.58 8 12 11.58 12 16C12 22 20 32 20 32C20 32 28 22 28 16C28 11.58 24.42 8 20 8Z" fill="white" />
+      </svg>
+      <span class="topbar__brand-text">Hemocentro</span>
+    </a>
+    <nav class="topbar__nav" aria-label="Navegación principal">
+      <ul class="topbar__nav-list">
+        {navLinks.map((link) => (
+          <li>
+            <a href={link.href} class="topbar__nav-link">{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="topbar__actions">
+      <a href="/login" class="btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.75rem;">Iniciar Sesión</a>
+    </div>
+    <button class="topbar__hamburger" id="hamburger-btn" aria-label="Abrir menú" aria-expanded="false">
+      <span class="topbar__hamburger-line"></span>
+      <span class="topbar__hamburger-line"></span>
+      <span class="topbar__hamburger-line"></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const hamburger = document.getElementById('hamburger-btn');
+  const nav = document.querySelector('.topbar__nav');
+  const body = document.body;
+
+  if (hamburger && nav) {
+    hamburger.addEventListener('click', () => {
+      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', String(!expanded));
+      nav.classList.toggle('topbar__nav--open');
+    });
+
+    nav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        hamburger.setAttribute('aria-expanded', 'false');
+        nav.classList.remove('topbar__nav--open');
+      });
+    });
+  }
+</script>
+
+<style>
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e4bdbc;
+  }
+
+  .topbar__inner {
+    display: flex;
+    align-items: center;
+    height: 64px;
+    gap: 2rem;
+  }
+
+  .topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .topbar__brand-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #8f0020;
+    letter-spacing: -0.01em;
+  }
+
+  .topbar__nav {
+    flex: 1;
+    display: flex;
+  }
+
+  .topbar__nav-list {
+    display: flex;
+    list-style: none;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .topbar__nav-link {
+    display: block;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #5c403f;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .topbar__nav-link:hover {
+    background-color: rgba(188, 0, 45, 0.06);
+    color: #8f0020;
+  }
+
+  .topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .topbar__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+  }
+
+  .topbar__hamburger:hover {
+    background-color: rgba(188, 0, 45, 0.06);
+  }
+
+  .topbar__hamburger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: #5c403f;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .topbar__hamburger[aria-expanded="true"] .topbar__hamburger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .topbar__hamburger[aria-expanded="true"] .topbar__hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .topbar__hamburger[aria-expanded="true"] .topbar__hamburger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    .topbar__nav {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ffffff;
+      padding: 1.5rem;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 99;
+    }
+
+    .topbar__nav--open {
+      transform: translateX(0);
+    }
+
+    .topbar__nav-list {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .topbar__nav-link {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
+
+    .topbar__actions {
+      display: none;
+    }
+
+    .topbar__hamburger {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .topbar__nav--open {
+      transform: none;
+    }
+  }
+</style>

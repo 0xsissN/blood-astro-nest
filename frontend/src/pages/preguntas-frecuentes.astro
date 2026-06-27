@@ -1,0 +1,84 @@
+---
+import PublicLayout from '../layouts/public-layout.astro';
+import HeroSection from '../components/public/hero-section.astro';
+import FaqAccordion from '../components/public/faq-accordion.astro';
+
+const faqGeneral = [
+  {
+    question: '¿Duele donar sangre?',
+    answer: 'La mayoría de las personas solo siente un pequeño pellizco cuando se inserta la aguja. El proceso es rápido y el personal médico está capacitado para hacerlo lo más cómodo posible.',
+  },
+  {
+    question: '¿Cuánto tiempo dura la donación?',
+    answer: 'El proceso completo, incluyendo el registro, la evaluación médica y la donación, dura aproximadamente 30-45 minutos. La extracción de sangre en sí toma entre 5 y 10 minutos.',
+  },
+  {
+    question: '¿Con qué frecuencia puedo donar sangre?',
+    answer: 'Los hombres pueden donar cada 3 meses (hasta 4 veces al año) y las mujeres cada 4 meses (hasta 3 veces al año), respetando siempre el intervalo mínimo de 90 días entre donaciones.',
+  },
+  {
+    question: '¿Cuánta sangre se extrae?',
+    answer: 'Se extraen aproximadamente 450 ml de sangre, lo que representa menos del 10% del volumen sanguíneo total de un adulto. El cuerpo repone esta cantidad en pocas horas.',
+  },
+  {
+    question: '¿Es seguro donar sangre?',
+    answer: 'Sí, es completamente seguro. Todo el material utilizado es estéril y de un solo uso. No existe riesgo de contraer enfermedades al donar sangre.',
+  },
+  {
+    question: '¿Puedo donar si estoy tomando medicamentos?',
+    answer: 'Depende del medicamento. Algunos medicamentos no impiden la donación, pero otros sí. Debes informar al personal médico durante la evaluación.',
+  },
+];
+
+const faqPostDonacion = [
+  {
+    question: '¿Qué cuidados debo tener después de donar?',
+    answer: 'Después de donar, te recomendamos descansar 10-15 minutos, tomar líquidos y evitar esfuerzos físicos intensos durante las siguientes 24 horas. Mantén el vendaje puesto por al menos 4 horas.',
+  },
+  {
+    question: '¿Puedo hacer ejercicio después de donar?',
+    answer: 'Se recomienda evitar ejercicio intenso, levantar peso o realizar actividades que requieran esfuerzo físico durante las 24 horas posteriores a la donación.',
+  },
+  {
+    question: '¿Qué pasa si me siento mareado después de donar?',
+    answer: 'Es normal sentirse ligeramente mareado. Si esto ocurre, siéntate o recuéstate inmediatamente y eleva las piernas. El personal médico te asistirá si es necesario.',
+  },
+  {
+    question: '¿Qué análisis se le hacen a mi sangre donada?',
+    answer: 'Tu sangre se analiza para detectar hepatitis B y C, VIH, sífilis, enfermedad de Chagas, HTLV y el grupo sanguíneo (ABO y Rh). Si se detecta alguna anomalía, se te notificará de forma confidencial.',
+  },
+];
+---
+
+<PublicLayout title="Preguntas Frecuentes - Hemocentro" description="Resuelve tus dudas sobre la donación de sangre. Preguntas frecuentes sobre requisitos, proceso y cuidados.">
+  <HeroSection
+    title="Preguntas Frecuentes"
+    subtitle="Resolvemos las dudas más comunes sobre la donación de sangre. Si no encuentras tu pregunta, contáctanos."
+    ctaText="Contáctanos"
+    ctaHref="/contacto"
+  />
+
+  <section class="section">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div class="text-center" style="margin-bottom: 2.5rem;">
+          <span class="tag tag--red" style="margin-bottom: 1rem; display: inline-block;">Información general</span>
+          <h2 class="section-title">Sobre la donación de sangre</h2>
+        </div>
+        <FaqAccordion items={faqGeneral} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div class="text-center" style="margin-bottom: 2.5rem;">
+          <span class="tag tag--green" style="margin-bottom: 1rem; display: inline-block;">Post donación</span>
+          <h2 class="section-title">Después de donar</h2>
+        </div>
+        <FaqAccordion items={faqPostDonacion} />
+      </div>
+    </div>
+  </section>
+</PublicLayout>
