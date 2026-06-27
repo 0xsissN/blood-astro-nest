@@ -1,0 +1,148 @@
+---
+import DashboardLayout from '../layouts/dashboard-layout.astro';
+import CampaignTable from '../components/campaigns/campaign-table.astro';
+import UpcomingSchedules from '../components/campaigns/upcoming-schedules.astro';
+import StockStatus from '../components/campaigns/stock-status.astro';
+---
+
+<DashboardLayout title="Campañas" activeSection="campañas">
+  <div class="campaigns-page">
+    <div class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">Gestión de Campañas</h1>
+        <p class="page-subtitle">Planifica, monitorea y analiza las jornadas de recolección nacional.</p>
+      </div>
+      <button class="create-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Crear Nueva Campaña
+      </button>
+    </div>
+
+    <div class="page-content">
+      <aside class="sidebar-panels">
+        <UpcomingSchedules />
+        <StockStatus />
+      </aside>
+
+      <div class="main-panel">
+        <CampaignTable />
+      </div>
+    </div>
+  </div>
+</DashboardLayout>
+
+<style>
+  .campaigns-page {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    font-size: 0.9375rem;
+    color: #6b7280;
+  }
+
+  .create-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: #bc002d;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .create-btn:hover {
+    background-color: #a30027;
+  }
+
+  .page-content {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .sidebar-panels {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .main-panel {
+    min-width: 0;
+  }
+
+  @media (max-width: 1200px) {
+    .page-content {
+      grid-template-columns: 240px 1fr;
+      gap: 1rem;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .page-content {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar-panels {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .sidebar-panels > * {
+      flex: 1;
+      min-width: 280px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .create-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .sidebar-panels {
+      flex-direction: column;
+    }
+
+    .sidebar-panels > * {
+      min-width: 100%;
+    }
+  }
+</style>
