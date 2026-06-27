@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CampaignsModule } from './modules/campaigns/campaigns.module';
 import { DonorsModule } from './modules/donors/donors.module';
+import { PublicModule } from './modules/public/public.module';
 
 @Module({
   imports: [
@@ -30,8 +31,7 @@ import { DonorsModule } from './modules/donors/donors.module';
     AuthModule,
     CampaignsModule,
     DonorsModule,
+    PublicModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

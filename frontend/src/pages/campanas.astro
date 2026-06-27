@@ -3,40 +3,56 @@ import PublicLayout from '../layouts/public-layout.astro';
 import HeroSection from '../components/public/hero-section.astro';
 import InfoCard from '../components/public/info-card.astro';
 
-const campaigns = [
-  {
-    title: 'Campaña de Verano 2026',
-    place: 'Hospital Regional, Santo Domingo',
-    date: '15 - 30 Julio 2026',
-    time: '8:00 AM - 4:00 PM',
-    status: 'Próximamente',
-    type: 'green',
-  },
-  {
-    title: 'Jornada Empresarial',
-    place: 'Edificio Corporativo BHD, Santiago',
-    date: '5 - 7 Agosto 2026',
-    time: '9:00 AM - 5:00 PM',
-    status: 'Próximamente',
-    type: 'green',
-  },
-  {
-    title: 'Donatón Universitaria',
-    place: 'Universidad Autónoma, Recinto Central',
-    date: '20 - 22 Junio 2026',
-    time: '8:00 AM - 6:00 PM',
-    status: 'Activa',
-    type: 'orange',
-  },
-  {
-    title: 'Campaña Nacional de Sangre',
-    place: 'Centro de Convenciones, Punta Cana',
-    date: '1 - 5 Marzo 2026',
-    time: '8:00 AM - 3:00 PM',
-    status: 'Finalizada',
-    type: 'red',
-  },
-];
+let campaigns = [];
+try {
+  const res = await fetch('http://localhost:3000/api/campaigns');
+  if (res.ok) {
+    const data = await res.json();
+    campaigns = data.map((c) => {
+      const hoy = new Date();
+      const inicio = new Date(c.fechaInicio);
+      const fin = new Date(c.fechaFin);
+      let status, type;
+      if (!c.activa) {
+        status = 'Finalizada';
+        type = 'red';
+      } else if (hoy >= inicio && hoy <= fin) {
+        status = 'Activa';
+        type = 'orange';
+      } else {
+        status = 'Próximamente';
+        type = 'green';
+      }
+      return {
+        title: c.nombre,
+        place: c.lugar,
+        date: `${inicio.getDate()} - ${fin.getDate()} ${fin.toLocaleString('es', { month: 'long' })} ${fin.getFullYear()}`,
+        time: '8:00 AM - 5:00 PM',
+        status,
+        type,
+      };
+    });
+  }
+} catch {
+  campaigns = [
+    {
+      title: 'Campaña de Verano 2026',
+      place: 'Hospital Regional, Santo Domingo',
+      date: '15 - 30 Julio 2026',
+      time: '8:00 AM - 4:00 PM',
+      status: 'Próximamente',
+      type: 'green',
+    },
+    {
+      title: 'Campaña Nacional de Sangre',
+      place: 'Centro de Convenciones, Punta Cana',
+      date: '1 - 5 Marzo 2026',
+      time: '8:00 AM - 3:00 PM',
+      status: 'Finalizada',
+      type: 'red',
+    },
+  ];
+}
 ---
 
 <PublicLayout title="Campañas - Hemocentro" description="Conoce las campañas de donación de sangre activas y próximas del Hemocentro.">

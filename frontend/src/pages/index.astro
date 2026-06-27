@@ -1,62 +1,172 @@
 ---
-import PublicLayout from '../layouts/public-layout.astro';
-import FabButton from '../components/public/fab-button.astro';
+import PublicLayout from "../layouts/public-layout.astro";
+import FabButton from "../components/public/fab-button.astro";
 
-const stockItems = [
-  { type: 'A+', status: 'Normal', color: 'green', icon: 'check_circle', urgent: false },
-  { type: 'O-', status: 'Crítico', color: 'red', icon: 'warning', urgent: true },
-  { type: 'AB+', status: 'Bajo', color: 'orange', icon: 'priority_high', urgent: false },
-  { type: 'B-', status: 'Normal', color: 'green', icon: 'check_circle', urgent: false },
-  { type: 'A-', status: 'Bajo', color: 'orange', icon: 'priority_high', urgent: false },
-  { type: 'B+', status: 'Normal', color: 'green', icon: 'check_circle', urgent: false },
-  { type: 'O+', status: 'Normal', color: 'green', icon: 'check_circle', urgent: false },
-  { type: 'AB-', status: 'Bajo', color: 'orange', icon: 'priority_high', urgent: false },
-];
+let stockItems = [];
+try {
+  const res = await fetch("http://localhost:3000/api/blood-types");
+  if (res.ok) {
+    const bloodTypes = await res.json();
+    stockItems = bloodTypes.map(
+      (bt: { nivel_critico: any; grupo: any; factor_rh: any }) => {
+        const nivel = bt.nivel_critico;
+        let status, color, icon, urgent;
+        if (nivel === 0) {
+          status = "Crítico";
+          color = "red";
+          icon = "warning";
+          urgent = true;
+        } else if (nivel <= 3) {
+          status = "Bajo";
+          color = "orange";
+          icon = "priority_high";
+          urgent = false;
+        } else {
+          status = "Normal";
+          color = "green";
+          icon = "check_circle";
+          urgent = false;
+        }
+        return {
+          type: `${bt.grupo}${bt.factor_rh}`,
+          status,
+          color,
+          icon,
+          urgent,
+        };
+      },
+    );
+  }
+} catch {
+  stockItems = [
+    {
+      type: "A+",
+      status: "Normal",
+      color: "green",
+      icon: "check_circle",
+      urgent: false,
+    },
+    {
+      type: "O-",
+      status: "Crítico",
+      color: "red",
+      icon: "warning",
+      urgent: true,
+    },
+    {
+      type: "AB+",
+      status: "Bajo",
+      color: "orange",
+      icon: "priority_high",
+      urgent: false,
+    },
+    {
+      type: "B-",
+      status: "Normal",
+      color: "green",
+      icon: "check_circle",
+      urgent: false,
+    },
+    {
+      type: "A-",
+      status: "Bajo",
+      color: "orange",
+      icon: "priority_high",
+      urgent: false,
+    },
+    {
+      type: "B+",
+      status: "Normal",
+      color: "green",
+      icon: "check_circle",
+      urgent: false,
+    },
+    {
+      type: "O+",
+      status: "Normal",
+      color: "green",
+      icon: "check_circle",
+      urgent: false,
+    },
+    {
+      type: "AB-",
+      status: "Bajo",
+      color: "orange",
+      icon: "priority_high",
+      urgent: false,
+    },
+  ];
+}
 
 const centros = [
-  { name: 'Sede Central', status: 'Abierto', statusColor: 'green', address: 'Av. Principal 123, Distrito Capital' },
-  { name: 'Punto Norte', status: 'Abierto', statusColor: 'green', address: 'Calle 45 #12-34, Centro Comercial Norte' },
-  { name: 'Clínica del Sur', status: 'Cerrado', statusColor: 'red', address: 'Carrera 8 #90-11, Edificio Sanitas' },
+  {
+    name: "Sede Central",
+    status: "Abierto",
+    statusColor: "green",
+    address: "Av. Principal 123, Distrito Capital",
+  },
+  {
+    name: "Punto Norte",
+    status: "Abierto",
+    statusColor: "green",
+    address: "Calle 45 #12-34, Centro Comercial Norte",
+  },
+  {
+    name: "Clínica del Sur",
+    status: "Cerrado",
+    statusColor: "red",
+    address: "Carrera 8 #90-11, Edificio Sanitas",
+  },
 ];
 
 const campaigns = [
-  { title: 'Campaña Universidad Central', date: '25 Oct - 27 Oct, 2024', location: 'Plaza de las Américas, Sede Norte', time: '09:00 - 17:00' },
-  { title: 'Jornada Empresarial Tech Hub', date: '28 Oct - 30 Oct, 2024', location: 'Auditorio Principal Edificio Quantum', time: '08:30 - 16:00' },
-  { title: 'Feria de Salud Parque Metropolitano', date: '01 Nov - 05 Nov, 2024', location: 'Zona de Eventos B, Puerta 4', time: '10:00 - 18:30' },
+  {
+    title: "Campaña Universidad Central",
+    date: "25 Oct - 27 Oct, 2024",
+    location: "Plaza de las Américas, Sede Norte",
+    time: "09:00 - 17:00",
+  },
+  {
+    title: "Jornada Empresarial Tech Hub",
+    date: "28 Oct - 30 Oct, 2024",
+    location: "Auditorio Principal Edificio Quantum",
+    time: "08:30 - 16:00",
+  },
+  {
+    title: "Feria de Salud Parque Metropolitano",
+    date: "01 Nov - 05 Nov, 2024",
+    location: "Zona de Eventos B, Puerta 4",
+    time: "10:00 - 18:30",
+  },
 ];
 ---
 
-<PublicLayout title="Hemocentro Nacional | Tu Sangre Salva Vidas" description="Hemocentro Nacional - Sistema de gestión de donación de sangre. Encuentra centros, consulta stock y dona sangre para salvar vidas.">
-  <!-- Hero -->
+<PublicLayout
+  title="Hemocentro Nacional | Tu Sangre Salva Vidas"
+  description="Hemocentro Nacional - Sistema de gestión de donación de sangre. Encuentra centros, consulta stock y dona sangre para salvar vidas."
+>
   <header class="hero">
     <div class="hero__bg" aria-hidden="true"></div>
     <div class="container hero__inner">
       <div class="hero__content">
         <h1 class="hero__title">Tu sangre salva vidas</h1>
         <p class="hero__subtitle">
-          Miles de personas dependen de tu generosidad. Encuentra tu centro de donación más cercano y agenda tu cita hoy mismo para marcar la diferencia.
+          Miles de personas dependen de tu generosidad. Encuentra tu centro de
+          donación más cercano y agenda tu cita hoy mismo para marcar la
+          diferencia.
         </p>
-        <div class="hero__search">
-          <div class="hero__search-input-wrap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#906f6f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <input type="text" class="hero__search-input" placeholder="Ingresa tu ciudad o código postal..." />
-          </div>
-          <a href="#centros" class="btn-primary hero__search-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            Buscar Centros
-          </a>
-        </div>
       </div>
     </div>
   </header>
 
-  <!-- Stock en Tiempo Real -->
   <section class="section" id="stock">
     <div class="container">
       <div class="stock__header">
         <div>
           <h2 class="section-title">Stock en Tiempo Real</h2>
-          <p class="section-subtitle">Estado actualizado de nuestras reservas por grupo sanguíneo.</p>
+          <p class="section-subtitle">
+            Estado actualizado de nuestras reservas por grupo sanguíneo.
+          </p>
         </div>
         <div class="stock__legend">
           <div class="stock__legend-item">
@@ -75,60 +185,153 @@ const campaigns = [
       </div>
 
       <div class="stock__grid">
-        {stockItems.map((item) => {
-          const statusColors = { green: { bar: '#10b981', icon: '#059669', bg: 'rgba(16,185,129,0.1)', text: '#059669', ring: '' }, orange: { bar: '#f59e0b', icon: '#d97706', bg: 'rgba(251,146,60,0.1)', text: '#d97706', ring: '' }, red: { bar: '#bc002d', icon: '#bc002d', bg: 'rgba(188,0,45,0.1)', text: '#bc002d', ring: 'ring-2 ring-red-500 ring-opacity-10 border-red-200' } };
-          const c = statusColors[item.color];
-          return (
-            <article class={`stock-card${item.urgent ? ' stock-card--urgent' : ''}`}>
-              <div class="stock-card__bar" style={`background-color: ${c.bar}; height: ${item.urgent ? '6px' : '4px'};`}></div>
-              <div class="stock-card__icon" style={`background-color: ${c.bg};`}>
-                {item.icon === 'check_circle' && (
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c.icon} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                )}
-                {item.icon === 'warning' && (
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c.icon} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                )}
-                {item.icon === 'priority_high' && (
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c.icon} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                )}
-              </div>
-              <span class="stock-card__type">{item.type}</span>
-              <div class="stock-card__status">
-                <span class="stock-card__status-text" style={`color: ${c.text};`}>{item.status}</span>
-                {item.urgent && (
-                  <a href="/requisitos" class="stock-card__urgent-btn">Urgente: Donar</a>
-                )}
-              </div>
-            </article>
-          );
-        })}
+        {
+          stockItems.map(
+            (item: {
+              color: string | number;
+              urgent: any;
+              icon: string;
+              type: unknown;
+              status: unknown;
+            }) => {
+              const statusColors = {
+                green: {
+                  bar: "#10b981",
+                  icon: "#059669",
+                  bg: "rgba(16,185,129,0.1)",
+                  text: "#059669",
+                  ring: "",
+                },
+                orange: {
+                  bar: "#f59e0b",
+                  icon: "#d97706",
+                  bg: "rgba(251,146,60,0.1)",
+                  text: "#d97706",
+                  ring: "",
+                },
+                red: {
+                  bar: "#bc002d",
+                  icon: "#bc002d",
+                  bg: "rgba(188,0,45,0.1)",
+                  text: "#bc002d",
+                  ring: "ring-2 ring-red-500 ring-opacity-10 border-red-200",
+                },
+              };
+              const c = statusColors[item.color];
+              return (
+                <article
+                  class={`stock-card${item.urgent ? " stock-card--urgent" : ""}`}
+                >
+                  <div
+                    class="stock-card__bar"
+                    style={`background-color: ${c.bar}; height: ${item.urgent ? "6px" : "4px"};`}
+                  />
+                  <div
+                    class="stock-card__icon"
+                    style={`background-color: ${c.bg};`}
+                  >
+                    {item.icon === "check_circle" && (
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke={c.icon}
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                      </svg>
+                    )}
+                    {item.icon === "warning" && (
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke={c.icon}
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                    )}
+                    {item.icon === "priority_high" && (
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke={c.icon}
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                      </svg>
+                    )}
+                  </div>
+                  <span class="stock-card__type">{item.type}</span>
+                  <div class="stock-card__status">
+                    <span
+                      class="stock-card__status-text"
+                      style={`color: ${c.text};`}
+                    >
+                      {item.status}
+                    </span>
+                    {item.urgent && (
+                      <a href="/requisitos" class="stock-card__urgent-btn">
+                        Urgente: Donar
+                      </a>
+                    )}
+                  </div>
+                </article>
+              );
+            },
+          )
+        }
       </div>
     </div>
   </section>
 
-  <!-- Centros de Donación -->
   <section class="section section--surface" id="centros">
     <div class="container">
       <div style="margin-bottom: 2.5rem;">
         <h2 class="section-title">Centros de Donación</h2>
-        <p class="section-subtitle">Encuentra el punto de donación más cercano a ti.</p>
+        <p class="section-subtitle">
+          Encuentra el punto de donación más cercano a ti.
+        </p>
       </div>
       <div class="grid-3">
-        {centros.map((c) => (
-          <article class="centro-card card">
-            <div class="centro-card__header">
-              <h3 class="centro-card__name">{c.name}</h3>
-              <span class={`centro-card__badge centro-card__badge--${c.statusColor}`}>{c.status}</span>
-            </div>
-            <p class="centro-card__address">{c.address}</p>
-            <a href="/contacto" class="centro-card__link">Ver en Mapa</a>
-          </article>
-        ))}
+        {
+          centros.map((c) => (
+            <article class="centro-card card">
+              <div class="centro-card__header">
+                <h3 class="centro-card__name">{c.name}</h3>
+                <span
+                  class={`centro-card__badge centro-card__badge--${c.statusColor}`}
+                >
+                  {c.status}
+                </span>
+              </div>
+              <p class="centro-card__address">{c.address}</p>
+              <a href="/contacto" class="centro-card__link">
+                Ver en Mapa
+              </a>
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <!-- Próximas Jornadas -->
   <section class="section" id="campanas">
     <div class="container">
       <div class="campaigns__header">
@@ -138,64 +341,178 @@ const campaigns = [
         </div>
         <a href="/campanas" class="campaigns__view-all">
           Ver todas
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><line x1="5" y1="12" x2="19" y2="12"></line><polyline
+              points="12 5 19 12 12 19"></polyline></svg
+          >
         </a>
       </div>
       <div class="campaigns__scroll hide-scrollbar">
-        {campaigns.map((camp) => (
-          <article class="campaign-card">
-            <div class="campaign-card__body">
-              <h3 class="campaign-card__title">{camp.title}</h3>
-              <div class="campaign-card__details">
-                <div class="campaign-card__detail">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  {camp.date}
+        {
+          campaigns.map((camp) => (
+            <article class="campaign-card">
+              <div class="campaign-card__body">
+                <h3 class="campaign-card__title">{camp.title}</h3>
+                <div class="campaign-card__details">
+                  <div class="campaign-card__detail">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#bc002d"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <>
+                        <rect
+                          x="3"
+                          y="4"
+                          width="18"
+                          height="18"
+                          rx="2"
+                          ry="2"
+                        />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </>
+                    </svg>
+                    {camp.date}
+                  </div>
+                  <div class="campaign-card__detail">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#bc002d"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </>
+                    </svg>
+                    {camp.location}
+                  </div>
+                  <div class="campaign-card__detail">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#bc002d"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <>
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </>
+                    </svg>
+                    {camp.time}
+                  </div>
                 </div>
-                <div class="campaign-card__detail">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  {camp.location}
-                </div>
-                <div class="campaign-card__detail">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  {camp.time}
-                </div>
+                <a href="/campanas" class="campaign-card__btn">
+                  Ver Detalle
+                </a>
               </div>
-              <a href="/campanas" class="campaign-card__btn">Ver Detalle</a>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <!-- ¿Cómo Donar? -->
   <section class="section section--tinted" id="como-donar">
     <div class="container">
       <div class="text-center" style="margin-bottom: 2.5rem;">
         <h2 class="section-title">¿Cómo Donar?</h2>
-        <p class="section-subtitle mx-auto">Un proceso simple y seguro que salva vidas.</p>
+        <p class="section-subtitle mx-auto">
+          Un proceso simple y seguro que salva vidas.
+        </p>
       </div>
       <div class="grid-3">
         <article class="step-card">
           <div class="step-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#bc002d"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"
+              ></path><rect x="9" y="3" width="6" height="4" rx="1"></rect><path
+                d="M9 14l2 2 4-4"></path></svg
+            >
           </div>
           <h3 class="step-card__title">1. Consulta los Requisitos</h3>
-          <p class="step-card__desc">Verifica condiciones básicas de salud, edad y peso antes de asistir.</p>
+          <p class="step-card__desc">
+            Verifica condiciones básicas de salud, edad y peso antes de asistir.
+          </p>
         </article>
         <article class="step-card">
           <div class="step-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#bc002d"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect x="3" y="4" width="18" height="18" rx="2" ry="2"
+              ></rect><line x1="16" y1="2" x2="16" y2="6"></line><line
+                x1="8"
+                y1="2"
+                x2="8"
+                y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg
+            >
           </div>
           <h3 class="step-card__title">2. Agenda tu Cita</h3>
-          <p class="step-card__desc">Encuentra tu centro de donación o unidad móvil más cercana y reserva tu lugar.</p>
+          <p class="step-card__desc">
+            Encuentra tu centro de donación o unidad móvil más cercana y reserva
+            tu lugar.
+          </p>
         </article>
         <article class="step-card">
           <div class="step-card__icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#bc002d"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+              ></path></svg
+            >
           </div>
           <h3 class="step-card__title">3. Salva Vidas</h3>
-          <p class="step-card__desc">Asiste a tu cita y ayuda hasta a 3 pacientes con una sola donación.</p>
+          <p class="step-card__desc">
+            Asiste a tu cita y ayuda hasta a 3 pacientes con una sola donación.
+          </p>
         </article>
       </div>
     </div>
@@ -207,14 +524,29 @@ const campaigns = [
       <div class="impact__grid">
         <div class="impact__image">
           <div class="impact__image-placeholder">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <svg
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+              ></path></svg
+            >
           </div>
           <div class="impact__image-overlay"></div>
         </div>
         <div class="impact__content">
           <h2 class="section-title">Impacto de tu Donación</h2>
           <p class="impact__text">
-            Cada donación de sangre puede salvar hasta tres vidas. Tu generosidad no solo ayuda a pacientes en emergencias, sino que también apoya tratamientos contra el cáncer y cirugías complejas en todo el país.
+            Cada donación de sangre puede salvar hasta tres vidas. Tu
+            generosidad no solo ayuda a pacientes en emergencias, sino que
+            también apoya tratamientos contra el cáncer y cirugías complejas en
+            todo el país.
           </p>
           <div class="impact__stats">
             <div class="impact__stat">
@@ -235,7 +567,6 @@ const campaigns = [
 </PublicLayout>
 
 <style>
-  /* ============ HERO ============ */
   .hero {
     position: relative;
     padding: 8rem 0 6rem;
@@ -250,7 +581,12 @@ const campaigns = [
     width: 600px;
     height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(188, 0, 45, 0.04) 0%, rgba(188, 0, 45, 0.02) 50%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba(188, 0, 45, 0.04) 0%,
+      rgba(188, 0, 45, 0.02) 50%,
+      transparent 70%
+    );
     pointer-events: none;
   }
 
@@ -306,7 +642,7 @@ const campaigns = [
     flex: 1;
     border: none;
     background: transparent;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.875rem;
     color: #281717;
     outline: none;
@@ -341,7 +677,6 @@ const campaigns = [
     }
   }
 
-  /* ============ STOCK ============ */
   .stock__header {
     display: flex;
     flex-direction: column;
@@ -374,9 +709,15 @@ const campaigns = [
     border-radius: 50%;
   }
 
-  .stock__dot--green { background-color: #10b981; }
-  .stock__dot--orange { background-color: #f59e0b; }
-  .stock__dot--red { background-color: #bc002d; }
+  .stock__dot--green {
+    background-color: #10b981;
+  }
+  .stock__dot--orange {
+    background-color: #f59e0b;
+  }
+  .stock__dot--red {
+    background-color: #bc002d;
+  }
 
   .stock__legend-label {
     font-size: 0.75rem;
@@ -483,7 +824,6 @@ const campaigns = [
     color: #ffffff;
   }
 
-  /* ============ CENTROS ============ */
   .centro-card__header {
     display: flex;
     justify-content: space-between;
@@ -536,7 +876,6 @@ const campaigns = [
     text-decoration: underline;
   }
 
-  /* ============ CAMPAÑAS ============ */
   .campaigns__header {
     display: flex;
     justify-content: space-between;
@@ -625,7 +964,9 @@ const campaigns = [
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: #8f0020;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
     text-decoration: none;
   }
 
@@ -634,7 +975,6 @@ const campaigns = [
     color: #ffffff;
   }
 
-  /* ============ STEP CARDS ============ */
   .step-card {
     display: flex;
     flex-direction: column;
@@ -670,7 +1010,6 @@ const campaigns = [
     line-height: 1.6;
   }
 
-  /* ============ IMPACTO ============ */
   .impact__grid {
     display: grid;
     grid-template-columns: 1fr;

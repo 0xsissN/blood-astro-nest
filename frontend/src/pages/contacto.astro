@@ -1,10 +1,13 @@
 ---
-import PublicLayout from '../layouts/public-layout.astro';
-import HeroSection from '../components/public/hero-section.astro';
-import InfoCard from '../components/public/info-card.astro';
+import PublicLayout from "../layouts/public-layout.astro";
+import HeroSection from "../components/public/hero-section.astro";
+import InfoCard from "../components/public/info-card.astro";
 ---
 
-<PublicLayout title="Contacto - Hemocentro" description="Ponte en contacto con el Hemocentro. Encuentra dirección, teléfono, correo electrónico y horarios de atención.">
+<PublicLayout
+  title="Contacto - Hemocentro"
+  description="Ponte en contacto con el Hemocentro. Encuentra dirección, teléfono, correo electrónico y horarios de atención."
+>
   <HeroSection
     title="Contáctanos"
     subtitle="Estamos para ayudarte. Si tienes dudas sobre la donación de sangre o deseas más información, no dudes en escribirnos."
@@ -14,7 +17,10 @@ import InfoCard from '../components/public/info-card.astro';
     <div class="container">
       <div class="contact-grid">
         <div>
-          <div class="text-center" style="margin-bottom: 2.5rem; text-align: left;">
+          <div
+            class="text-center"
+            style="margin-bottom: 2.5rem; text-align: left;"
+          >
             <h2 class="section-title">Información de contacto</h2>
             <p class="section-subtitle" style="max-width: none;">
               Puedes visitarnos, llamarnos o enviarnos un correo electrónico.
@@ -45,7 +51,11 @@ import InfoCard from '../components/public/info-card.astro';
           </div>
 
           <div class="card" style="margin-top: 2rem;">
-            <h3 style="font-size: 1.125rem; font-weight: 600; color: #281717; margin-bottom: 1rem;">Horarios de atención</h3>
+            <h3
+              style="font-size: 1.125rem; font-weight: 600; color: #281717; margin-bottom: 1rem;"
+            >
+              Horarios de atención
+            </h3>
             <table class="schedule-table">
               <tbody>
                 <tr><td>Lunes a Viernes</td><td>8:00 AM - 6:00 PM</td></tr>
@@ -55,87 +65,10 @@ import InfoCard from '../components/public/info-card.astro';
             </table>
           </div>
         </div>
-
-        <div>
-          <form class="contact-form card" id="contact-form" novalidate>
-            <h3 class="contact-form__title">Envíanos un mensaje</h3>
-            <p class="contact-form__desc">Déjanos tus datos y te contactaremos a la brevedad.</p>
-            <div class="contact-form__group">
-              <label for="name" class="contact-form__label">Nombre completo</label>
-              <input type="text" id="name" name="name" class="contact-form__input" placeholder="Tu nombre" required />
-            </div>
-            <div class="contact-form__group">
-              <label for="email" class="contact-form__label">Correo electrónico</label>
-              <input type="email" id="email" name="email" class="contact-form__input" placeholder="tu@correo.com" required />
-            </div>
-            <div class="contact-form__group">
-              <label for="phone" class="contact-form__label">Teléfono</label>
-              <input type="tel" id="phone" name="phone" class="contact-form__input" placeholder="809-555-1234" />
-            </div>
-            <div class="contact-form__group">
-              <label for="subject" class="contact-form__label">Asunto</label>
-              <select id="subject" name="subject" class="contact-form__input" required>
-                <option value="">Selecciona un asunto</option>
-                <option value="donacion">Quiero donar sangre</option>
-                <option value="campania">Información sobre campañas</option>
-                <option value="requisitos">Dudas sobre requisitos</option>
-                <option value="otro">Otro</option>
-              </select>
-            </div>
-            <div class="contact-form__group">
-              <label for="message" class="contact-form__label">Mensaje</label>
-              <textarea id="message" name="message" class="contact-form__input contact-form__textarea" placeholder="Escribe tu mensaje..." rows="4" required></textarea>
-            </div>
-            <button type="submit" class="btn-primary" style="width: 100%;">Enviar mensaje</button>
-            <div id="form-feedback" style="margin-top: 1rem;"></div>
-          </form>
-        </div>
       </div>
     </div>
   </section>
 </PublicLayout>
-
-<script>
-  const form = document.getElementById('contact-form');
-  const feedback = document.getElementById('form-feedback');
-
-  if (form && feedback) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = form.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Enviando...';
-
-      const data = {
-        name: form.name.value,
-        email: form.email.value,
-        phone: form.phone.value,
-        subject: form.subject.value,
-        message: form.message.value,
-      };
-
-      try {
-        const res = await fetch('http://localhost:3000/contacto', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-
-        if (res.ok) {
-          feedback.innerHTML = '<div class="alert alert--success">Mensaje enviado correctamente. Te contactaremos pronto.</div>';
-          form.reset();
-        } else {
-          feedback.innerHTML = '<div class="alert alert--error">Error al enviar el mensaje. Intenta de nuevo.</div>';
-        }
-      } catch {
-        feedback.innerHTML = '<div class="alert alert--error">Error de conexión. Verifica tu conexión a internet.</div>';
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Enviar mensaje';
-      }
-    });
-  }
-</script>
 
 <style>
   .contact-grid {
@@ -204,13 +137,15 @@ import InfoCard from '../components/public/info-card.astro';
 
   .contact-form__input {
     padding: 0.75rem 1rem;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.9375rem;
     color: #281717;
     background-color: #fff8f7;
     border: 1px solid #e4bdbc;
     border-radius: 0.75rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
     width: 100%;
   }
 
