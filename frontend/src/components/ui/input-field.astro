@@ -1,0 +1,110 @@
+---
+interface Props {
+  type?: string;
+  name: string;
+  label: string;
+  placeholder?: string;
+  error?: string;
+  required?: boolean;
+  value?: string;
+}
+
+const {
+  type = 'text',
+  name,
+  label,
+  placeholder = '',
+  error = '',
+  required = false,
+  value = '',
+} = Astro.props;
+---
+
+<div class="input-group" data-has-error={!!error}>
+  <label for={name} class="input-label">{label}</label>
+  <input
+    type={type}
+    id={name}
+    name={name}
+    placeholder={placeholder}
+    required={required}
+    value={value}
+    class="input-field"
+    aria-invalid={!!error}
+    aria-describedby={error ? `${name}-error` : undefined}
+  />
+  {error && (
+    <span id={`${name}-error`} class="input-error" role="alert">{error}</span>
+  )}
+</div>
+
+<style>
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .input-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    letter-spacing: 0.01em;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
+    color: #1f2937;
+    background-color: #ffffff;
+    border: 1.5px solid #f1d3d2;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .input-field::placeholder {
+    color: #9ca3af;
+  }
+
+  .input-field:focus {
+    border-color: #bc002d;
+    box-shadow: 0 0 0 3px rgba(188, 0, 45, 0.1);
+  }
+
+  .input-group[data-has-error="true"] .input-field {
+    border-color: #bc002d;
+  }
+
+  .input-group[data-has-error="true"] .input-field:focus {
+    box-shadow: 0 0 0 3px rgba(188, 0, 45, 0.15);
+  }
+
+  .input-error {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
+    color: #bc002d;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .input-error::before {
+    content: '!';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #bc002d;
+    color: #ffffff;
+    font-size: 0.625rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+</style>
