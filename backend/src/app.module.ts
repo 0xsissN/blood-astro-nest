@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CampaignsModule } from './modules/campaigns/campaigns.module';
 import { DonorsModule } from './modules/donors/donors.module';
+import { PublicModule } from './modules/public/public.module';
+import { BloodStockModule } from './modules/blood-stock/blood-stock.module';
 
 @Module({
   imports: [
@@ -30,8 +30,8 @@ import { DonorsModule } from './modules/donors/donors.module';
     AuthModule,
     CampaignsModule,
     DonorsModule,
+    PublicModule,
+    BloodStockModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

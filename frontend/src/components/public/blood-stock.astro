@@ -1,0 +1,335 @@
+---
+import { apiGet } from "../../scripts/api";
+import type { BloodStockResponse } from "../../types/blood-stock";
+import type { StockItem } from "../../types/stock-item";
+
+const stock = await apiGet<BloodStockResponse[]>("/blood-stock");
+
+const stockItems: StockItem[] = stock.map((item) => ({
+  color:
+    item.estadoStock === "normal"
+      ? "green"
+      : item.estadoStock === "bajo"
+        ? "orange"
+        : "red",
+
+  urgent: item.estadoStock === "critico",
+
+  icon:
+    item.estadoStock === "normal"
+      ? "check_circle"
+      : item.estadoStock === "bajo"
+        ? "warning"
+        : "priority_high",
+
+  type: `${item.tipoSangre.grupo}${item.tipoSangre.factorRh}`,
+
+  units: item.cantidadUnidades,
+
+  status:
+    item.estadoStock === "normal"
+      ? "Normal"
+      : item.estadoStock === "bajo"
+        ? "Bajo"
+        : "Crítico",
+}));
+
+const statusColors = {
+  green: {
+    bar: "#10b981",
+    icon: "#059669",
+    bg: "rgba(16,185,129,0.1)",
+    text: "#059669",
+  },
+  orange: {
+    bar: "#f59e0b",
+    icon: "#d97706",
+    bg: "rgba(251,146,60,0.1)",
+    text: "#d97706",
+  },
+  red: {
+    bar: "#bc002d",
+    icon: "#bc002d",
+    bg: "rgba(188,0,45,0.1)",
+    text: "#bc002d",
+  },
+} as const;
+---
+
+<section class="section" id="stock">
+  <div class="container">
+    <div class="stock__header">
+      <div>
+        <h2 class="section-title">Stock en Tiempo Real</h2>
+        <p class="section-subtitle">
+          Estado actualizado de nuestras reservas por grupo sanguíneo.
+        </p>
+      </div>
+
+      <div class="stock__legend">
+        <div class="stock__legend-item">
+          <span class="stock__dot stock__dot--green"></span>
+          <span class="stock__legend-label">Normal</span>
+        </div>
+
+        <div class="stock__legend-item">
+          <span class="stock__dot stock__dot--orange"></span>
+          <span class="stock__legend-label">Bajo</span>
+        </div>
+
+        <div class="stock__legend-item">
+          <span class="stock__dot stock__dot--red"></span>
+          <span class="stock__legend-label">Crítico</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stock__grid">
+      {
+        stockItems.map((item) => {
+          const c = statusColors[item.color];
+
+          return (
+            <article
+              class={`stock-card${item.urgent ? " stock-card--urgent" : ""}`}
+            >
+              <div
+                class="stock-card__bar"
+                style={`background-color:${c.bar};height:${item.urgent ? "6px" : "4px"};`}
+              />
+
+              <div class="stock-card__icon" style={`background-color:${c.bg};`}>
+                {item.icon === "check_circle" && (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={c.icon}
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                )}
+
+                {item.icon === "warning" && (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={c.icon}
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                )}
+
+                {item.icon === "priority_high" && (
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={c.icon}
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                )}
+              </div>
+
+              <span class="stock-card__type">{item.type}</span>
+
+              <span class="stock-card__units">{item.units} unidades</span>
+
+              <div class="stock-card__status">
+                <span
+                  class="stock-card__status-text"
+                  style={`color:${c.text};`}
+                >
+                  {item.status}
+                </span>
+
+                {item.urgent && (
+                  <a href="/requisitos" class="stock-card__urgent-btn">
+                    Urgente: Donar
+                  </a>
+                )}
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .stock__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .stock__header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+  }
+
+  .stock__legend {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .stock__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .stock__dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+  }
+
+  .stock__dot--green {
+    background-color: #10b981;
+  }
+
+  .stock__dot--orange {
+    background-color: #f59e0b;
+  }
+
+  .stock__dot--red {
+    background-color: #bc002d;
+  }
+
+  .stock__legend-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #5c403f;
+  }
+
+  .stock__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .stock__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .stock-card {
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid #e4bdbc;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+
+  .stock-card:hover {
+    border-color: #bc002d;
+  }
+
+  .stock-card--urgent {
+    border-width: 2px;
+    border-color: #f1d3d2;
+  }
+
+  .stock-card--urgent:hover {
+    border-color: #bc002d;
+  }
+
+  .stock-card__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+
+  .stock-card__icon {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stock-card__type {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #281717;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .stock-card__status {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .stock-card__status-text {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .stock-card__urgent-btn {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    background-color: #bc002d;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+  }
+
+  .stock-card__urgent-btn:hover {
+    background-color: #8f0020;
+    color: #ffffff;
+  }
+
+  .stock-card__units {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: #5c403f;
+  }
+</style>

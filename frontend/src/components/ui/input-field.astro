@@ -1,6 +1,8 @@
 ---
+type HTMLInputTypeAttribute = HTMLInputElement["type"];
+
 interface Props {
-  type?: string;
+  type?: HTMLInputTypeAttribute;
   name: string;
   label: string;
   placeholder?: string;
@@ -10,13 +12,13 @@ interface Props {
 }
 
 const {
-  type = 'text',
+  type = "text",
   name,
   label,
-  placeholder = '',
-  error = '',
+  placeholder = "",
+  error = "",
   required = false,
-  value = '',
+  value = "",
 } = Astro.props;
 ---
 
@@ -33,9 +35,13 @@ const {
     aria-invalid={!!error}
     aria-describedby={error ? `${name}-error` : undefined}
   />
-  {error && (
-    <span id={`${name}-error`} class="input-error" role="alert">{error}</span>
-  )}
+  {
+    error && (
+      <span id={`${name}-error`} class="input-error" role="alert">
+        {error}
+      </span>
+    )
+  }
 </div>
 
 <style>
@@ -46,7 +52,7 @@ const {
   }
 
   .input-label {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
@@ -56,14 +62,16 @@ const {
   .input-field {
     width: 100%;
     padding: 0.625rem 0.875rem;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.9375rem;
     color: #1f2937;
     background-color: #ffffff;
     border: 1.5px solid #f1d3d2;
     border-radius: 8px;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
     box-sizing: border-box;
   }
 
@@ -85,7 +93,7 @@ const {
   }
 
   .input-error {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.8125rem;
     color: #bc002d;
     display: flex;
@@ -94,7 +102,7 @@ const {
   }
 
   .input-error::before {
-    content: '!';
+    content: "!";
     display: inline-flex;
     align-items: center;
     justify-content: center;
