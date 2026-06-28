@@ -3,9 +3,9 @@ const currentPath = Astro.url.pathname;
 const isHome = currentPath === "/";
 const navLinks = [
   { href: isHome ? "#stock" : "/#stock", label: "Stock" },
-  { href: isHome ? "#centros" : "/#centros", label: "Centros" },
   { href: isHome ? "#campanas" : "/#campanas", label: "Campañas" },
   { href: isHome ? "#como-donar" : "/#como-donar", label: "¿Cómo Donar?" },
+  { href: isHome ? "#impacto" : "/#impacto", label: "Impacto" },
 ];
 ---
 
@@ -42,7 +42,7 @@ const navLinks = [
     </nav>
     <div class="topbar__actions">
       <a
-        href="/login"
+        href="/auth/login"
         class="btn-primary"
         style="padding: 0.5rem 1.25rem; font-size: 0.75rem;">Iniciar Sesión</a
       >

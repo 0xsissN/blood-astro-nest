@@ -1,0 +1,123 @@
+---
+
+---
+
+<section class="section section--surface">
+  <div class="container">
+    <div class="impact__grid">
+      <div class="impact__image">
+        <div class="impact__image-placeholder">
+          <svg
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path
+              d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+            ></path></svg
+          >
+        </div>
+        <div class="impact__image-overlay"></div>
+      </div>
+      <div class="impact__content">
+        <h2 class="section-title">Impacto de tu Donación</h2>
+        <p class="impact__text">
+          Cada donación de sangre puede salvar hasta tres vidas. Tu generosidad
+          no solo ayuda a pacientes en emergencias, sino que también apoya
+          tratamientos contra el cáncer y cirugías complejas en todo el país.
+        </p>
+        <div class="impact__stats">
+          <div class="impact__stat">
+            <span class="impact__stat-value">3</span>
+            <span class="impact__stat-label">Vidas Salvadas</span>
+          </div>
+          <div class="impact__stat">
+            <span class="impact__stat-value">15m</span>
+            <span class="impact__stat-label">Tiempo de Donación</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .impact__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .impact__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .impact__image {
+    position: relative;
+    height: 400px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fadbda 0%, #ffe1e0 50%, #f1d3d2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .impact__image-placeholder {
+    color: #bc002d;
+    opacity: 0.4;
+  }
+
+  .impact__image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(188, 0, 45, 0.3), transparent);
+  }
+
+  .impact__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .impact__text {
+    font-size: 1rem;
+    color: #5c403f;
+    line-height: 1.7;
+  }
+
+  .impact__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .impact__stat {
+    padding: 1rem;
+    background-color: #fff0ef;
+    border-radius: 0.5rem;
+  }
+
+  .impact__stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #8f0020;
+    letter-spacing: -0.02em;
+  }
+
+  .impact__stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #5c403f;
+  }
+</style>

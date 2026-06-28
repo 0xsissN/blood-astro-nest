@@ -1,8 +1,8 @@
 ---
-import DashboardLayout from '../layouts/dashboard-layout.astro';
-import CampaignTable from '../components/campaigns/campaign-table.astro';
-import UpcomingSchedules from '../components/campaigns/upcoming-schedules.astro';
-import StockStatus from '../components/campaigns/stock-status.astro';
+import DashboardLayout from "../../layouts/dashboard-layout.astro";
+import CampaignTable from "../../components/campaigns/campaign-table.astro";
+import UpcomingSchedules from "../../components/campaigns/upcoming-schedules.astro";
+import StockStatus from "../../components/campaigns/stock-status.astro";
 ---
 
 <DashboardLayout title="Campañas" activeSection="campañas">
@@ -10,10 +10,21 @@ import StockStatus from '../components/campaigns/stock-status.astro';
     <div class="page-header">
       <div class="header-content">
         <h1 class="page-title">Gestión de Campañas</h1>
-        <p class="page-subtitle">Planifica, monitorea y analiza las jornadas de recolección nacional.</p>
+        <p class="page-subtitle">
+          Planifica, monitorea y analiza las jornadas de recolección nacional.
+        </p>
       </div>
       <button class="create-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
@@ -74,7 +85,7 @@ import StockStatus from '../components/campaigns/stock-status.astro';
     color: #ffffff;
     border: none;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;

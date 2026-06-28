@@ -37,6 +37,7 @@ export class CampaignsService {
   async findAll(): Promise<CampaignResponseDto[]> {
     const campaigns = await this.campaignRepository.find({
       order: { fechaInicio: 'DESC' },
+      where: { activa: true },
     });
     return campaigns.map((c) => this.toResponseDto(c));
   }
