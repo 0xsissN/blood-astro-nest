@@ -48,7 +48,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
 
       <nav class="sidebar-nav">
         <a
-          href="/"
+          href="/center/dashboard"
           class:list={[
             "nav-item",
             { "nav-item--active": "dashboard" === activeSection },
@@ -75,7 +75,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
           <span class="nav-text">Dashboard</span>
         </a>
         <a
-          href="/donors"
+          href="/center/donors"
           class:list={[
             "nav-item",
             { "nav-item--active": "donantes" === activeSection },
@@ -100,7 +100,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
           <span class="nav-text">Donantes</span>
         </a>
         <a
-          href="/donations"
+          href="/center/donation"
           class:list={[
             "nav-item",
             { "nav-item--active": "donaciones" === activeSection },
@@ -123,7 +123,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
           <span class="nav-text">Donaciones</span>
         </a>
         <a
-          href="/campaigns"
+          href="/center/campaigns"
           class:list={[
             "nav-item",
             { "nav-item--active": "campañas" === activeSection },
@@ -147,7 +147,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
           <span class="nav-text">Campañas</span>
         </a>
         <a
-          href="/reports"
+          href="/center/reports"
           class:list={[
             "nav-item",
             { "nav-item--active": "reportes" === activeSection },
@@ -196,24 +196,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
 
     <div class="main-area">
       <header class="topbar">
-        <div class="topbar-left">
-          <div class="search-box">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" placeholder="Buscar campañas..." />
-          </div>
-        </div>
+        <div class="topbar-left"></div>
         <div class="topbar-right">
           <button class="icon-btn">
             <svg

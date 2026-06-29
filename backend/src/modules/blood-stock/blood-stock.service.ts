@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 
 import { BloodStock } from './entities/blood-stock.entity';
 import { BloodStockResponseDto } from './dto/blood-stock-response.dto';
-import { BloodStockMapper } from './mapper/blood.stock.mapper';
+import { BloodStockMapper } from './mapper/blood-stock.mapper';
 
 @Injectable()
 export class BloodStockService {
