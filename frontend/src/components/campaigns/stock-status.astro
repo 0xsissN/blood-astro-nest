@@ -1,62 +1,59 @@
 ---
-interface BloodStock {
-  tipo: string;
-  cantidad: number;
-  estado: 'critico' | 'bajo' | 'normal';
-}
+import { apiGet } from "../../scripts/api";
+import type { BloodStockResponse } from "../../types/blood-stock";
 
-const stocks: BloodStock[] = [
-  { tipo: 'A+', cantidad: 142, estado: 'normal' },
-  { tipo: 'O-', cantidad: 12, estado: 'bajo' },
-  { tipo: 'B-', cantidad: 5, estado: 'critico' },
-  { tipo: 'AB+', cantidad: 88, estado: 'normal' },
-];
+const stocks = await apiGet<BloodStockResponse[]>("/blood-stock");
 
 function getEstadoColor(estado: string): string {
   switch (estado) {
-    case 'critico':
-      return 'stock--critico';
-    case 'bajo':
-      return 'stock--bajo';
-    case 'normal':
-      return 'stock--normal';
+    case "critico":
+      return "stock--critico";
+    case "bajo":
+      return "stock--bajo";
+    case "normal":
+      return "stock--normal";
     default:
-      return '';
+      return "";
   }
 }
 
 function getBarColor(estado: string): string {
   switch (estado) {
-    case 'critico':
-      return '#bc002d';
-    case 'bajo':
-      return '#f59e0b';
-    case 'normal':
-      return '#22c55e';
+    case "critico":
+      return "#bc002d";
+    case "bajo":
+      return "#f59e0b";
+    case "normal":
+      return "#22c55e";
     default:
-      return '#e5e7eb';
+      return "#e5e7eb";
   }
 }
 ---
 
 <div class="stock-status">
   <h3 class="section-title">ESTADO DE STOCK GLOBAL</h3>
-  
+
   <div class="stock-grid">
-    {stocks.map((stock) => (
-      <div class:list={['stock-card', getEstadoColor(stock.estado)]}>
-        <div class="stock-bar">
-          <div 
-            class="stock-bar-fill" 
-            style={`width: ${Math.min(stock.cantidad / 1.5, 100)}%; background-color: ${getBarColor(stock.estado)};`}
-          ></div>
+    {
+      stocks.map((st) => (
+        <div class:list={["stock-card", getEstadoColor(st.estadoStock)]}>
+          <div class="stock-bar">
+            <div
+              class="stock-bar-fill"
+              style={`width: ${Math.min(st.cantidadUnidades / 1.5, 100)}%; background-color: ${getBarColor(st.estadoStock)};`}
+            />
+          </div>
+          <div class="stock-info">
+            <span class="stock-tipo">
+              {st.tipoSangre.grupo}
+              {st.tipoSangre.factorRh}
+            </span>
+            <span class="stock-cantidad">{st.cantidadUnidades} U</span>
+          </div>
         </div>
-        <div class="stock-info">
-          <span class="stock-tipo">{stock.tipo}</span>
-          <span class="stock-cantidad">{stock.cantidad} U</span>
-        </div>
-      </div>
-    ))}
+      ))
+    }
   </div>
 </div>
 
@@ -64,7 +61,9 @@ function getBarColor(estado: string): string {
   .stock-status {
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 1px 2px rgba(0, 0, 0, 0.04);
     padding: 1.25rem;
   }
 
