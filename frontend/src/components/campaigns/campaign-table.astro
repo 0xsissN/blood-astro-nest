@@ -12,6 +12,7 @@ const campaigns = await apiGet<CampaignResponseDto[]>("/campaigns");
         <th>CAMPAÑA / LUGAR</th>
         <th>FECHA</th>
         <th>RECOLECTADO</th>
+        <th>ACCIONES</th>
       </tr>
     </thead>
     <tbody>
@@ -49,7 +50,7 @@ const campaigns = await apiGet<CampaignResponseDto[]>("/campaigns");
             </td>
             <td>
               <div class="recolectado-info">
-                <span class="recolectado-number">0</span>
+                <span class="recolectado-number">0 </span>
                 <span class="recolectado-label">Unidades</span>
               </div>
             </td>
