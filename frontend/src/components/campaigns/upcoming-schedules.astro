@@ -1,32 +1,40 @@
 ---
+import { apiGet } from "../../scripts/api";
+import type { CampaignResponseDto } from "../../types/campaign";
+
+const campagins = await apiGet<CampaignResponseDto[]>("/campaigns");
+
 interface Schedule {
-  month: string;
-  day: string;
+  mes: string;
+  dia: string;
   nombre: string;
   lugar: string;
 }
 
-const schedules: Schedule[] = [
-  {
-    month: 'OCT',
-    day: '24',
-    nombre: 'Universidad Central',
-    lugar: 'Campus Norte, Edificio C',
-  },
-  {
-    month: 'NOV',
-    day: '02',
-    nombre: 'Plaza de la Salud',
-    lugar: 'Estación Principal',
-  },
-];
+const schedules: Schedule[] = campagins.map((campaign) => ({
+  mes: new Date(campaign.fechaInicio)
+    .toLocaleString("es-ES", { month: "short" })
+    .toUpperCase(),
+  dia: new Date(campaign.fechaInicio).getDate().toString(),
+  nombre: campaign.nombre,
+  lugar: campaign.lugar,
+}));
 ---
 
 <div class="upcoming-schedules">
   <div class="section-header">
     <h3 class="section-title">Próximas Jornadas</h3>
     <button class="calendar-btn">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
         <line x1="16" y1="2" x2="16" y2="6"></line>
         <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -36,28 +44,30 @@ const schedules: Schedule[] = [
   </div>
 
   <div class="schedules-list">
-    {schedules.map((schedule) => (
-      <div class="schedule-item">
-        <div class="schedule-date">
-          <span class="schedule-month">{schedule.month}</span>
-          <span class="schedule-day">{schedule.day}</span>
+    {
+      schedules.slice(0, 3).map((schedule) => (
+        <div class="schedule-item">
+          <div class="schedule-date">
+            <span class="schedule-month">{schedule.mes}</span>
+            <span class="schedule-day">{schedule.dia}</span>
+          </div>
+          <div class="schedule-details">
+            <span class="schedule-name">{schedule.nombre}</span>
+            <span class="schedule-place">{schedule.lugar}</span>
+          </div>
         </div>
-        <div class="schedule-details">
-          <span class="schedule-name">{schedule.nombre}</span>
-          <span class="schedule-place">{schedule.lugar}</span>
-        </div>
-      </div>
-    ))}
+      ))
+    }
   </div>
-
-  <a href="/calendar" class="view-calendar-link">Ver calendario completo</a>
 </div>
 
 <style>
   .upcoming-schedules {
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 1px 2px rgba(0, 0, 0, 0.04);
     padding: 1.25rem;
   }
 
@@ -163,22 +173,5 @@ const schedules: Schedule[] = [
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .view-calendar-link {
-    display: block;
-    text-align: center;
-    margin-top: 1rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid #f1d3d2;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #bc002d;
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-
-  .view-calendar-link:hover {
-    color: #a30027;
   }
 </style>

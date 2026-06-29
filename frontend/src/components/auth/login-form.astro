@@ -106,7 +106,7 @@ import Button from "../ui/button.astro";
         return;
       }
 
-      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("token", data.accessToken);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       showAlert("Inicio de sesión exitoso", "success");
