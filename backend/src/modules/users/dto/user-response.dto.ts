@@ -1,4 +1,4 @@
-import { RoleResponseDTO } from './role.response.dto';
+import { RoleResponseDTO } from './role-response.dto';
 
 export class UserResponseDTO {
   id!: number;

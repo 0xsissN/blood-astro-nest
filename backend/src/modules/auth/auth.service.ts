@@ -14,7 +14,7 @@ import { LoginDto } from './dto/login.dto';
 import { LoginResponseDto } from './dto/login.response.dto';
 import { UserMapper } from '../users/mapper/user.mapper';
 import { User } from '../users/entities/user.entity';
-import { UserResponseDTO } from '../users/dto/user.response.dto';
+import { UserResponseDTO } from '../users/dto/user-response.dto';
 
 @Injectable()
 export class AuthService {

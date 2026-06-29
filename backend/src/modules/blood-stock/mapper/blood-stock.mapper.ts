@@ -1,6 +1,6 @@
 import { BloodStockResponseDto } from '../dto/blood-stock-response.dto';
 import { BloodStock } from '../entities/blood-stock.entity';
-import { BloodTypeMapper } from './blood.type.mapper';
+import { BloodTypeMapper } from './blood-type.mapper';
 
 export class BloodStockMapper {
   static toResponseDto(stock: BloodStock): BloodStockResponseDto {
