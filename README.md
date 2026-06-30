@@ -50,3 +50,97 @@ Una Historia de Usuario se considera completada únicamente cuando cumple con to
 * Los cambios fueron integrados exitosamente a la rama principal.
 * El sistema funciona correctamente después de la integración.
 * No existen conflictos pendientes ni errores de ejecución.
+
+# 📌 Retrospectiva Sprint 1
+
+Durante el cierre del Sprint 1, el equipo realizó una retrospectiva utilizando la técnica **Starfish**, con el propósito de identificar fortalezas, oportunidades de mejora y definir acciones concretas para optimizar el trabajo durante el Sprint 2.
+
+---
+
+# 🌟 1. Tablero Starfish
+
+## 🟢 Keep Doing (Mantener)
+
+- Uso constante de GitHub para compartir avances.
+- División clara de tareas entre los integrantes.
+- Ayuda entre compañeros cuando surgieron problemas técnicos.
+- Uso de PostgreSQL como base de datos centralizada.
+- Realizar commits frecuentes para evitar pérdida de trabajo.
+- Mantener reuniones cortas para revisar avances.
+
+## 🟡 Less Of (Menos de)
+
+- Reuniones improvisadas sin agenda.
+- Repetir explicaciones ya compartidas en el chat.
+- Hacer commits muy grandes y difíciles de revisar.
+- Dejar tareas pendientes para el último día.
+- No actualizar el estado de las tareas en GitHub.
+
+## 🔵 More Of (Más de)
+
+- Revisar el código entre compañeros (Peer Review).
+- Probar el sistema antes de integrar cambios.
+- Actualizar diariamente el tablero Kanban.
+- Consultar los criterios de aceptación antes de programar.
+- Usar ramas separadas para cada funcionalidad.
+- Compartir avances al finalizar cada jornada.
+- Verificar que la base de datos esté sincronizada para todos.
+- Planificar mejor las tareas del día siguiente.
+
+## 🔴 Stop Doing (Dejar de hacer)
+
+- Subir código sin realizar pruebas.
+- No avisar cuando se modifica una funcionalidad importante.
+- Dejar conflictos de Git para el último momento.
+- Cerrar tareas sin validación del equipo.
+- Hacer cambios grandes sin registrarlos en GitHub.
+- Posponer la documentación técnica.
+- Asumir que todos comprendieron una tarea sin confirmarlo.
+
+## 🟣 Start Doing (Empezar a hacer)
+
+- Realizar un Daily Scrum de 10 minutos.
+- Implementar revisión obligatoria mediante Pull Request.
+- Utilizar un checklist antes de cerrar cada Historia de Usuario.
+- Mejorar la organización del tablero Kanban.
+- Asignar un responsable por módulo.
+- Registrar bloqueos técnicos mediante GitHub Issues.
+- Realizar una mini demostración interna antes de cada entrega.
+- Actualizar diariamente el estado de las tareas.
+
+### 📷 Evidencia
+
+> **Inserte aquí la captura del tablero Starfish realizado por el equipo.**
+
+![Tablero Starfish](docs/starfish-sprint1.png)
+
+---
+
+# 📋 2. Informe de Decisiones Tomadas
+
+| ¿Qué vamos a mejorar? | ¿Cómo sabremos que funcionó al finalizar el Sprint 2? | Guardián |
+|------------------------|--------------------------------------------------------|----------|
+| Implementar revisión obligatoria mediante Pull Request antes de integrar cambios. | El 100% de las funcionalidades desarrolladas serán integradas mediante Pull Request y aprobadas por al menos un integrante antes del Merge. | Nicolás |
+| Realizar Daily Scrum de 10 minutos y actualizar diariamente el tablero Kanban. | Se realizarán reuniones diarias durante todo el Sprint 2 y el tablero Kanban permanecerá actualizado con el estado real de las tareas. | Sarah Carolina Chávez Valencia |
+
+---
+
+# 🚀 3. Tarea de mejora para el Sprint 2
+
+Se creó una tarea en el tablero **GitHub Projects** para dar seguimiento a las mejoras acordadas durante la retrospectiva.
+
+**Título de la tarea:**
+
+> **Implementar revisión obligatoria mediante Pull Request y Daily Scrum para el Sprint 2**
+
+**Objetivo**
+
+Mejorar la calidad del código, fortalecer la comunicación del equipo y mantener un seguimiento constante del avance del Sprint.
+
+### 🔗 Enlace a la tarea
+
+> **Agregar aquí el enlace directo a la tarjeta del GitHub Project.**
+
+Ejemplo:
+
+https://github.com/USUARIO/REPOSITORIO/projects/1?pane=issue&item=XXXX
