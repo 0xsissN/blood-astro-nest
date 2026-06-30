@@ -110,9 +110,7 @@ Durante el cierre del Sprint 1, el equipo realizó una retrospectiva utilizando 
 
 ### 📷 Evidencia
 
-> **Inserte aquí la captura del tablero Starfish realizado por el equipo.**
-
-![Tablero Starfish](docs/starfish-sprint1.png)
+![Tablero Starfish](STARTFISH.png)
 
 ---
 
@@ -139,8 +137,5 @@ Mejorar la calidad del código, fortalecer la comunicación del equipo y mantene
 
 ### 🔗 Enlace a la tarea
 
-> **Agregar aquí el enlace directo a la tarjeta del GitHub Project.**
+[https://github.com/USUARIO/REPOSITORIO/projects/1?pane=issue&item=XXXX](https://github.com/0xsissN/blood-astro-nest/issues/44)
 
-Ejemplo:
-
-https://github.com/USUARIO/REPOSITORIO/projects/1?pane=issue&item=XXXX
