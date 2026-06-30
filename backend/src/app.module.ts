@@ -6,6 +6,8 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CampaignsModule } from './modules/campaigns/campaigns.module';
 import { DonorsModule } from './modules/donors/donors.module';
+import { DonationsModule } from './modules/donations/donations.module';
+import { ReportsModule } from './modules/reports/reports.module';
 import { PublicModule } from './modules/public/public.module';
 import { BloodStockModule } from './modules/blood-stock/blood-stock.module';
 
@@ -30,6 +32,8 @@ import { BloodStockModule } from './modules/blood-stock/blood-stock.module';
     AuthModule,
     CampaignsModule,
     DonorsModule,
+    DonationsModule,
+    ReportsModule,
     PublicModule,
     BloodStockModule,
   ],
