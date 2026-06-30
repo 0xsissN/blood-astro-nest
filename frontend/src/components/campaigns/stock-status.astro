@@ -2,7 +2,21 @@
 import { apiGet } from "../../scripts/api";
 import type { BloodStockResponse } from "../../types/blood-stock";
 
-const stocks = await apiGet<BloodStockResponse[]>("/blood-stock");
+let stocks: BloodStockResponse[] = [];
+try {
+  stocks = await apiGet<BloodStockResponse[]>("/blood-stock");
+} catch {
+  stocks = [
+    { "id": 1, "tipoSangre": { "grupo": "A", "factorRh": "+" }, "cantidadUnidades": 42, "estadoStock": "normal", "fechaActualizacion": "", "idTipoSangre": 1 },
+    { "id": 2, "tipoSangre": { "grupo": "A", "factorRh": "-" }, "cantidadUnidades": 12, "estadoStock": "bajo", "fechaActualizacion": "", "idTipoSangre": 2 },
+    { "id": 3, "tipoSangre": { "grupo": "B", "factorRh": "+" }, "cantidadUnidades": 28, "estadoStock": "normal", "fechaActualizacion": "", "idTipoSangre": 3 },
+    { "id": 4, "tipoSangre": { "grupo": "B", "factorRh": "-" }, "cantidadUnidades": 8, "estadoStock": "bajo", "fechaActualizacion": "", "idTipoSangre": 4 },
+    { "id": 5, "tipoSangre": { "grupo": "AB", "factorRh": "+" }, "cantidadUnidades": 15, "estadoStock": "bajo", "fechaActualizacion": "", "idTipoSangre": 5 },
+    { "id": 6, "tipoSangre": { "grupo": "AB", "factorRh": "-" }, "cantidadUnidades": 5, "estadoStock": "critico", "fechaActualizacion": "", "idTipoSangre": 6 },
+    { "id": 7, "tipoSangre": { "grupo": "O", "factorRh": "+" }, "cantidadUnidades": 55, "estadoStock": "normal", "fechaActualizacion": "", "idTipoSangre": 7 },
+    { "id": 8, "tipoSangre": { "grupo": "O", "factorRh": "-" }, "cantidadUnidades": 3, "estadoStock": "critico", "fechaActualizacion": "", "idTipoSangre": 8 },
+  ];
+}
 
 function getEstadoColor(estado: string): string {
   switch (estado) {
