@@ -1,0 +1,91 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  ctaText?: string;
+  ctaHref?: string;
+  secondaryCtaText?: string;
+  secondaryCtaHref?: string;
+}
+
+const { title, subtitle } = Astro.props;
+---
+
+<section class="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero__content">
+      <h1 class="hero__title">{title}</h1>
+      <p class="hero__subtitle">{subtitle}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: 7rem 0 5rem;
+    overflow: hidden;
+    background-color: #fff8f7;
+  }
+
+  .hero__bg {
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(188, 0, 45, 0.04) 0%,
+      rgba(188, 0, 45, 0.02) 50%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+  }
+
+  .hero__title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: #8f0020;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+    color: #5c403f;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 560px;
+  }
+
+  @media (min-width: 640px) {
+    .hero__title {
+      font-size: 2.75rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .hero {
+      padding: 5.5rem 0 3rem;
+    }
+
+    .hero__bg {
+      width: 300px;
+      height: 300px;
+    }
+
+    .hero__title {
+      font-size: 2rem;
+    }
+  }
+</style>

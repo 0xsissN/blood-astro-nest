@@ -1,0 +1,135 @@
+---
+import { apiGet } from "../../scripts/api";
+import type { BloodStockResponse } from "../../types/blood-stock";
+
+const stocks = await apiGet<BloodStockResponse[]>("/blood-stock");
+
+function getEstadoColor(estado: string): string {
+  switch (estado) {
+    case "critico":
+      return "stock--critico";
+    case "bajo":
+      return "stock--bajo";
+    case "normal":
+      return "stock--normal";
+    default:
+      return "";
+  }
+}
+
+function getBarColor(estado: string): string {
+  switch (estado) {
+    case "critico":
+      return "#bc002d";
+    case "bajo":
+      return "#f59e0b";
+    case "normal":
+      return "#22c55e";
+    default:
+      return "#e5e7eb";
+  }
+}
+---
+
+<div class="stock-status">
+  <h3 class="section-title">ESTADO DE STOCK GLOBAL</h3>
+
+  <div class="stock-grid">
+    {
+      stocks.map((st) => (
+        <div class:list={["stock-card", getEstadoColor(st.estadoStock)]}>
+          <div class="stock-bar">
+            <div
+              class="stock-bar-fill"
+              style={`width: ${Math.min(st.cantidadUnidades / 1.5, 100)}%; background-color: ${getBarColor(st.estadoStock)};`}
+            />
+          </div>
+          <div class="stock-info">
+            <span class="stock-tipo">
+              {st.tipoSangre.grupo}
+              {st.tipoSangre.factorRh}
+            </span>
+            <span class="stock-cantidad">{st.cantidadUnidades} U</span>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .stock-status {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+    padding: 1.25rem;
+  }
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  .stock-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .stock-card {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 0.75rem;
+    border-left: 3px solid transparent;
+  }
+
+  .stock--critico {
+    border-left-color: #bc002d;
+  }
+
+  .stock--bajo {
+    border-left-color: #f59e0b;
+  }
+
+  .stock--normal {
+    border-left-color: #22c55e;
+  }
+
+  .stock-bar {
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+
+  .stock-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .stock-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .stock-tipo {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .stock-cantidad {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #6b7280;
+  }
+</style>

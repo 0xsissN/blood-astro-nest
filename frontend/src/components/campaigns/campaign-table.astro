@@ -1,0 +1,190 @@
+---
+import { apiGet } from "../../scripts/api";
+import type { CampaignResponseDto } from "../../types/campaign";
+
+const campaigns = await apiGet<CampaignResponseDto[]>("/campaigns");
+---
+
+<div class="campaign-table-container">
+  <table class="campaign-table">
+    <thead>
+      <tr>
+        <th>CAMPAÑA / LUGAR</th>
+        <th>FECHA</th>
+        <th>RECOLECTADO</th>
+        <th>ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        campaigns.map((campaign) => (
+          <tr>
+            <td>
+              <div class="campaign-info">
+                <div class="campaign-icon">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                    <line x1="4" y1="22" x2="4" y2="15" />
+                  </svg>
+                </div>
+                <div class="campaign-details">
+                  <span class="campaign-name">{campaign.nombre}</span>
+                  <span class="campaign-place">{campaign.lugar}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="date-info">
+                <span class="date-main">{campaign.fechaInicio}</span>
+                <span class="date-time">{campaign.fechaFin}</span>
+              </div>
+            </td>
+            <td>
+              <div class="recolectado-info">
+                <span class="recolectado-number">0 </span>
+                <span class="recolectado-label">Unidades</span>
+              </div>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .campaign-table-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+    overflow-x: auto;
+  }
+
+  .campaign-table-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .campaign-table-container::-webkit-scrollbar-track {
+    background: #f3f4f6;
+  }
+
+  .campaign-table-container::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 999px;
+  }
+
+  .campaign-table-container::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+
+  .campaign-table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+  }
+
+  .campaign-table th {
+    padding: 0.75rem 1.25rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: #f9fafb;
+    border-bottom: 1px solid #f1d3d2;
+  }
+
+  .campaign-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1d3d2;
+  }
+
+  .campaign-table tbody tr:hover {
+    background-color: #fff8f7;
+  }
+
+  .campaign-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .campaign-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .campaign-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #fef2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bc002d;
+    flex-shrink: 0;
+  }
+
+  .campaign-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .campaign-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  .campaign-place {
+    font-size: 0.8125rem;
+    color: #6b7280;
+  }
+
+  .date-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .date-main {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1f2937;
+  }
+
+  .date-time {
+    font-size: 0.8125rem;
+    color: #6b7280;
+  }
+
+  .recolectado-info {
+    display: flex;
+    align-items: baseline;
+    gap: 0.375rem;
+  }
+
+  .recolectado-number {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .recolectado-label {
+    font-size: 0.8125rem;
+    color: #6b7280;
+  }
+</style>

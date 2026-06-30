@@ -1,17 +1,23 @@
 ---
-
+import PublicLayout from "../layouts/public-layout.astro";
+import BloodStock from "../components/public/blood-stock.astro";
+import Campaign from "../components/public/campaign.astro";
+import HowToDonate from "../components/public/how-to-donate.astro";
+import Impact from "../components/public/impact.astro";
+import Header from "../components/public/header.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<PublicLayout
+  title="Hemocentro Nacional | Tu Sangre Salva Vidas"
+  description="Hemocentro Nacional - Sistema de gestión de donación de sangre. Encuentra centros, consulta stock y dona sangre para salvar vidas."
+>
+  <Header />
+
+  <BloodStock />
+
+  <Campaign />
+
+  <HowToDonate />
+
+  <Impact />
+</PublicLayout>

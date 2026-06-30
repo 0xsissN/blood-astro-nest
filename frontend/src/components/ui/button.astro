@@ -1,0 +1,94 @@
+---
+interface Props {
+  type?: 'button' | 'submit' | 'reset';
+  text: string;
+  loading?: boolean;
+  disabled?: boolean;
+  fullWidth?: boolean;
+}
+
+const {
+  type = 'submit',
+  text,
+  loading = false,
+  disabled = false,
+  fullWidth = true,
+} = Astro.props;
+---
+
+<button
+  type={type}
+  disabled={disabled || loading}
+  class:list={['btn', { 'btn--full-width': fullWidth }]}
+  aria-busy={loading}
+>
+  {loading ? (
+    <span class="btn__spinner" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.3" />
+        <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+      </svg>
+    </span>
+    <span class="btn__text">Cargando...</span>
+  ) : (
+    <span class="btn__text">{text}</span>
+  )}
+</button>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #bc002d;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease, transform 0.1s ease;
+    letter-spacing: 0.01em;
+  }
+
+  .btn:hover:not(:disabled) {
+    background-color: #a30027;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn--full-width {
+    width: 100%;
+  }
+
+  .btn__spinner {
+    display: inline-flex;
+    width: 1.125rem;
+    height: 1.125rem;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .btn__spinner svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .btn__text {
+    line-height: 1;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+interface Props {
+  group: string;
+  factor: string;
+  description: string;
+  canDonateTo: string;
+  canReceiveFrom: string;
+}
+
+const { group, factor, description, canDonateTo, canReceiveFrom } = Astro.props;
+---
+
+<article class="blood-card card">
+  <div class="blood-card__header">
+    <span class="blood-card__type">{group}<small>{factor}</small></span>
+  </div>
+  <p class="blood-card__desc">{description}</p>
+  <div class="blood-card__info">
+    <div class="blood-card__row">
+      <span class="blood-card__label">Donar a:</span>
+      <span class="blood-card__value">{canDonateTo}</span>
+    </div>
+    <div class="blood-card__row">
+      <span class="blood-card__label">Recibir de:</span>
+      <span class="blood-card__value">{canReceiveFrom}</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .blood-card {
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .blood-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .blood-card__header {
+    margin-bottom: 0.75rem;
+  }
+
+  .blood-card__type {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #bc002d;
+    letter-spacing: -0.02em;
+  }
+
+  .blood-card__type small {
+    font-size: 1rem;
+    font-weight: 600;
+    vertical-align: super;
+  }
+
+  .blood-card__desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  .blood-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1d3d2;
+  }
+
+  .blood-card__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .blood-card__label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #6b7280;
+  }
+
+  .blood-card__value {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+</style>
