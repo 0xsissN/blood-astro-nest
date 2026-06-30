@@ -1,0 +1,1127 @@
+---
+import DashboardLayout from '../../layouts/dashboard-layout.astro';
+
+interface Donor {
+  id: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+  ci: string;
+  tipo_sangre: string;
+  ultima_donacion: string;
+  activo: boolean;
+  telefono: string;
+  fecha_nacimiento: string;
+  direccion: string;
+}
+
+const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+const donors: Donor[] = [
+  { id: 1, nombre: 'Alejandro', apellido: 'Rodríguez', email: 'alejandro.rod@email.com', ci: '1.234.567-8', tipo_sangre: 'O+', ultima_donacion: '15 May 2023', activo: true, telefono: '809-555-0101', fecha_nacimiento: '1990-05-12', direccion: 'Calle 1, Santo Domingo' },
+  { id: 2, nombre: 'Lucía', apellido: 'Martínez', email: 'l.martinez@email.com', ci: '4.567.890-1', tipo_sangre: 'A-', ultima_donacion: '02 Feb 2023', activo: true, telefono: '809-555-0102', fecha_nacimiento: '1985-11-23', direccion: 'Av. 2, Santiago' },
+  { id: 3, nombre: 'Carlos', apellido: 'García', email: 'cgarcia.ph@email.com', ci: '3.421.987-5', tipo_sangre: 'B+', ultima_donacion: '12 Dic 2022', activo: false, telefono: '809-555-0103', fecha_nacimiento: '1992-07-08', direccion: 'Calle 3, La Vega' },
+  { id: 4, nombre: 'Mariana', apellido: 'Villalba', email: 'mariana.v@email.com', ci: '2.983.412-0', tipo_sangre: 'AB+', ultima_donacion: '28 Jun 2023', activo: true, telefono: '809-555-0104', fecha_nacimiento: '1994-03-17', direccion: 'Av. 4, Santo Domingo' },
+  { id: 5, nombre: 'Pedro', apellido: 'López', email: 'pedro.l@email.com', ci: '5.678.901-2', tipo_sangre: 'O-', ultima_donacion: '10 Ene 2023', activo: true, telefono: '809-555-0105', fecha_nacimiento: '1988-09-25', direccion: 'Calle 5, Puerto Plata' },
+  { id: 6, nombre: 'Ana', apellido: 'Ramírez', email: 'ana.ramirez@email.com', ci: '6.789.012-3', tipo_sangre: 'A+', ultima_donacion: '05 Mar 2023', activo: true, telefono: '809-555-0106', fecha_nacimiento: '1991-12-02', direccion: 'Calle 6, Santiago' },
+  { id: 7, nombre: 'Luis', apellido: 'Fernández', email: 'l.fernandez@email.com', ci: '7.890.123-4', tipo_sangre: 'B-', ultima_donacion: '20 Ago 2022', activo: false, telefono: '809-555-0107', fecha_nacimiento: '1983-04-15', direccion: 'Av. 7, La Romana' },
+  { id: 8, nombre: 'Sofía', apellido: 'Díaz', email: 'sofia.diaz@email.com', ci: '8.901.234-5', tipo_sangre: 'AB-', ultima_donacion: '14 Mar 2023', activo: true, telefono: '809-555-0108', fecha_nacimiento: '1996-08-30', direccion: 'Calle 8, Santo Domingo' },
+];
+
+const activeCount = donors.filter((d) => d.activo).length;
+const totalCount = donors.length;
+const newThisMonth = 3;
+---
+
+<DashboardLayout title="Gestión de Donantes - Hemocentro" currentSection="donantes">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">Gestión de Donantes</h1>
+      <p class="page-header__subtitle">Administre la base de datos nacional de donantes voluntarios.</p>
+    </div>
+    <button class="btn-primary" id="open-create-modal" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Registrar Nuevo Donante
+    </button>
+  </div>
+
+  <!-- Filters + Stats -->
+  <div class="filters-grid">
+    <div class="filter-card">
+      <span class="filter-card__label">Filtrar por Tipo Sanguíneo</span>
+      <div class="filter-card__pills" id="blood-type-filters">
+        {bloodTypes.map((bt) => (
+          <button class="pill" data-blood={bt} type="button">{bt}</button>
+        ))}
+      </div>
+    </div>
+    <div class="stats-card">
+      <div class="stat-item">
+        <span class="stat-item__label">Total Donantes</span>
+        <span class="stat-item__value">{totalCount}</span>
+      </div>
+      <div class="stat-item stat-item--bordered">
+        <span class="stat-item__label">Donantes Activos</span>
+        <span class="stat-item__value stat-item__value--primary">{activeCount}</span>
+      </div>
+      <div class="stat-item stat-item--bordered">
+        <span class="stat-item__label">Nuevos este mes</span>
+        <span class="stat-item__value stat-item__value--secondary">+{newThisMonth}</span>
+      </div>
+      <button class="stats-card__filter-btn" aria-label="Filtros avanzados">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c403f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table class="donor-table" id="donor-table">
+      <thead>
+        <tr>
+          <th>Donante</th>
+          <th>Cédula Identidad</th>
+          <th>Tipo Sanguíneo</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="donor-table-body">
+        {donors.map((donor) => {
+          const initials = (donor.nombre.charAt(0) + donor.apellido.charAt(0)).toUpperCase();
+          return (
+            <tr class="donor-row" data-id={donor.id} data-blood={donor.tipo_sangre} data-activo={donor.activo}>
+              <td>
+                <div class="donor-cell">
+                  <div class="donor-avatar">{initials}</div>
+                  <div>
+                    <p class="donor-name">{donor.nombre} {donor.apellido}</p>
+                    <p class="donor-email">{donor.email}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="donor-ci">{donor.ci}</td>
+              <td>
+                <span class="blood-badge">{donor.tipo_sangre}</span>
+              </td>
+              <td class="donor-phone">{donor.telefono}</td>
+              <td>
+                <span class:list={['status-badge', donor.activo ? 'status-badge--active' : 'status-badge--inactive']}>
+                  {donor.activo ? 'Activo' : 'Inactivo'}
+                </span>
+              </td>
+              <td class="text-right">
+                <div class="action-btns">
+                  <button class="action-btn" title="Editar" data-action="edit" data-id={donor.id}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="action-btn" title="Historial" data-action="history" data-id={donor.id}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </button>
+                  <button class="action-btn action-btn--danger" title={donor.activo ? 'Desactivar' : 'Eliminar'} data-action="delete" data-id={donor.id}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+    <!-- Pagination -->
+    <div class="pagination">
+      <span class="pagination__info">Mostrando 1-{donors.length} de {donors.length} donantes</span>
+      <div class="pagination__btns">
+        <button class="pagination__btn pagination__btn--active" type="button">1</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state (hidden by default) -->
+  <div class="empty-state" id="empty-state" hidden>
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e4bdbc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+    <h3 class="empty-state__title">No se encontraron donantes</h3>
+    <p class="empty-state__desc">Intenta ajustar los filtros o registra un nuevo donante.</p>
+  </div>
+
+  <!-- Modal: Create / Edit Donor -->
+  <div class="modal-overlay hidden" id="donor-modal">
+    <div class="modal">
+      <div class="modal__header">
+        <h2 class="modal__title" id="modal-title">Registrar Nuevo Donante</h2>
+        <button class="modal__close" id="modal-close" aria-label="Cerrar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form class="modal__form" id="donor-form" novalidate>
+        <input type="hidden" id="donor-id" value="" />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="donor-nombre">Nombre</label>
+            <input class="form-input" type="text" id="donor-nombre" placeholder="Nombre" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="donor-apellido">Apellido</label>
+            <input class="form-input" type="text" id="donor-apellido" placeholder="Apellido" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="donor-ci">Cédula de Identidad</label>
+            <input class="form-input" type="text" id="donor-ci" placeholder="000.000.000-0" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="donor-fecha-nac">Fecha de Nacimiento</label>
+            <input class="form-input" type="date" id="donor-fecha-nac" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="donor-telefono">Teléfono</label>
+            <input class="form-input" type="tel" id="donor-telefono" placeholder="809-555-0000" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="donor-tipo-sangre">Tipo Sanguíneo</label>
+            <select class="form-input" id="donor-tipo-sangre" required>
+              <option value="">Seleccionar...</option>
+              {bloodTypes.map((bt) => (<option value={bt}>{bt}</option>))}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="donor-email">Email</label>
+          <input class="form-input" type="email" id="donor-email" placeholder="correo@ejemplo.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="donor-direccion">Dirección</label>
+          <textarea class="form-input form-textarea" id="donor-direccion" placeholder="Dirección completa..." rows="3"></textarea>
+        </div>
+        <div class="modal__error hidden" id="form-error"></div>
+        <div class="modal__actions">
+          <button class="btn-cancel" type="button" id="modal-cancel">Cancelar</button>
+          <button class="btn-primary" type="submit" id="modal-submit">Guardar Donante</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Delete Confirmation -->
+  <div class="modal-overlay hidden" id="delete-modal">
+    <div class="modal modal--sm">
+      <div class="modal__header">
+        <h2 class="modal__title">Confirmar acción</h2>
+        <button class="modal__close" id="delete-modal-close" aria-label="Cerrar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="delete-content">
+        <div class="delete-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <p class="delete-text" id="delete-message">¿Estás seguro de que deseas desactivar este donante?</p>
+        <p class="delete-note" id="delete-note">Este donante posee donaciones registradas, solo podrá desactivarse.</p>
+      </div>
+      <div class="modal__actions">
+        <button class="btn-cancel" type="button" id="delete-cancel">Cancelar</button>
+        <button class="btn-danger" type="button" id="delete-confirm">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</DashboardLayout>
+
+<script>
+  (function() {
+    const donors = [
+      { id: 1, nombre: 'Alejandro', apellido: 'Rodríguez', email: 'alejandro.rod@email.com', ci: '1.234.567-8', tipo_sangre: 'O+', ultima_donacion: '15 May 2023', activo: true, telefono: '809-555-0101', fecha_nacimiento: '1990-05-12', direccion: 'Calle 1, Santo Domingo' },
+      { id: 2, nombre: 'Lucía', apellido: 'Martínez', email: 'l.martinez@email.com', ci: '4.567.890-1', tipo_sangre: 'A-', ultima_donacion: '02 Feb 2023', activo: true, telefono: '809-555-0102', fecha_nacimiento: '1985-11-23', direccion: 'Av. 2, Santiago' },
+      { id: 3, nombre: 'Carlos', apellido: 'García', email: 'cgarcia.ph@email.com', ci: '3.421.987-5', tipo_sangre: 'B+', ultima_donacion: '12 Dic 2022', activo: false, telefono: '809-555-0103', fecha_nacimiento: '1992-07-08', direccion: 'Calle 3, La Vega' },
+      { id: 4, nombre: 'Mariana', apellido: 'Villalba', email: 'mariana.v@email.com', ci: '2.983.412-0', tipo_sangre: 'AB+', ultima_donacion: '28 Jun 2023', activo: true, telefono: '809-555-0104', fecha_nacimiento: '1994-03-17', direccion: 'Av. 4, Santo Domingo' },
+      { id: 5, nombre: 'Pedro', apellido: 'López', email: 'pedro.l@email.com', ci: '5.678.901-2', tipo_sangre: 'O-', ultima_donacion: '10 Ene 2023', activo: true, telefono: '809-555-0105', fecha_nacimiento: '1988-09-25', direccion: 'Calle 5, Puerto Plata' },
+      { id: 6, nombre: 'Ana', apellido: 'Ramírez', email: 'ana.ramirez@email.com', ci: '6.789.012-3', tipo_sangre: 'A+', ultima_donacion: '05 Mar 2023', activo: true, telefono: '809-555-0106', fecha_nacimiento: '1991-12-02', direccion: 'Calle 6, Santiago' },
+      { id: 7, nombre: 'Luis', apellido: 'Fernández', email: 'l.fernandez@email.com', ci: '7.890.123-4', tipo_sangre: 'B-', ultima_donacion: '20 Ago 2022', activo: false, telefono: '809-555-0107', fecha_nacimiento: '1983-04-15', direccion: 'Av. 7, La Romana' },
+      { id: 8, nombre: 'Sofía', apellido: 'Díaz', email: 'sofia.diaz@email.com', ci: '8.901.234-5', tipo_sangre: 'AB-', ultima_donacion: '14 Mar 2023', activo: true, telefono: '809-555-0108', fecha_nacimiento: '1996-08-30', direccion: 'Calle 8, Santo Domingo' },
+    ];
+
+    let nextId = 9;
+    let editingId = null;
+    let deletingId = null;
+
+    const tbody = document.getElementById('donor-table-body');
+    const emptyState = document.getElementById('empty-state');
+    const tableWrap = document.querySelector('.table-wrap');
+
+    const modal = document.getElementById('donor-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const donorForm = document.getElementById('donor-form');
+    const formError = document.getElementById('form-error');
+    const donorIdInput = document.getElementById('donor-id');
+
+    const deleteModal = document.getElementById('delete-modal');
+    const deleteMessage = document.getElementById('delete-message');
+    const deleteNote = document.getElementById('delete-note');
+
+    const searchInput = document.getElementById('global-search');
+
+    let activeBloodFilter = null;
+
+    function getInitials(nombre, apellido) {
+      return (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
+    }
+
+    function renderTable(list) {
+      if (list.length === 0) {
+        tableWrap.style.display = 'none';
+        emptyState.hidden = false;
+        return;
+      }
+      tableWrap.style.display = '';
+      emptyState.hidden = true;
+
+      tbody.innerHTML = list.map((d) => {
+        const initials = getInitials(d.nombre, d.apellido);
+        const statusClass = d.activo ? 'status-badge--active' : 'status-badge--inactive';
+        const statusText = d.activo ? 'Activo' : 'Inactivo';
+        const deleteLabel = d.activo ? 'Desactivar' : 'Eliminar';
+        return `
+          <tr class="donor-row" data-id="${d.id}" data-blood="${d.tipo_sangre}" data-activo="${d.activo}">
+            <td>
+              <div class="donor-cell">
+                <div class="donor-avatar">${initials}</div>
+                <div>
+                  <p class="donor-name">${d.nombre} ${d.apellido}</p>
+                  <p class="donor-email">${d.email}</p>
+                </div>
+              </div>
+            </td>
+            <td class="donor-ci">${d.ci}</td>
+            <td><span class="blood-badge">${d.tipo_sangre}</span></td>
+            <td class="donor-phone">${d.telefono}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td class="text-right">
+              <div class="action-btns">
+                <button class="action-btn" title="Editar" data-action="edit" data-id="${d.id}">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="action-btn" title="Historial" data-action="history" data-id="${d.id}">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </button>
+                <button class="action-btn action-btn--danger" title="${deleteLabel}" data-action="delete" data-id="${d.id}">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+
+      attachRowEvents();
+    }
+
+    function filterDonors() {
+      let filtered = [...donors];
+
+      if (activeBloodFilter) {
+        filtered = filtered.filter((d) => d.tipo_sangre === activeBloodFilter);
+      }
+
+      const query = searchInput.value.trim().toLowerCase();
+      if (query) {
+        filtered = filtered.filter((d) =>
+          d.nombre.toLowerCase().includes(query) ||
+          d.apellido.toLowerCase().includes(query) ||
+          d.ci.includes(query) ||
+          d.tipo_sangre.toLowerCase().includes(query)
+        );
+      }
+
+      renderTable(filtered);
+    }
+
+    function attachRowEvents() {
+      document.querySelectorAll('[data-action="edit"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = parseInt(btn.dataset.id);
+          openEditModal(id);
+        });
+      });
+
+      document.querySelectorAll('[data-action="delete"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = parseInt(btn.dataset.id);
+          openDeleteModal(id);
+        });
+      });
+
+      document.querySelectorAll('[data-action="history"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          alert('Historial de donaciones - Funcionalidad próxima.');
+        });
+      });
+    }
+
+    function openEditModal(id) {
+      const donor = donors.find((d) => d.id === id);
+      if (!donor) return;
+      editingId = id;
+      modalTitle.textContent = 'Editar Donante';
+      document.getElementById('modal-submit').textContent = 'Guardar Cambios';
+      donorIdInput.value = id;
+      document.getElementById('donor-nombre').value = donor.nombre;
+      document.getElementById('donor-apellido').value = donor.apellido;
+      document.getElementById('donor-ci').value = donor.ci;
+      document.getElementById('donor-fecha-nac').value = donor.fecha_nacimiento;
+      document.getElementById('donor-telefono').value = donor.telefono;
+      document.getElementById('donor-tipo-sangre').value = donor.tipo_sangre;
+      document.getElementById('donor-email').value = donor.email;
+      document.getElementById('donor-direccion').value = donor.direccion;
+      formError.classList.add('hidden');
+      modal.classList.remove('hidden');
+    }
+
+    function openCreateModal() {
+      editingId = null;
+      modalTitle.textContent = 'Registrar Nuevo Donante';
+      document.getElementById('modal-submit').textContent = 'Guardar Donante';
+      donorForm.reset();
+      donorIdInput.value = '';
+      formError.classList.add('hidden');
+      modal.classList.remove('hidden');
+    }
+
+    function openDeleteModal(id) {
+      const donor = donors.find((d) => d.id === id);
+      if (!donor) return;
+      deletingId = id;
+      deleteMessage.textContent = donor.activo
+        ? '¿Estás seguro de que deseas desactivar este donante?'
+        : '¿Estás seguro de que deseas eliminar este donante?';
+      deleteNote.style.display = donor.activo ? '' : 'none';
+      deleteModal.classList.remove('hidden');
+    }
+
+    // Blood type filter pills
+    document.querySelectorAll('.pill').forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const bt = pill.dataset.blood;
+        if (activeBloodFilter === bt) {
+          activeBloodFilter = null;
+          pill.classList.remove('pill--active');
+        } else {
+          document.querySelectorAll('.pill').forEach((p) => p.classList.remove('pill--active'));
+          activeBloodFilter = bt;
+          pill.classList.add('pill--active');
+        }
+        filterDonors();
+      });
+    });
+
+    // Search
+    searchInput.addEventListener('input', filterDonors);
+
+    // Open create modal
+    document.getElementById('open-create-modal').addEventListener('click', openCreateModal);
+
+    // Modal close
+    function closeModals() {
+      modal.classList.add('hidden');
+      deleteModal.classList.add('hidden');
+    }
+
+    document.getElementById('modal-close').addEventListener('click', closeModals);
+    document.getElementById('modal-cancel').addEventListener('click', closeModals);
+    document.getElementById('delete-modal-close').addEventListener('click', closeModals);
+    document.getElementById('delete-cancel').addEventListener('click', closeModals);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModals();
+    });
+    deleteModal.addEventListener('click', (e) => {
+      if (e.target === deleteModal) closeModals();
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModals();
+    });
+
+    // Form submit (create/update)
+    donorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+
+      const nombre = document.getElementById('donor-nombre').value.trim();
+      const apellido = document.getElementById('donor-apellido').value.trim();
+      const ci = document.getElementById('donor-ci').value.trim();
+      const fecha_nacimiento = document.getElementById('donor-fecha-nac').value;
+      const telefono = document.getElementById('donor-telefono').value.trim();
+      const tipo_sangre = document.getElementById('donor-tipo-sangre').value;
+
+      if (!nombre || !apellido || !ci || !fecha_nacimiento || !telefono || !tipo_sangre) {
+        formError.textContent = 'Todos los campos obligatorios deben ser completados.';
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      const ciExists = donors.some((d) => d.ci === ci && d.id !== editingId);
+      if (ciExists) {
+        formError.textContent = 'El número de cédula ya está registrado.';
+        formError.classList.remove('hidden');
+        return;
+      }
+
+      const email = document.getElementById('donor-email').value.trim();
+      const direccion = document.getElementById('donor-direccion').value.trim();
+
+      if (editingId) {
+        const idx = donors.findIndex((d) => d.id === editingId);
+        if (idx !== -1) {
+          donors[idx] = { ...donors[idx], nombre, apellido, ci, fecha_nacimiento, telefono, tipo_sangre, email, direccion };
+        }
+      } else {
+        donors.push({
+          id: nextId++,
+          nombre,
+          apellido,
+          email,
+          ci,
+          tipo_sangre,
+          ultima_donacion: 'Nunca',
+          activo: true,
+          telefono,
+          fecha_nacimiento,
+          direccion,
+        });
+      }
+
+      filterDonors();
+      closeModals();
+    });
+
+    // Delete confirm
+    document.getElementById('delete-confirm').addEventListener('click', () => {
+      const donor = donors.find((d) => d.id === deletingId);
+      if (!donor) return;
+
+      if (donor.activo) {
+        donor.activo = false;
+      } else {
+        const idx = donors.findIndex((d) => d.id === deletingId);
+        if (idx !== -1) donors.splice(idx, 1);
+      }
+
+      filterDonors();
+      closeModals();
+    });
+
+    // Initial render
+    renderTable(donors);
+  })();
+</script>
+
+<style>
+  /* ============= PAGE HEADER ============= */
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .page-header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+
+  .page-header__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #281717;
+    margin-bottom: 0.25rem;
+  }
+
+  .page-header__subtitle {
+    font-size: 0.875rem;
+    color: #5c403f;
+  }
+
+  /* ============= FILTERS + STATS ============= */
+  .filters-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .filters-grid {
+      grid-template-columns: 1fr 2fr;
+    }
+  }
+
+  .filter-card {
+    background-color: #ffffff;
+    border: 1px solid #e4bdbc;
+    border-radius: 0.75rem;
+    padding: 1rem;
+  }
+
+  .filter-card__label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #5c403f;
+    margin-bottom: 0.625rem;
+  }
+
+  .filter-card__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .pill {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid #e4bdbc;
+    border-radius: 9999px;
+    background: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #5c403f;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .pill:hover {
+    background-color: #ffdad9;
+    border-color: #bc002d;
+    color: #8f0020;
+  }
+
+  .pill--active {
+    background-color: #bc002d;
+    border-color: #bc002d;
+    color: #ffffff;
+  }
+
+  .stats-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background-color: #ffffff;
+    border: 1px solid #e4bdbc;
+    border-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .stat-item--bordered {
+    padding-left: 1.5rem;
+    border-left: 1px solid #e4bdbc;
+  }
+
+  .stat-item__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #5c403f;
+  }
+
+  .stat-item__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #281717;
+  }
+
+  .stat-item__value--primary {
+    color: #8f0020;
+  }
+
+  .stat-item__value--secondary {
+    color: #5c403f;
+  }
+
+  .stats-card__filter-btn {
+    margin-left: auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .stats-card__filter-btn:hover {
+    background-color: #ffe1e0;
+  }
+
+  /* ============= TABLE ============= */
+  .table-wrap {
+    background-color: #ffffff;
+    border: 1px solid #e4bdbc;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .donor-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .donor-table thead {
+    background-color: #ffe1e0;
+  }
+
+  .donor-table th {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #5c403f;
+    white-space: nowrap;
+  }
+
+  .donor-table td {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+    color: #5c403f;
+    border-top: 1px solid #e4bdbc;
+  }
+
+  .donor-row {
+    transition: background-color 0.15s ease;
+  }
+
+  .donor-row:hover {
+    background-color: #fff0ef;
+  }
+
+  .donor-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .donor-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: #bc002d;
+    flex-shrink: 0;
+  }
+
+  .donor-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #281717;
+  }
+
+  .donor-email {
+    font-size: 0.75rem;
+    color: #906f6f;
+    margin-top: 0.125rem;
+  }
+
+  .donor-ci,
+  .donor-phone {
+    font-family: 'Inter', monospace;
+    font-size: 0.875rem;
+  }
+
+  .blood-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: #bc002d;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .status-badge--active {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .status-badge--inactive {
+    background-color: #fadbda;
+    color: #5c403f;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .action-btns {
+    display: inline-flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .donor-row:hover .action-btns {
+    opacity: 1;
+  }
+
+  .action-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    color: #5c403f;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .action-btn:hover {
+    background-color: #ffe1e0;
+    color: #8f0020;
+  }
+
+  .action-btn--danger:hover {
+    background-color: rgba(188, 0, 45, 0.1);
+    color: #bc002d;
+  }
+
+  /* ============= PAGINATION ============= */
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #e4bdbc;
+  }
+
+  .pagination__info {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #5c403f;
+  }
+
+  .pagination__btns {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .pagination__btn {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #e4bdbc;
+    border-radius: 0.5rem;
+    background: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
+    color: #5c403f;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .pagination__btn:hover {
+    background-color: #ffe1e0;
+  }
+
+  .pagination__btn--active {
+    background-color: #ffdad9;
+    border-color: #bc002d;
+    color: #8f0020;
+    font-weight: 700;
+  }
+
+  /* ============= EMPTY STATE ============= */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .empty-state__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #281717;
+  }
+
+  .empty-state__desc {
+    font-size: 0.875rem;
+    color: #5c403f;
+  }
+
+  /* ============= MODAL OVERLAY ============= */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.hidden {
+    display: none;
+  }
+
+  .modal {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal--sm {
+    max-width: 420px;
+  }
+
+  .modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: #bc002d;
+    color: #ffffff;
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+
+  .modal__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .modal__close {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    color: #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .modal__close:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .modal__form {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .form-row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #5c403f;
+  }
+
+  .form-input {
+    padding: 0.625rem 0.875rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    color: #281717;
+    background-color: #fff8f7;
+    border: 1px solid #e4bdbc;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+  }
+
+  .form-input:focus {
+    border-color: #bc002d;
+    box-shadow: 0 0 0 3px rgba(188, 0, 45, 0.1);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .modal__error {
+    padding: 0.75rem 1rem;
+    background-color: rgba(188, 0, 45, 0.08);
+    border: 1px solid rgba(188, 0, 45, 0.15);
+    border-radius: 0.5rem;
+    color: #bc002d;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .modal__error.hidden {
+    display: none;
+  }
+
+  .modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+  }
+
+  .btn-cancel {
+    padding: 0.625rem 1.25rem;
+    border: 1px solid #e4bdbc;
+    border-radius: 0.5rem;
+    background: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #5c403f;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-cancel:hover {
+    background-color: #fff0ef;
+  }
+
+  .btn-danger {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #bc002d;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-danger:hover {
+    background-color: #8f0020;
+  }
+
+  /* Delete modal content */
+  .delete-content {
+    text-align: center;
+    padding: 2rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .delete-icon {
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(188, 0, 45, 0.08);
+    border-radius: 50%;
+  }
+
+  .delete-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #281717;
+  }
+
+  .delete-note {
+    font-size: 0.8125rem;
+    color: #906f6f;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .donor-table th:nth-child(4),
+    .donor-table td:nth-child(4) {
+      display: none;
+    }
+
+    .action-btns {
+      opacity: 1;
+    }
+
+    .stats-card {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .stat-item--bordered {
+      border-left: none;
+      padding-left: 0;
+    }
+
+    .pagination {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+  }
+</style>
