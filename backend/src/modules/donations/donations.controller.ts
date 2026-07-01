@@ -15,6 +15,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { DonationsService } from './donations.service';
 import { CreateDonationDto } from './dto/create-donation.dto';
 import { FilterDonationDto } from './dto/filter-donation.dto';
+import { DonationResponseDto } from './dto/donation-response.dto';
 
 @Controller('donations')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -47,6 +48,16 @@ export class DonationsController {
     @Query('fechaFin') fechaFin?: string,
   ) {
     return this.donationsService.getRecurringDonors(fechaInicio, fechaFin);
+  }
+
+  @Get('donor/:id')
+  @Roles('ADMIN', 'MEDICO')
+  async findByDonor(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('fechaInicio') fechaInicio?: string,
+    @Query('fechaFin') fechaFin?: string,
+  ): Promise<DonationResponseDto[]> {
+    return this.donationsService.findByDonor(id, fechaInicio, fechaFin);
   }
 
   @Get(':id')
