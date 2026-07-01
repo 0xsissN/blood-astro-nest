@@ -25,7 +25,7 @@ export class StockAudit {
   @Column({ name: 'cantidad_nueva' })
   cantidadNueva!: number;
 
-  @Column({ length: 255, nullable: true })
+  @Column({ name: 'motivo', type: 'varchar', length: 255, nullable: true })
   motivo!: string | null;
 
   @Column({
