@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DashboardReport } from './entities/dashboard-report.entity';
 import { Donation } from '../donations/entities/donation.entity';
 import { Donor } from '../donors/entities/donor.entity';
-import { BloodStock } from '../donations/entities/blood-stock.entity';
+import { BloodStock } from '../blood-stock/entities/blood-stock.entity';
 import { ReportsService } from './reports.service';
 import { ReportsController } from './reports.controller';
 
