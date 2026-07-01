@@ -1,10 +1,17 @@
 ---
+import '../styles/global.css';
+import SideNav from '../components/dashboard/side-nav.astro';
+import TopBar from '../components/dashboard/top-bar.astro';
+
 interface Props {
   title?: string;
-  activeSection?: string;
+  currentSection?: string;
 }
 
-const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
+const {
+  title = 'Hemocentro - Dashboard',
+  currentSection = 'donantes',
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -17,11 +24,8 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <title>{title} - Hemocentro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>{title}</title>
   </head>
   <body class="dashboard-body">
     <aside class="sidebar">
@@ -320,377 +324,50 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
         <slot />
       </main>
     </div>
-
-    <script is:inline>
-      (function () {
-        const userStr = localStorage.getItem("user");
-        const userNameEl = document.getElementById("user-name");
-        const userRoleEl = document.getElementById("user-role");
-
-        if (userStr) {
-          try {
-            const user = JSON.parse(userStr);
-            if (userNameEl) userNameEl.textContent = user.nombre || "Usuario";
-            if (userRoleEl)
-              userRoleEl.textContent =
-                user.rol?.nombre || user.rol || "Sin rol";
-          } catch {}
-        }
-
-        const logoutBtn = document.getElementById("logout-btn");
-        logoutBtn?.addEventListener("click", async function () {
-          try {
-            await fetch("http://localhost:3000/auth/logout", {
-              method: "POST",
-            });
-          } catch {}
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          window.location.href = "/";
-        });
-      })();
-    </script>
   </body>
 </html>
 
 <style is:global>
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
+  body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #fff8f7;
+    font-family: 'Inter', sans-serif;
+    color: #281717;
     margin: 0;
-    padding: 0;
   }
 
-  body.dashboard-body {
-    font-family: "Inter", sans-serif;
-    background-color: #f5f5f5;
-    min-height: 100vh;
-    display: flex;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #e4bdbc;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #906f6f;
   }
 
-  .sidebar {
-    width: 240px;
-    background-color: #ffffff;
-    border-right: 1px solid #f1d3d2;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 100;
-  }
-
-  .sidebar-header {
-    padding: 1.25rem 1rem;
-    border-bottom: 1px solid #f1d3d2;
-  }
-
-  .sidebar-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .brand-name {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1f2937;
-    line-height: 1.2;
-  }
-
-  .brand-slogan {
-    font-size: 0.625rem;
-    color: #6b7280;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .sidebar-nav {
+  .dashboard-main {
+    margin-left: 260px;
     flex: 1;
-    padding: 1rem 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #4b5563;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    transition: all 0.15s ease;
-  }
-
-  .nav-item:hover {
-    background-color: #fff8f7;
-    color: #1f2937;
-  }
-
-  .nav-item--active {
-    background-color: #bc002d;
-    color: #ffffff;
-  }
-
-  .nav-item--active:hover {
-    background-color: #a30027;
-    color: #ffffff;
-  }
-
-  .nav-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-  }
-
-  .nav-icon :global(svg) {
-    width: 20px;
-    height: 20px;
-  }
-
-  .sidebar-footer {
-    padding: 1rem 0.75rem;
-    border-top: 1px solid #f1d3d2;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .new-donation-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background-color: #bc002d;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-family: "Inter", sans-serif;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-  }
-
-  .new-donation-btn:hover {
-    background-color: #a30027;
-  }
-
-  .settings-link {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #4b5563;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    transition: all 0.15s ease;
-  }
-
-  .settings-link:hover {
-    background-color: #fff8f7;
-    color: #1f2937;
-  }
-
-  .main-area {
-    flex: 1;
-    margin-left: 240px;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
   }
 
-  .topbar {
-    background-color: #ffffff;
-    border-bottom: 1px solid #f1d3d2;
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-
-  .topbar-left {
-    display: flex;
-    align-items: center;
-  }
-
-  .search-box {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    width: 320px;
-  }
-
-  .search-box svg {
-    color: #9ca3af;
-    flex-shrink: 0;
-  }
-
-  .search-box input {
-    border: none;
-    background: transparent;
-    font-family: "Inter", sans-serif;
-    font-size: 0.875rem;
-    color: #1f2937;
-    width: 100%;
-    outline: none;
-  }
-
-  .search-box input::placeholder {
-    color: #9ca3af;
-  }
-
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .icon-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: #6b7280;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .icon-btn:hover {
-    background-color: #f3f4f6;
-    color: #1f2937;
-  }
-
-  .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.375rem 0.75rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-  }
-
-  .user-profile:hover {
-    background-color: #f3f4f6;
-  }
-
-  .avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #6b7280;
-  }
-
-  .user-info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .user-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #1f2937;
-    line-height: 1.2;
-  }
-
-  .user-role {
-    font-size: 0.75rem;
-    color: #6b7280;
-    line-height: 1.2;
-  }
-
-  .content {
+  .dashboard-content {
     flex: 1;
     padding: 1.5rem;
   }
 
-  @media (max-width: 1024px) {
-    .sidebar {
-      width: 72px;
-    }
-
-    .brand-text,
-    .nav-text,
-    .new-donation-btn span:not(.nav-icon),
-    .settings-link span:not(.nav-icon) {
-      display: none;
-    }
-
-    .nav-item {
-      justify-content: center;
-      padding: 0.75rem;
-    }
-
-    .sidebar-footer {
-      align-items: center;
-    }
-
-    .new-donation-btn {
-      padding: 0.75rem;
-    }
-
-    .settings-link {
-      justify-content: center;
-    }
-
-    .main-area {
-      margin-left: 72px;
-    }
-
-    .search-box {
-      width: 240px;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .sidebar {
-      display: none;
-    }
-
-    .main-area {
+  @media (max-width: 768px) {
+    .dashboard-main {
       margin-left: 0;
-    }
-
-    .search-box {
-      width: 180px;
-    }
-
-    .user-info {
-      display: none;
     }
   }
 </style>

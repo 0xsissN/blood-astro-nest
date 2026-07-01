@@ -1,0 +1,28 @@
+---
+import DashboardLayout from '../../layouts/dashboard-layout.astro';
+---
+
+<DashboardLayout title="Dashboard - Hemocentro" currentSection="dashboard">
+  <div class="placeholder">
+    <h1 class="placeholder__title">Dashboard</h1>
+    <p class="placeholder__subtitle">Panel principal - Próximamente.</p>
+    <a href="/dashboard/donantes" class="btn-primary" style="display: inline-flex; margin-top: 1rem;">Ir a Gestión de Donantes</a>
+  </div>
+</DashboardLayout>
+
+<style>
+  .placeholder {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .placeholder__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #281717;
+    margin-bottom: 0.5rem;
+  }
+  .placeholder__subtitle {
+    font-size: 0.9375rem;
+    color: #5c403f;
+  }
+</style>
