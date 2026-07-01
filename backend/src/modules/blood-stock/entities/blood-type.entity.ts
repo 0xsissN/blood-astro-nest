@@ -5,13 +5,13 @@ export class BloodType {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ length: 3 })
+  @Column({ type: 'varchar', length: 3 })
   grupo!: string;
 
-  @Column({ name: 'factor_rh', length: 5 })
+  @Column({ name: 'factor_rh', type: 'varchar', length: 5 })
   factorRh!: string;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   descripcion!: string;
 
   @Column({ name: 'nivel_critico' })
