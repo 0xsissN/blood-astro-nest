@@ -5,5 +5,5 @@ export class BloodStockResponseDto {
   tipoSangre!: BloodTypeResponseDto;
   cantidadUnidades!: number;
   fechaActualizacion!: Date;
-  estadoStock!: string;
+  estadoStock!: string | null;
 }
