@@ -7,6 +7,7 @@ import { Repository, MoreThan } from 'typeorm';
 import { BloodStock } from './entities/blood-stock.entity';
 import { BloodType } from './entities/blood-type.entity';
 import { BloodUnit } from '../donations/entities/blood-unit.entity';
+import { AlertsService } from '../alerts/alerts.service';
 import { BloodStockResponseDto } from './dto/blood-stock-response.dto';
 import { BloodStockMapper } from './mapper/blood-stock.mapper';
 
@@ -21,6 +22,7 @@ export class BloodStockService {
     private readonly bloodTypeRepo: Repository<BloodType>,
     @InjectRepository(BloodUnit)
     private readonly bloodUnitRepo: Repository<BloodUnit>,
+    private readonly alertsService: AlertsService,
   ) {}
 
   async findAll(): Promise<BloodStockResponseDto[]> {
@@ -68,6 +70,8 @@ export class BloodStockService {
 
       await this.stockRepo.save(stock);
     }
+
+    await this.alertsService.checkAndCreateAlerts();
 
     this.logger.log('Stock sincronizado desde unidades activas');
   }

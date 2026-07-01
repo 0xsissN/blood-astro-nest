@@ -10,6 +10,7 @@ import { DonationsModule } from './modules/donations/donations.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { PublicModule } from './modules/public/public.module';
 import { BloodStockModule } from './modules/blood-stock/blood-stock.module';
+import { AlertsModule } from './modules/alerts/alerts.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { BloodStockModule } from './modules/blood-stock/blood-stock.module';
     ReportsModule,
     PublicModule,
     BloodStockModule,
+    AlertsModule,
   ],
 })
 export class AppModule {}
