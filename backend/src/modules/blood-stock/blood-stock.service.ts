@@ -72,6 +72,37 @@ export class BloodStockService {
     this.logger.log('Stock sincronizado desde unidades activas');
   }
 
+  async getChartData() {
+    const stocks = await this.stockRepo.find({
+      relations: ['tipoSangre'],
+      order: { id: 'ASC' },
+    });
+
+    const labels: string[] = [];
+    const unidades: number[] = [];
+    const nivelesCriticos: number[] = [];
+    const estados: string[] = [];
+    const colores: string[] = [];
+
+    for (const s of stocks) {
+      const label = `${s.tipoSangre.grupo}${s.tipoSangre.factorRh}`;
+      labels.push(label);
+      unidades.push(s.cantidadUnidades);
+      nivelesCriticos.push(s.tipoSangre.nivelCritico);
+      estados.push(s.estadoStock ?? 'normal');
+
+      if (s.estadoStock === 'critico') {
+        colores.push('#dc3545');
+      } else if (s.estadoStock === 'bajo') {
+        colores.push('#ffc107');
+      } else {
+        colores.push('#28a745');
+      }
+    }
+
+    return { labels, unidades, nivelesCriticos, estados, colores };
+  }
+
   @Cron(CronExpression.EVERY_HOUR)
   async autoSync(): Promise<void> {
     await this.syncStock();
