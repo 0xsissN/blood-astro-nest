@@ -3,14 +3,322 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 ---
 
 <DashboardLayout title="Donaciones" activeSection="donaciones">
-  <div class="dashboard-page">
+  <div class="donations-page">
     <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">Bienvenido a Donaciones</h1>
-        <p class="page-subtitle">Aquí puedes gestionar tus donaciones.</p>
+      <div>
+        <h1 class="page-title">Gestión de Donaciones</h1>
+        <p class="page-subtitle">Registre, supervise y gestione cada proceso de donación de sangre.</p>
+      </div>
+      <button class="btn-new">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Registrar Nueva Donación
+      </button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-label">Total Donaciones (Mes)</span>
+        <span class="stat-value">328</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Aprobadas</span>
+        <span class="stat-value stat-value--green">295</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Pendientes</span>
+        <span class="stat-value stat-value--orange">23</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Rechazadas</span>
+        <span class="stat-value stat-value--red">10</span>
       </div>
     </div>
 
-    <div class="page-content"></div>
-  </div></DashboardLayout
->
+    <div class="table-card">
+      <div class="table-header">
+        <h2 class="panel-title">Historial de Donaciones</h2>
+        <div class="table-filters">
+          <select class="form-select">
+            <option>Todos los estados</option>
+            <option>Aprobada</option>
+            <option>Pendiente</option>
+            <option>Rechazada</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Donante</th>
+              <th>Tipo Sangre</th>
+              <th>Fecha</th>
+              <th>Cantidad (ml)</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-bold">DON-001</td>
+              <td>Ricardo Mendoza</td>
+              <td><span class="blood-badge">O-</span></td>
+              <td>14 Oct, 2023</td>
+              <td>450 ml</td>
+              <td><span class="status-tag status-tag--aprobada">Aprobada</span></td>
+            </tr>
+            <tr>
+              <td class="td-bold">DON-002</td>
+              <td>Ana Sofía Torres</td>
+              <td><span class="blood-badge">A+</span></td>
+              <td>02 Nov, 2023</td>
+              <td>480 ml</td>
+              <td><span class="status-tag status-tag--aprobada">Aprobada</span></td>
+            </tr>
+            <tr>
+              <td class="td-bold">DON-003</td>
+              <td>Lucas García</td>
+              <td><span class="blood-badge">B-</span></td>
+              <td>22 Sep, 2023</td>
+              <td>460 ml</td>
+              <td><span class="status-tag status-tag--pendiente">Pendiente</span></td>
+            </tr>
+            <tr>
+              <td class="td-bold">DON-004</td>
+              <td>Carmen Rojas</td>
+              <td><span class="blood-badge">AB+</span></td>
+              <td>10 Nov, 2023</td>
+              <td>470 ml</td>
+              <td><span class="status-tag status-tag--aprobada">Aprobada</span></td>
+            </tr>
+            <tr>
+              <td class="td-bold">DON-005</td>
+              <td>Javier Morales</td>
+              <td><span class="blood-badge">O+</span></td>
+              <td>15 Oct, 2023</td>
+              <td>500 ml</td>
+              <td><span class="status-tag status-tag--rechazada">Rechazada</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</DashboardLayout>
+
+<style>
+  .donations-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+
+  .btn-new {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background-color: #bc002d;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .btn-new:hover {
+    background-color: #a30027;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .stat-card {
+    background: #fff;
+    border: 1px solid #f1d3d2;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .stat-label {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.2;
+  }
+
+  .stat-value--green {
+    color: #16a34a;
+  }
+
+  .stat-value--orange {
+    color: #ea580c;
+  }
+
+  .stat-value--red {
+    color: #dc2626;
+  }
+
+  .table-card {
+    background: #fff;
+    border: 1px solid #f1d3d2;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1d3d2;
+  }
+
+  .panel-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .form-select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.8125rem;
+    color: #374151;
+    background: #fff;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.875rem 1.5rem;
+    background: #fff8f7;
+    border-bottom: 1px solid #f1d3d2;
+  }
+
+  .data-table td {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+    border-bottom: 1px solid #f9fafb;
+    vertical-align: middle;
+  }
+
+  .data-table tbody tr:hover {
+    background: #fff8f7;
+  }
+
+  .td-bold {
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .blood-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .status-tag--aprobada {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .status-tag--pendiente {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .status-tag--rechazada {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  @media (max-width: 768px) {
+    .stats-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .page-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .btn-new {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
