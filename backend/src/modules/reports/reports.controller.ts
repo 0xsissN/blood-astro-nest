@@ -1,10 +1,10 @@
-import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { ReportsService } from './reports.service';
+import { ReportsService, InventoryReportData } from './reports.service';
 import { GenerateReportDto } from './dto/generate-report.dto';
 
 @Controller('reports')
@@ -29,5 +29,24 @@ export class ReportsController {
     });
 
     res.send(result.content);
+  }
+
+  @Get('inventory')
+  @Roles('ADMIN', 'LABORATORISTA')
+  async generateInventoryReport(): Promise<InventoryReportData> {
+    return this.reportsService.generateInventoryReport();
+  }
+
+  @Get('inventory/pdf')
+  @Roles('ADMIN')
+  async generateInventoryPdf(@Res() res: Response) {
+    const pdfBuffer = await this.reportsService.generateInventoryPdf();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="reporte-inventario.pdf"`,
+    });
+
+    res.send(pdfBuffer);
   }
 }
