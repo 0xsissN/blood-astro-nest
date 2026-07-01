@@ -2,6 +2,11 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Body,
+  Param,
+  Query,
+  ParseIntPipe,
   UseGuards,
   Res,
 } from '@nestjs/common';
@@ -11,6 +16,8 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { BloodStockService } from './blood-stock.service';
 import { BloodStockResponseDto } from './dto/blood-stock-response.dto';
+import { UpdateStockDto } from './dto/update-stock.dto';
+import { StockAuditResponseDto } from './dto/stock-audit-response.dto';
 
 @Controller('blood-stock')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -27,6 +34,16 @@ export class BloodStockController {
   @Roles('ADMIN', 'LABORATORISTA')
   async getChartData() {
     return this.bloodStockService.getChartData();
+  }
+
+  @Get('audit')
+  @Roles('ADMIN')
+  async getAuditLog(
+    @Query('stockId') stockId?: string,
+  ): Promise<StockAuditResponseDto[]> {
+    return this.bloodStockService.getAuditLog(
+      stockId ? Number(stockId) : undefined,
+    );
   }
 
   @Get('stream')
@@ -49,6 +66,15 @@ export class BloodStockController {
       clearInterval(interval);
       res.end();
     });
+  }
+
+  @Patch(':id')
+  @Roles('ADMIN')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateStockDto,
+  ): Promise<BloodStockResponseDto> {
+    return this.bloodStockService.updateStock(id, dto);
   }
 
   @Post('sync')
