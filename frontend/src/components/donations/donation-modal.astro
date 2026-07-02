@@ -1,0 +1,208 @@
+---
+import InputField from "../ui/input-field.astro";
+import Button from "../ui/button.astro";
+---
+
+<div class="modal-overlay" id="donation-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Registrar Nueva Donación</h2>
+      <button class="modal-close" id="donation-modal-close" type="button" aria-label="Cerrar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="donation-form" novalidate>
+      <div id="donation-form-alert"></div>
+
+      <div class="modal-fields">
+        <div class="form-group">
+          <label for="donor-select" class="input-label">Donante *</label>
+          <select id="donor-select" name="idDonante" class="form-select" required>
+            <option value="">Seleccione un donante</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="blood-type-select" class="input-label">Tipo de Sangre *</label>
+          <select id="blood-type-select" name="idTipoSangre" class="form-select" required>
+            <option value="">Seleccione tipo de sangre</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="campaign-select" class="input-label">Campaña (opcional)</label>
+          <select id="campaign-select" name="idCampania" class="form-select">
+            <option value="">Sin campaña</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <InputField
+            type="date"
+            name="fechaDonacion"
+            label="Fecha de Donación *"
+            required={true}
+          />
+          <InputField
+            type="number"
+            name="cantidadMl"
+            label="Cantidad (ml) *"
+            placeholder="Ej: 450"
+            required={true}
+          />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="donation-modal-cancel">Cancelar</button>
+        <Button type="submit" text="Registrar Donación" fullWidth={false} />
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal {
+    background-color: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1d3d2;
+  }
+
+  .modal-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .modal-close:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+  }
+
+  #donation-form {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .input-label {
+    font-family: "Inter", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .form-select {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9375rem;
+    color: #1f2937;
+    background-color: #ffffff;
+    border: 1.5px solid #f1d3d2;
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .form-select:focus {
+    border-color: #bc002d;
+    box-shadow: 0 0 0 3px rgba(188, 0, 45, 0.1);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .btn-cancel {
+    padding: 0.625rem 1.25rem;
+    font-family: "Inter", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-cancel:hover {
+    background-color: #e5e7eb;
+    color: #1f2937;
+  }
+
+  @media (max-width: 640px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
