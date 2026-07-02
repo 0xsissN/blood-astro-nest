@@ -1,5 +1,6 @@
 ---
 import DashboardLayout from "../../layouts/dashboard-layout.astro";
+import DonorModal from "../../components/donors/donor-modal.astro";
 ---
 
 <DashboardLayout title="Donantes" activeSection="donantes">
@@ -10,7 +11,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         <h1 class="page-title">Gestión de Donantes</h1>
         <p class="page-subtitle">Administre la base de datos nacional de donantes voluntarios.</p>
       </div>
-      <button class="btn-register">
+      <button class="btn-register" id="open-modal-btn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="8.5" cy="7" r="4"></circle>
@@ -159,7 +160,142 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     </div>
 
   </div>
+
+  <DonorModal />
 </DashboardLayout>
+
+<script is:inline>
+  (function () {
+    const API_URL = "http://localhost:3000";
+    const modal = document.getElementById("donor-modal");
+    const openBtn = document.getElementById("open-modal-btn");
+    const closeBtn = document.getElementById("modal-close-btn");
+    const cancelBtn = document.getElementById("modal-cancel-btn");
+    const form = document.getElementById("donor-form");
+    const alertContainer = document.getElementById("form-alert");
+    const bloodTypeSelect = document.getElementById("idTipoSangre");
+
+    function openModal() {
+      modal?.classList.add("active");
+      loadBloodTypes();
+    }
+
+    function closeModal() {
+      modal?.classList.remove("active");
+      form?.reset();
+      if (alertContainer) alertContainer.innerHTML = "";
+    }
+
+    function showAlert(message, type) {
+      if (!alertContainer) return;
+      const icon =
+        type === "error"
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+      alertContainer.innerHTML = `
+        <div class="alert alert--${type}" role="alert">
+          <span class="alert__icon">${icon}</span>
+          <span class="alert__message">${message}</span>
+        </div>`;
+    }
+
+    async function loadBloodTypes() {
+      if (!bloodTypeSelect) return;
+      try {
+        const res = await fetch(`${API_URL}/api/blood-types`);
+        const types = await res.json();
+        bloodTypeSelect.innerHTML = '<option value="">Seleccione un tipo sanguíneo</option>';
+        types.forEach(function (t) {
+          const opt = document.createElement("option");
+          opt.value = t.id;
+          opt.textContent = t.grupo + t.factorRh + (t.descripcion ? " - " + t.descripcion : "");
+          bloodTypeSelect.appendChild(opt);
+        });
+      } catch {
+        bloodTypeSelect.innerHTML = '<option value="">Error al cargar tipos sanguíneos</option>';
+      }
+    }
+
+    openBtn?.addEventListener("click", openModal);
+    closeBtn?.addEventListener("click", closeModal);
+    cancelBtn?.addEventListener("click", closeModal);
+
+    modal?.addEventListener("click", function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modal?.classList.contains("active"))
+        closeModal();
+    });
+
+    form?.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      if (alertContainer) alertContainer.innerHTML = "";
+
+      const fd = new FormData(form);
+      const nombre = fd.get("nombre")?.toString().trim();
+      const apellido = fd.get("apellido")?.toString().trim();
+      const ci = fd.get("ci")?.toString().trim();
+      const telefono = fd.get("telefono")?.toString().trim() || undefined;
+      const fechaNacimiento = fd.get("fechaNacimiento")?.toString() || undefined;
+      const idTipoSangre = fd.get("idTipoSangre")?.toString();
+
+      if (!nombre || !apellido || !ci || !idTipoSangre) {
+        showAlert("Los campos nombre, apellido, CI y tipo sanguíneo son obligatorios", "error");
+        return;
+      }
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute("aria-busy", "true");
+      }
+
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API_URL}/donors`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            nombre,
+            apellido,
+            ci,
+            telefono,
+            fechaNacimiento,
+            idTipoSangre: Number(idTipoSangre),
+          }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          const msg = Array.isArray(data.message)
+            ? data.message.join(", ")
+            : data.message || "Error al registrar el donante";
+          showAlert(msg, "error");
+          return;
+        }
+
+        showAlert("Donante registrado exitosamente", "success");
+        setTimeout(function () {
+          closeModal();
+          window.location.reload();
+        }, 800);
+      } catch {
+        showAlert("Error de conexión. Intente nuevamente.", "error");
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute("aria-busy");
+        }
+      }
+    });
+  })();
+</script>
 
 <style>
   .donors-page {
@@ -529,5 +665,39 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
       width: 100%;
       justify-content: center;
     }
+  }
+
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .alert--error {
+    background-color: rgba(188, 0, 45, 0.08);
+    color: #bc002d;
+    border-left: 3px solid #bc002d;
+  }
+
+  .alert--success {
+    background-color: rgba(34, 197, 94, 0.08);
+    color: #16a34a;
+    border-left: 3px solid #16a34a;
+  }
+
+  .alert__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    line-height: 0;
+  }
+
+  .alert__message {
+    flex: 1;
   }
 </style>
