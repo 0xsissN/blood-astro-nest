@@ -4,15 +4,26 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
 <DashboardLayout title="Reportes" activeSection="reportes">
   <div class="reports-page">
-
     <div class="page-header-row">
       <div>
-        <span class="epic-badge">ÉPICA 7: CENTRO DE ANALÍTICA</span>
         <h1 class="page-title">Gestión de Reportes</h1>
-        <p class="page-subtitle">Analice la eficiencia del sistema, supervise los niveles críticos de stock y documente cada flujo de donación para el cumplimiento institucional.</p>
+        <p class="page-subtitle">
+          Analice la eficiencia del sistema, supervise los niveles críticos de
+          stock y documente cada flujo de donación para el cumplimiento
+          institucional.
+        </p>
       </div>
       <button class="btn-history" id="btn-view-all-reports">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
@@ -26,7 +37,16 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
           <div class="card-header-row">
             <div class="card-header-left">
               <div class="card-icon card-icon--red">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   <line x1="18" y1="20" x2="18" y2="10"></line>
                   <line x1="12" y1="20" x2="12" y2="4"></line>
                   <line x1="6" y1="20" x2="6" y2="14"></line>
@@ -34,12 +54,23 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
               </div>
               <div>
                 <h2 class="card-title">Reportes de Donaciones</h2>
-                <p class="card-subtitle">Filtros dinámicos de captación (HU-20)</p>
+                <p class="card-subtitle">Filtros dinámicos de captación</p>
               </div>
             </div>
             <button class="btn-generate-pdf" id="btn-generate-donation-pdf">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                ></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
               </svg>
               Generar Reporte PDF
@@ -73,13 +104,24 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
           <div class="donations-table-container" id="donations-container">
             <div class="loading-state">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4a0a0" stroke-width="1.5">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#d4a0a0"
+                stroke-width="1.5"
+              >
                 <line x1="18" y1="20" x2="18" y2="10"></line>
                 <line x1="12" y1="20" x2="12" y2="4"></line>
                 <line x1="6" y1="20" x2="6" y2="14"></line>
               </svg>
-              <p class="chart-text">Seleccione filtros para cargar el historial de donaciones</p>
-              <p class="chart-hint">Las donaciones se mostrarán en la tabla a continuación</p>
+              <p class="chart-text">
+                Seleccione filtros para cargar el historial de donaciones
+              </p>
+              <p class="chart-hint">
+                Las donaciones se mostrarán en la tabla a continuación
+              </p>
             </div>
           </div>
         </div>
@@ -87,13 +129,24 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         <div class="recent-reports-card">
           <div class="recent-header">
             <div class="recent-header-left">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#bc002d"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
               <h2 class="panel-title">Reportes Generados Recientemente</h2>
             </div>
-            <span class="recent-count" id="reports-count">Mostrando últimos 5</span>
+            <span class="recent-count" id="reports-count"
+              >Mostrando últimos 5</span
+            >
           </div>
 
           <div class="table-container">
@@ -120,13 +173,24 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         <div class="stock-critico-card">
           <div class="stock-header-row">
             <div class="stock-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                ></path>
               </svg>
             </div>
             <div>
               <h3 class="stock-title">Stock Crítico</h3>
-              <p class="stock-subtitle">Estado actual de inventario (HU-21)</p>
+              <p class="stock-subtitle">Estado actual de inventario</p>
             </div>
           </div>
 
@@ -140,7 +204,16 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
           </div>
 
           <button class="btn-export" id="btn-export-inventory">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
               <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -150,7 +223,6 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         </div>
       </div>
     </div>
-
   </div>
 </DashboardLayout>
 
@@ -158,28 +230,28 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   const API_BASE = "http://localhost:3000";
 
   function getToken() {
-    return localStorage.getItem('token');
+    return localStorage.getItem("token");
   }
 
   function getAuthHeaders() {
     const token = getToken();
     return {
       "Content-Type": "application/json",
-      ...(token ? { "Authorization": `Bearer ${token}` } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
   }
 
   interface BloodStock {
     id: number;
-    tipoSangre: { id: number; grupo: string; factorRh: string; };
+    tipoSangre: { id: number; grupo: string; factorRh: string };
     cantidadUnidades: number;
     estadoStock: string | null;
   }
 
   interface Donation {
     id: number;
-    donante: { id: number; nombre: string; apellido: string; ci: string; };
-    tipoSangre: { id: number; grupo: string; factorRh: string; };
+    donante: { id: number; nombre: string; apellido: string; ci: string };
+    tipoSangre: { id: number; grupo: string; factorRh: string };
     fechaDonacion: string;
     cantidadMl: number;
     estado: string;
@@ -208,59 +280,71 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   }
 
   function renderBloodStock(stocks: BloodStock[]) {
-    const container = document.getElementById('stock-list');
-    const badge = document.getElementById('alert-badge');
+    const container = document.getElementById("stock-list");
+    const badge = document.getElementById("alert-badge");
     if (!container) return;
 
-    const criticalCount = stocks.filter(s => s.estadoStock === 'critico' || s.estadoStock === 'bajo').length;
+    const criticalCount = stocks.filter(
+      (s) => s.estadoStock === "critico" || s.estadoStock === "bajo",
+    ).length;
 
     if (badge) {
-      badge.textContent = criticalCount > 0 ? `ALERTA: ${criticalCount} CRÍTICOS` : 'TODO NORMAL';
-      badge.className = `alert-badge ${criticalCount > 0 ? 'alert-badge--danger' : 'alert-badge--ok'}`;
+      badge.textContent =
+        criticalCount > 0 ? `ALERTA: ${criticalCount} CRÍTICOS` : "TODO NORMAL";
+      badge.className = `alert-badge ${criticalCount > 0 ? "alert-badge--danger" : "alert-badge--ok"}`;
     }
 
     if (stocks.length === 0) {
-      container.innerHTML = '<div class="loading-state-small">No hay datos de stock</div>';
+      container.innerHTML =
+        '<div class="loading-state-small">No hay datos de stock</div>';
       return;
     }
 
-    container.innerHTML = stocks.map(stock => {
-      const tipo = `${stock.tipoSangre.grupo}${stock.tipoSangre.factorRh}`;
-      const isNegative = stock.tipoSangre.factorRh === '-';
-      const isCritical = stock.estadoStock === 'critico' || stock.cantidadUnidades <= 5;
-      const isWarning = stock.estadoStock === 'bajo' || stock.cantidadUnidades <= 15;
+    container.innerHTML = stocks
+      .map((stock) => {
+        const tipo = `${stock.tipoSangre.grupo}${stock.tipoSangre.factorRh}`;
+        const isNegative = stock.tipoSangre.factorRh === "-";
+        const isCritical =
+          stock.estadoStock === "critico" || stock.cantidadUnidades <= 5;
+        const isWarning =
+          stock.estadoStock === "bajo" || stock.cantidadUnidades <= 15;
 
-      let itemClass = 'critical-item--ok';
-      let detailClass = 'critical-detail--ok';
-      let detailText = 'Estado: Óptimo';
-      let badgeClass = '';
+        let itemClass = "critical-item--ok";
+        let detailClass = "critical-detail--ok";
+        let detailText = "Estado: Óptimo";
+        let badgeClass = "";
 
-      if (isCritical) {
-        itemClass = 'critical-item--danger';
-        detailClass = 'critical-detail--danger';
-        detailText = '▲ Stock mínimo';
-        badgeClass = 'critical-badge--danger';
-      } else if (isWarning) {
-        itemClass = 'critical-item--warning';
-        detailClass = 'critical-detail--warning';
-        detailText = `▲ ${stock.cantidadUnidades} unidades`;
-      }
+        if (isCritical) {
+          itemClass = "critical-item--danger";
+          detailClass = "critical-detail--danger";
+          detailText = "▲ Stock mínimo";
+          badgeClass = "critical-badge--danger";
+        } else if (isWarning) {
+          itemClass = "critical-item--warning";
+          detailClass = "critical-detail--warning";
+          detailText = `▲ ${stock.cantidadUnidades} unidades`;
+        }
 
-      return `
+        return `
         <div class="critical-item ${itemClass}">
           <div class="critical-badge ${badgeClass}">${tipo}</div>
           <div class="critical-info">
-            <span class="critical-name">${stock.tipoSangre.grupo} ${isNegative ? 'Negativo' : 'Positivo'}</span>
+            <span class="critical-name">${stock.tipoSangre.grupo} ${isNegative ? "Negativo" : "Positivo"}</span>
             <span class="critical-detail ${detailClass}">${detailText}</span>
           </div>
-          <span class="critical-units ${isCritical ? 'critical-units--danger' : ''}">${String(stock.cantidadUnidades).padStart(2, '0')}u</span>
+          <span class="critical-units ${isCritical ? "critical-units--danger" : ""}">${String(stock.cantidadUnidades).padStart(2, "0")}u</span>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
   }
 
   // ==================== HISTORIAL DE DONACIONES ====================
-  async function fetchDonations(fechaInicio?: string, fechaFin?: string, tipoSangre?: string): Promise<Donation[]> {
+  async function fetchDonations(
+    fechaInicio?: string,
+    fechaFin?: string,
+    tipoSangre?: string,
+  ): Promise<Donation[]> {
     try {
       let url = `${API_BASE}/donations?`;
       if (fechaInicio) url += `fechaInicio=${fechaInicio}&`;
@@ -288,7 +372,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   }
 
   function renderDonations(donations: Donation[]) {
-    const container = document.getElementById('donations-container');
+    const container = document.getElementById("donations-container");
     if (!container) return;
 
     if (donations.length === 0) {
@@ -320,7 +404,9 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
             </tr>
           </thead>
           <tbody>
-            ${donations.map(d => `
+            ${donations
+              .map(
+                (d) => `
               <tr>
                 <td>#${d.id}</td>
                 <td>
@@ -330,11 +416,13 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
                   </div>
                 </td>
                 <td><span class="blood-badge-sm">${d.tipoSangre.grupo}${d.tipoSangre.factorRh}</span></td>
-                <td>${new Date(d.fechaDonacion).toLocaleDateString('es-BO')}</td>
+                <td>${new Date(d.fechaDonacion).toLocaleDateString("es-BO")}</td>
                 <td>${d.cantidadMl} ml</td>
                 <td><span class="status-tag status-tag--${d.estado}">${d.estado.toUpperCase()}</span></td>
               </tr>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </tbody>
         </table>
       </div>
@@ -345,7 +433,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   async function fetchReports(): Promise<Report[]> {
     try {
       const res = await fetch(`${API_BASE}/reports?limit=5`, {
-        method: 'GET',
+        method: "GET",
         headers: getAuthHeaders(),
         credentials: "include",
       });
@@ -359,8 +447,8 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   }
 
   function renderReports(reports: Report[]) {
-    const tbody = document.getElementById('reports-tbody');
-    const countEl = document.getElementById('reports-count');
+    const tbody = document.getElementById("reports-tbody");
+    const countEl = document.getElementById("reports-count");
     if (!tbody) return;
 
     if (reports.length === 0) {
@@ -374,11 +462,14 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
     if (countEl) countEl.textContent = `Mostrando ${reports.length} reportes`;
 
-    tbody.innerHTML = reports.slice(0, 5).map(report => `
+    tbody.innerHTML = reports
+      .slice(0, 5)
+      .map(
+        (report) => `
       <tr>
-        <td class="td-bold">Reporte_${report.periodo.replace(/\s/g, '_').replace(/[:\/]/g, '-')}.pdf</td>
+        <td class="td-bold">Reporte_${report.periodo.replace(/\s/g, "_").replace(/[:\/]/g, "-")}.pdf</td>
         <td><span class="type-tag type-tag--donaciones">DONACIONES</span></td>
-        <td>${new Date(report.fechaGeneracion).toLocaleString('es-BO')}</td>
+        <td>${new Date(report.fechaGeneracion).toLocaleString("es-BO")}</td>
         <td>
           <button class="download-btn" title="Descargar" onclick="downloadReport(${report.id})">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -389,40 +480,44 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
           </button>
         </td>
       </tr>
-    `).join('');
+    `,
+      )
+      .join("");
   }
 
-  (window as any).downloadReport = async function(reportId: number) {
+  (window as any).downloadReport = async function (reportId: number) {
     try {
       const res = await fetch(`${API_BASE}/reports/pdf`, {
-        method: 'POST',
+        method: "POST",
         headers: getAuthHeaders(),
         credentials: "include",
         body: JSON.stringify({}),
       });
       if (!res.ok) {
-        alert('Error al descargar el reporte.');
+        alert("Error al descargar el reporte.");
         return;
       }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `reporte-${reportId}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading:", error);
-      alert('Error de conexión al descargar reporte.');
+      alert("Error de conexión al descargar reporte.");
     }
   };
 
   // ==================== EXPORTAR INVENTARIO ====================
-  (window as any).exportInventoryPdf = async function() {
-    const btn = document.getElementById('btn-export-inventory') as HTMLButtonElement;
+  (window as any).exportInventoryPdf = async function () {
+    const btn = document.getElementById(
+      "btn-export-inventory",
+    ) as HTMLButtonElement;
     if (btn) {
       btn.disabled = true;
-      btn.textContent = 'Exportando...';
+      btn.textContent = "Exportando...";
     }
     try {
       const res = await fetch(`${API_BASE}/reports/inventory/pdf`, {
@@ -430,19 +525,21 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         credentials: "include",
       });
       if (!res.ok) {
-        alert('Error al exportar inventario. Verifique que el backend esté corriendo.');
+        alert(
+          "Error al exportar inventario. Verifique que el backend esté corriendo.",
+        );
         return;
       }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = 'reporte-inventario.pdf';
+      a.download = "reporte-inventario.pdf";
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error exporting:", error);
-      alert('Error de conexión al exportar inventario.');
+      alert("Error de conexión al exportar inventario.");
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -452,40 +549,56 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   };
 
   // ==================== GENERAR REPORTE DONACIONES ====================
-  (window as any).generateDonationPdf = async function() {
-    const btn = document.getElementById('btn-generate-donation-pdf') as HTMLButtonElement;
-    const fechaInicio = (document.getElementById('filter-date-start') as HTMLInputElement)?.value;
-    const fechaFin = (document.getElementById('filter-date-end') as HTMLInputElement)?.value;
-    const tipoSangre = (document.getElementById('filter-blood-type') as HTMLSelectElement)?.value;
+  (window as any).generateDonationPdf = async function () {
+    const btn = document.getElementById(
+      "btn-generate-donation-pdf",
+    ) as HTMLButtonElement;
+    const fechaInicio = (
+      document.getElementById("filter-date-start") as HTMLInputElement
+    )?.value;
+    const fechaFin = (
+      document.getElementById("filter-date-end") as HTMLInputElement
+    )?.value;
+    const tipoSangre = (
+      document.getElementById("filter-blood-type") as HTMLSelectElement
+    )?.value;
 
     if (btn) {
       btn.disabled = true;
-      btn.textContent = 'Generando...';
+      btn.textContent = "Generando...";
     }
 
     try {
       const res = await fetch(`${API_BASE}/reports/pdf`, {
-        method: 'POST',
+        method: "POST",
         headers: getAuthHeaders(),
         credentials: "include",
-        body: JSON.stringify({ fechaInicio, fechaFin, tipo: tipoSangre || undefined }),
+        body: JSON.stringify({
+          fechaInicio,
+          fechaFin,
+          tipo: tipoSangre || undefined,
+        }),
       });
       if (!res.ok) {
         const errText = await res.text();
         console.error("PDF error:", errText);
-        alert('Error al generar el PDF. Verifique que el backend esté corriendo.');
+        alert(
+          "Error al generar el PDF. Verifique que el backend esté corriendo.",
+        );
         return;
       }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `reporte-donaciones-${new Date().toISOString().split('T')[0]}.pdf`;
+      a.download = `reporte-donaciones-${new Date().toISOString().split("T")[0]}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error generating PDF:", error);
-      alert('Error de conexión al generar PDF. Verifique que el backend esté corriendo en localhost:3000.');
+      alert(
+        "Error de conexión al generar PDF. Verifique que el backend esté corriendo en localhost:3000.",
+      );
     } finally {
       if (btn) {
         btn.disabled = false;
@@ -502,32 +615,52 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     const reports = await fetchReports();
     renderReports(reports);
 
-    document.getElementById('filter-date-start')?.addEventListener('change', applyFilters);
-    document.getElementById('filter-date-end')?.addEventListener('change', applyFilters);
-    document.getElementById('filter-blood-type')?.addEventListener('change', applyFilters);
+    document
+      .getElementById("filter-date-start")
+      ?.addEventListener("change", applyFilters);
+    document
+      .getElementById("filter-date-end")
+      ?.addEventListener("change", applyFilters);
+    document
+      .getElementById("filter-blood-type")
+      ?.addEventListener("change", applyFilters);
 
-    document.getElementById('btn-generate-donation-pdf')?.addEventListener('click', () => {
-      (window as any).generateDonationPdf();
-    });
+    document
+      .getElementById("btn-generate-donation-pdf")
+      ?.addEventListener("click", () => {
+        (window as any).generateDonationPdf();
+      });
 
-    document.getElementById('btn-export-inventory')?.addEventListener('click', () => {
-      (window as any).exportInventoryPdf();
-    });
+    document
+      .getElementById("btn-export-inventory")
+      ?.addEventListener("click", () => {
+        (window as any).exportInventoryPdf();
+      });
   }
 
   async function applyFilters() {
-    const fechaInicio = (document.getElementById('filter-date-start') as HTMLInputElement)?.value;
-    const fechaFin = (document.getElementById('filter-date-end') as HTMLInputElement)?.value;
-    const tipoSangre = (document.getElementById('filter-blood-type') as HTMLSelectElement)?.value;
+    const fechaInicio = (
+      document.getElementById("filter-date-start") as HTMLInputElement
+    )?.value;
+    const fechaFin = (
+      document.getElementById("filter-date-end") as HTMLInputElement
+    )?.value;
+    const tipoSangre = (
+      document.getElementById("filter-blood-type") as HTMLSelectElement
+    )?.value;
 
-    const donations = await fetchDonations(fechaInicio || undefined, fechaFin || undefined, tipoSangre || undefined);
+    const donations = await fetchDonations(
+      fechaInicio || undefined,
+      fechaFin || undefined,
+      tipoSangre || undefined,
+    );
     renderDonations(donations);
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener("DOMContentLoaded", init);
 </script>
 
-<style>
+<style is:global>
   .reports-page {
     max-width: 1400px;
     margin: 0 auto;
@@ -1044,9 +1177,15 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     font-weight: 500;
   }
 
-  .critical-detail--warning { color: #d97706; }
-  .critical-detail--ok { color: #16a34a; }
-  .critical-detail--danger { color: #dc2626; }
+  .critical-detail--warning {
+    color: #d97706;
+  }
+  .critical-detail--ok {
+    color: #16a34a;
+  }
+  .critical-detail--danger {
+    color: #dc2626;
+  }
 
   .critical-units {
     font-size: 1.125rem;
