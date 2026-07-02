@@ -10,49 +10,12 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         <h1 class="page-title">Estado del Stock Regional</h1>
         <p class="page-subtitle">Monitoreo en tiempo real de unidades disponibles por grupo sanguíneo.</p>
       </div>
-      <span class="updated-badge">Actualizado hace 2 min</span>
+      <span class="updated-badge" id="updated-badge">Cargando...</span>
     </div>
 
-    <div class="blood-stock-grid">
-      <div class="blood-card blood-card--saludable">
-        <span class="blood-label">A+</span>
-        <span class="blood-count">42</span>
-        <span class="blood-status blood-status--saludable">Saludable</span>
-      </div>
-      <div class="blood-card blood-card--critico">
-        <span class="blood-label">A-</span>
-        <span class="blood-count blood-count--critico">3</span>
-        <span class="blood-status blood-status--critico">CRÍTICO</span>
-      </div>
-      <div class="blood-card blood-card--saludable">
-        <span class="blood-label">B+</span>
-        <span class="blood-count">28</span>
-        <span class="blood-status blood-status--saludable">Saludable</span>
-      </div>
-      <div class="blood-card blood-card--bajo">
-        <span class="blood-label">B-</span>
-        <span class="blood-count">8</span>
-        <span class="blood-status blood-status--bajo">Bajo</span>
-      </div>
-      <div class="blood-card blood-card--saludable">
-        <span class="blood-label">O+</span>
-        <span class="blood-count">56</span>
-        <span class="blood-status blood-status--saludable">Saludable</span>
-      </div>
-      <div class="blood-card blood-card--critico">
-        <span class="blood-label">O-</span>
-        <span class="blood-count blood-count--critico">2</span>
-        <span class="blood-status blood-status--critico">CRÍTICO</span>
-      </div>
-      <div class="blood-card blood-card--saludable">
-        <span class="blood-label">AB+</span>
-        <span class="blood-count">15</span>
-        <span class="blood-status blood-status--saludable">Saludable</span>
-      </div>
-      <div class="blood-card blood-card--bajo">
-        <span class="blood-label">AB-</span>
-        <span class="blood-count">6</span>
-        <span class="blood-status blood-status--bajo">Bajo</span>
+    <div class="blood-stock-grid" id="blood-stock-grid">
+      <div class="blood-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #9ca3af;">
+        Cargando datos del stock...
       </div>
     </div>
 
@@ -232,6 +195,64 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   </div>
 </DashboardLayout>
 
+<script is:inline>
+  (function () {
+    const API_URL = "http://localhost:3000";
+    var grid = document.getElementById("blood-stock-grid");
+    var badge = document.getElementById("updated-badge");
+
+    function getEstadoClass(estado) {
+      if (estado === "critico") return "blood-card--critico";
+      if (estado === "bajo") return "blood-card--bajo";
+      return "blood-card--saludable";
+    }
+
+    function getCountClass(estado) {
+      return estado === "critico" ? "blood-count--critico" : "";
+    }
+
+    function getStatusClass(estado) {
+      if (estado === "critico") return "blood-status--critico";
+      if (estado === "bajo") return "blood-status--bajo";
+      return "blood-status--saludable";
+    }
+
+    function getStatusLabel(estado) {
+      if (estado === "critico") return "CRÍTICO";
+      if (estado === "bajo") return "Bajo";
+      return "Saludable";
+    }
+
+    async function loadStock() {
+      if (!grid) return;
+      try {
+        var res = await fetch(API_URL + "/blood-stock");
+        if (!res.ok) throw new Error();
+        var data = await res.json();
+
+        grid.innerHTML = data.map(function (s) {
+          var label = s.tipoSangre.grupo + s.tipoSangre.factorRh;
+          var estado = s.estadoStock || "normal";
+          return '<div class="blood-card ' + getEstadoClass(estado) + '">' +
+            '<span class="blood-label">' + label + '</span>' +
+            '<span class="blood-count ' + getCountClass(estado) + '">' + s.cantidadUnidades + '</span>' +
+            '<span class="blood-status ' + getStatusClass(estado) + '">' + getStatusLabel(estado) + '</span>' +
+          '</div>';
+        }).join("");
+
+        if (badge) {
+          badge.textContent = "Actualizado hace unos segundos";
+        }
+      } catch (e) {
+        grid.innerHTML = '<div class="blood-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #bc002d;">Error al cargar datos del stock</div>';
+      }
+    }
+
+    loadStock();
+    setInterval(loadStock, 30000);
+  })();
+</script>
+
 <style>
   .dashboard-page {
     max-width: 1400px;
@@ -268,13 +289,13 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     margin-top: 0.25rem;
   }
 
-  .blood-stock-grid {
+  :global(.blood-stock-grid) {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: 0.75rem;
   }
 
-  .blood-card {
+  :global(.blood-card) {
     background: #fff;
     border-radius: 10px;
     padding: 1rem;
@@ -286,37 +307,37 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     text-align: center;
   }
 
-  .blood-label {
+  :global(.blood-label) {
     font-size: 0.8125rem;
     color: #6b7280;
     font-weight: 500;
   }
 
-  .blood-count {
+  :global(.blood-count) {
     font-size: 2.5rem;
     font-weight: 700;
     color: #1f2937;
     line-height: 1;
   }
 
-  .blood-count--critico {
+  :global(.blood-count--critico) {
     color: #bc002d;
   }
 
-  .blood-status {
+  :global(.blood-status) {
     font-size: 0.75rem;
     font-weight: 600;
   }
 
-  .blood-status--saludable {
+  :global(.blood-status--saludable) {
     color: #16a34a;
   }
 
-  .blood-status--bajo {
+  :global(.blood-status--bajo) {
     color: #ea580c;
   }
 
-  .blood-status--critico {
+  :global(.blood-status--critico) {
     color: #bc002d;
     text-transform: uppercase;
   }
@@ -694,7 +715,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   }
 
   @media (max-width: 1200px) {
-    .blood-stock-grid {
+    :global(.blood-stock-grid) {
       grid-template-columns: repeat(4, 1fr);
     }
 
@@ -704,7 +725,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   }
 
   @media (max-width: 768px) {
-    .blood-stock-grid {
+    :global(.blood-stock-grid) {
       grid-template-columns: repeat(2, 1fr);
     }
 
