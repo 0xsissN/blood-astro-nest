@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Query } from '@nestjs/common';
 import type { Response } from 'express';
 
 import { ReportsService, InventoryReportData } from './reports.service';
@@ -7,6 +7,12 @@ import { GenerateReportDto } from './dto/generate-report.dto';
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
+
+  @Get()
+  async getRecentReports(@Query('limit') limit?: string) {
+    const take = limit ? parseInt(limit, 10) : 5;
+    return this.reportsService.findRecent(take);
+  }
 
   @Post()
   async generateReport(@Body() dto: GenerateReportDto) {

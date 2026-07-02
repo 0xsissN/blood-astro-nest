@@ -5,7 +5,7 @@ export class DashboardReport {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ length: 20 })
+  @Column({ length: 50 })
   periodo!: string;
 
   @Column({ name: 'total_donaciones', default: 0 })
