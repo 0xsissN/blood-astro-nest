@@ -4,20 +4,7 @@ import type { BloodStockResponse } from "../../types/blood-stock";
 import type { StockItem } from "../../types/stock-item";
 
 let stock: BloodStockResponse[] = [];
-try {
-  stock = await apiGet<BloodStockResponse[]>("/blood-stock");
-} catch {
-  stock = [
-    { "id": 1, "tipoSangre": { "grupo": "A", "factorRh": "+" }, "cantidadUnidades": 42, "estadoStock": "normal", "fechaActualizacion": "", "idTipoSangre": 1 },
-    { "id": 2, "tipoSangre": { "grupo": "A", "factorRh": "-" }, "cantidadUnidades": 12, "estadoStock": "bajo", "fechaActualizacion": "", "idTipoSangre": 2 },
-    { "id": 3, "tipoSangre": { "grupo": "B", "factorRh": "+" }, "cantidadUnidades": 28, "estadoStock": "normal", "fechaActualizacion": "", "idTipoSangre": 3 },
-    { "id": 4, "tipoSangre": { "grupo": "B", "factorRh": "-" }, "cantidadUnidades": 8, "estadoStock": "bajo", "fechaActualizacion": "", "idTipoSangre": 4 },
-    { "id": 5, "tipoSangre": { "grupo": "AB", "factorRh": "+" }, "cantidadUnidades": 15, "estadoStock": "bajo", "fechaActualizacion": "", "idTipoSangre": 5 },
-    { "id": 6, "tipoSangre": { "grupo": "AB", "factorRh": "-" }, "cantidadUnidades": 5, "estadoStock": "critico", "fechaActualizacion": "", "idTipoSangre": 6 },
-    { "id": 7, "tipoSangre": { "grupo": "O", "factorRh": "+" }, "cantidadUnidades": 55, "estadoStock": "normal", "fechaActualizacion": "", "idTipoSangre": 7 },
-    { "id": 8, "tipoSangre": { "grupo": "O", "factorRh": "-" }, "cantidadUnidades": 3, "estadoStock": "critico", "fechaActualizacion": "", "idTipoSangre": 8 },
-  ];
-}
+stock = await apiGet<BloodStockResponse[]>("/blood-stock");
 
 const stockItems: StockItem[] = stock.map((item) => ({
   color:
@@ -175,12 +162,6 @@ const statusColors = {
                 >
                   {item.status}
                 </span>
-
-                {item.urgent && (
-                  <a href="/requisitos" class="stock-card__urgent-btn">
-                    Urgente: Donar
-                  </a>
-                )}
               </div>
             </article>
           );

@@ -1,7 +1,7 @@
 const API_BASE = "http://localhost:3000";
 
 function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
@@ -14,10 +14,7 @@ function getAuthHeaders(): Record<string, string> {
 }
 
 export async function apiGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: getAuthHeaders(),
-    credentials: "include",
-  });
+  const res = await fetch(`${API_BASE}${path}`);
 
   if (!res.ok) {
     throw new Error(`API error: ${res.status}`);
