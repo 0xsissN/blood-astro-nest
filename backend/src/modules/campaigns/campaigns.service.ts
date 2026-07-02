@@ -7,14 +7,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Campaign } from './entities/campaign.entity';
+import { Donation } from '../donations/entities/donation.entity';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { CampaignResponseDto } from './dto/campaign-response.dto';
+import { CampaignStatsResponseDto } from './dto/campaign-stats-response.dto';
+
+interface CampaignStatsRaw {
+  id: string;
+  nombre: string;
+  lugar: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  activa: boolean;
+  total_donaciones: string;
+  total_ml: string;
+}
 
 @Injectable()
 export class CampaignsService {
   constructor(
     @InjectRepository(Campaign)
     private readonly campaignRepository: Repository<Campaign>,
+    @InjectRepository(Donation)
+    private readonly donationRepository: Repository<Donation>,
   ) {}
 
   async create(
@@ -81,6 +96,39 @@ export class CampaignsService {
     }
 
     await this.campaignRepository.remove(campaign);
+  }
+
+  async getTopCampaigns(): Promise<CampaignStatsResponseDto[]> {
+    const stats = await this.donationRepository
+      .createQueryBuilder('donacion')
+      .select('campania.id', 'id')
+      .addSelect('campania.nombre', 'nombre')
+      .addSelect('campania.lugar', 'lugar')
+      .addSelect('campania.fecha_inicio', 'fecha_inicio')
+      .addSelect('campania.fecha_fin', 'fecha_fin')
+      .addSelect('campania.activa', 'activa')
+      .addSelect('COUNT(donacion.id)', 'total_donaciones')
+      .addSelect('SUM(donacion.cantidad_ml)', 'total_ml')
+      .innerJoin('donacion.campania', 'campania')
+      .groupBy('campania.id')
+      .addGroupBy('campania.nombre')
+      .addGroupBy('campania.lugar')
+      .addGroupBy('campania.fecha_inicio')
+      .addGroupBy('campania.fecha_fin')
+      .addGroupBy('campania.activa')
+      .orderBy('total_donaciones', 'DESC')
+      .getRawMany<CampaignStatsRaw>();
+
+    return stats.map((s) => ({
+      id: Number(s.id),
+      nombre: s.nombre,
+      lugar: s.lugar,
+      fechaInicio: s.fecha_inicio,
+      fechaFin: s.fecha_fin,
+      activa: s.activa,
+      totalDonaciones: Number(s.total_donaciones),
+      totalMl: Number(s.total_ml),
+    }));
   }
 
   private validateDates(fechaInicio: string, fechaFin: string): void {

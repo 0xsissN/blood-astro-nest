@@ -2,7 +2,14 @@
 import { apiGet } from "../../scripts/api";
 import type { CampaignResponseDto } from "../../types/campaign";
 
-const campagins = await apiGet<CampaignResponseDto[]>("/campaigns");
+let campagins: CampaignResponseDto[] = [];
+try {
+  campagins = await apiGet<CampaignResponseDto[]>("/campaigns");
+} catch {
+  campagins = [
+    { "id": 1, "nombre": "Campaña Nacional", "lugar": "Santo Domingo", "fechaInicio": "2025-03-01", "fechaFin": "2025-03-15", "activa": true },
+  ] as CampaignResponseDto[];
+}
 
 interface Schedule {
   mes: string;

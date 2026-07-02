@@ -11,6 +11,7 @@ import {
 
 import { CampaignsService } from './campaigns.service';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
+import { CampaignStatsResponseDto } from './dto/campaign-stats-response.dto';
 
 @Controller('campaigns')
 export class CampaignsController {
@@ -19,6 +20,11 @@ export class CampaignsController {
   @Post()
   async create(@Body() createCampaignDto: CreateCampaignDto) {
     return this.campaignsService.create(createCampaignDto);
+  }
+
+  @Get('top')
+  async getTopCampaigns(): Promise<CampaignStatsResponseDto[]> {
+    return this.campaignsService.getTopCampaigns();
   }
 
   @Get()

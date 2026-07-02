@@ -3,7 +3,8 @@ import { apiGet } from "../../scripts/api";
 import type { BloodStockResponse } from "../../types/blood-stock";
 import type { StockItem } from "../../types/stock-item";
 
-const stock = await apiGet<BloodStockResponse[]>("/blood-stock");
+let stock: BloodStockResponse[] = [];
+stock = await apiGet<BloodStockResponse[]>("/blood-stock");
 
 const stockItems: StockItem[] = stock.map((item) => ({
   color:
@@ -161,12 +162,6 @@ const statusColors = {
                 >
                   {item.status}
                 </span>
-
-                {item.urgent && (
-                  <a href="/requisitos" class="stock-card__urgent-btn">
-                    Urgente: Donar
-                  </a>
-                )}
               </div>
             </article>
           );

@@ -157,6 +157,36 @@ export class DonationsService {
     return donations.map((d) => this.toResponseDto(d, d.donante, d.tipoSangre));
   }
 
+  async findByDonor(
+    donorId: number,
+    fechaInicio?: string,
+    fechaFin?: string,
+  ): Promise<DonationResponseDto[]> {
+    const queryBuilder = this.donationRepository
+      .createQueryBuilder('donacion')
+      .leftJoinAndSelect('donacion.donante', 'donante')
+      .leftJoinAndSelect('donacion.tipoSangre', 'tipoSangre')
+      .leftJoinAndSelect('donacion.campania', 'campania')
+      .where('donacion.id_donante = :donorId', { donorId });
+
+    if (fechaInicio) {
+      queryBuilder.andWhere('donacion.fecha_donacion >= :fechaInicio', {
+        fechaInicio,
+      });
+    }
+
+    if (fechaFin) {
+      queryBuilder.andWhere('donacion.fecha_donacion <= :fechaFin', {
+        fechaFin,
+      });
+    }
+
+    queryBuilder.orderBy('donacion.fecha_donacion', 'DESC');
+
+    const donations = await queryBuilder.getMany();
+    return donations.map((d) => this.toResponseDto(d, d.donante, d.tipoSangre));
+  }
+
   async findOne(id: number): Promise<DonationResponseDto> {
     const donation = await this.donationRepository.findOne({
       where: { id },
@@ -235,7 +265,7 @@ export class DonationsService {
       .addGroupBy('donante.nombre')
       .addGroupBy('donante.apellido')
       .addGroupBy('donante.ci')
-      .orderBy('totalDonaciones', 'DESC')
+      .orderBy('"totalDonaciones"', 'DESC')
       .limit(10)
       .getRawMany<RecurringDonorRaw>();
 

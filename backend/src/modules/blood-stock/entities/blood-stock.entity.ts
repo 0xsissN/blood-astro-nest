@@ -29,6 +29,6 @@ export class BloodStock {
   })
   fechaActualizacion!: Date;
 
-  @Column({ name: 'estado_stock', length: 25 })
-  estadoStock!: string;
+  @Column({ name: 'estado_stock', type: 'varchar', length: 25, nullable: true })
+  estadoStock!: string | null;
 }

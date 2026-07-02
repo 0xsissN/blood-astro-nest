@@ -1,18 +1,885 @@
 ---
 import DashboardLayout from "../../layouts/dashboard-layout.astro";
+import { apiGet } from "../../scripts/api";
 ---
 
 <DashboardLayout title="Dashboard" activeSection="dashboard">
   <div class="dashboard-page">
-    <div class="page-header">
-      <div class="header-content">
-        <h1 class="page-title">Bienvenido al Dashboard</h1>
+    <div class="stock-header">
+      <div>
+        <h1 class="page-title">Estado del Stock Regional</h1>
         <p class="page-subtitle">
-          Aquí puedes gestionar tus campañas, donantes y donaciones.
+          Monitoreo en tiempo real de unidades disponibles por grupo sanguíneo.
         </p>
+      </div>
+      <span class="updated-badge" id="updated-badge">Cargando...</span>
+    </div>
+
+    <div class="blood-stock-grid" id="blood-stock-grid">
+      <div
+        class="blood-card"
+        style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #9ca3af;"
+      >
+        Cargando datos del stock...
       </div>
     </div>
 
-    <div class="page-content"></div>
-  </div></DashboardLayout
->
+    <div class="middle-section">
+      <div class="chart-panel">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Donaciones Mensuales</h2>
+            <p class="panel-subtitle">
+              Histórico de unidades colectadas (Últimos 12 meses)
+            </p>
+          </div>
+          <select class="year-select" id="year-select"> </select>
+        </div>
+        <div class="chart-placeholder">
+          <div class="chart-bars" id="chart-bars">
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+          </div>
+          <div class="chart-labels" id="chart-labels">
+            <span>ENE</span><span>FEB</span><span>MAR</span><span>ABR</span>
+            <span>MAY</span><span>JUN</span><span>JUL</span><span>AGO</span>
+            <span>SEP</span><span>OCT</span><span>NOV</span><span>DIC</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="campaigns-panel">
+        <h2 class="panel-title">Campañas Exitosas</h2>
+        <div class="campaign-list">
+          <div class="campaign-item">
+            <div class="campaign-rank campaign-rank--1">1</div>
+            <div class="campaign-info">
+              <span class="campaign-name">Maratón Navideño</span>
+              <span class="campaign-units">342 unidades colectadas</span>
+            </div>
+            <span class="campaign-growth">+12%</span>
+          </div>
+          <div class="campaign-item">
+            <div class="campaign-rank campaign-rank--2">2</div>
+            <div class="campaign-info">
+              <span class="campaign-name">Universitarios x la Vida</span>
+              <span class="campaign-units">210 unidades colectadas</span>
+            </div>
+            <span class="campaign-growth">+5%</span>
+          </div>
+          <div class="campaign-item">
+            <div class="campaign-rank campaign-rank--3">3</div>
+            <div class="campaign-info">
+              <span class="campaign-name">Donantes en Red</span>
+              <span class="campaign-units">185 unidades colectadas</span>
+            </div>
+            <span class="campaign-growth">+2%</span>
+          </div>
+        </div>
+        <a href="/center/campaigns" class="view-all-link"
+          >Ver todas las campañas</a
+        >
+      </div>
+    </div>
+
+    <div class="recurrent-panel">
+      <div class="recurrent-header">
+        <div>
+          <h2 class="panel-title">Donantes más Recurrentes</h2>
+          <p class="panel-subtitle">
+            Nuestros héroes más constantes del último período.
+          </p>
+        </div>
+        <button class="btn-download">Descargar Reporte</button>
+      </div>
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>DONANTE</th>
+              <th>TIPO</th>
+              <th>ÚLTIMA DONACIÓN</th>
+              <th>DONACIONES TOTALES</th>
+              <th>ESTATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="donor-cell">
+                  <div class="avatar-circle avatar-circle--red">RM</div>
+                  <div class="donor-info">
+                    <span class="donor-name">Ricardo Mendoza</span>
+                    <span class="donor-email">ricardo.m@email.com</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="blood-badge blood-badge--negative">O-</span></td>
+              <td>14 Oct, 2023</td>
+              <td class="td-bold">12</td>
+              <td><span class="status-dot status-dot--apto"></span> Apto</td>
+              <td><button class="menu-btn">⋮</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="donor-cell">
+                  <div class="avatar-circle avatar-circle--blue">AS</div>
+                  <div class="donor-info">
+                    <span class="donor-name">Ana Sofía Torres</span>
+                    <span class="donor-email">ana.st@email.com</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="blood-badge blood-badge--positive">A+</span></td>
+              <td>02 Nov, 2023</td>
+              <td class="td-bold">9</td>
+              <td><span class="status-dot status-dot--apto"></span> Apto</td>
+              <td><button class="menu-btn">⋮</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="donor-cell">
+                  <div class="avatar-circle avatar-circle--green">LG</div>
+                  <div class="donor-info">
+                    <span class="donor-name">Lucas García</span>
+                    <span class="donor-email">lucas.g@email.com</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="blood-badge blood-badge--negative">B-</span></td>
+              <td>22 Sep, 2023</td>
+              <td class="td-bold">8</td>
+              <td><span class="status-dot status-dot--espera"></span> Espera</td
+              >
+              <td><button class="menu-btn">⋮</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="donor-cell">
+                  <div class="avatar-circle avatar-circle--purple">CR</div>
+                  <div class="donor-info">
+                    <span class="donor-name">Carmen Rojas</span>
+                    <span class="donor-email">carmen.ro@email.com</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="blood-badge blood-badge--positive">AB+</span></td
+              >
+              <td>10 Nov, 2023</td>
+              <td class="td-bold">7</td>
+              <td><span class="status-dot status-dot--apto"></span> Apto</td>
+              <td><button class="menu-btn">⋮</button></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="donor-cell">
+                  <div class="avatar-circle avatar-circle--orange">JM</div>
+                  <div class="donor-info">
+                    <span class="donor-name">Javier Morales</span>
+                    <span class="donor-email">javier.m@email.com</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="blood-badge blood-badge--positive">O+</span></td>
+              <td>15 Oct, 2023</td>
+              <td class="td-bold">6</td>
+              <td><span class="status-dot status-dot--apto"></span> Apto</td>
+              <td><button class="menu-btn">⋮</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</DashboardLayout>
+
+<script>
+  import { apiGet } from "../../scripts/api";
+
+  const grid = document.getElementById("blood-stock-grid");
+  const badge = document.getElementById("updated-badge");
+  const chartBars = document.getElementById("chart-bars");
+  const chartLabels = document.getElementById("chart-labels");
+  const yearSelect = document.getElementById(
+    "year-select",
+  ) as HTMLSelectElement;
+  const campaignList = document.querySelector(".campaign-list");
+  const recurrentTbody = document.querySelector(
+    ".recurrent-panel .data-table tbody",
+  );
+
+  const monthShort = [
+    "ENE",
+    "FEB",
+    "MAR",
+    "ABR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AGO",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DIC",
+  ];
+
+  function getEstadoClass(estado: string) {
+    if (estado === "critico") return "blood-card--critico";
+    if (estado === "bajo") return "blood-card--bajo";
+    return "blood-card--saludable";
+  }
+
+  function getCountClass(estado: string) {
+    return estado === "critico" ? "blood-count--critico" : "";
+  }
+
+  function getStatusClass(estado: string) {
+    if (estado === "critico") return "blood-status--critico";
+    if (estado === "bajo") return "blood-status--bajo";
+    return "blood-status--saludable";
+  }
+
+  function getStatusLabel(estado: string) {
+    if (estado === "critico") return "CRÍTICO";
+    if (estado === "bajo") return "Bajo";
+    return "Saludable";
+  }
+
+  async function loadStock() {
+    if (!grid) return;
+    try {
+      const data = await apiGet<any[]>("/blood-stock");
+      grid.innerHTML = data
+        .map(function (s: any) {
+          const label = s.tipoSangre.grupo + s.tipoSangre.factorRh;
+          const estado = s.estadoStock || "normal";
+          return (
+            '<div class="blood-card ' +
+            getEstadoClass(estado) +
+            '">' +
+            '<span class="blood-label">' +
+            label +
+            "</span>" +
+            '<span class="blood-count ' +
+            getCountClass(estado) +
+            '">' +
+            s.cantidadUnidades +
+            "</span>" +
+            '<span class="blood-status ' +
+            getStatusClass(estado) +
+            '">' +
+            getStatusLabel(estado) +
+            "</span>" +
+            "</div>"
+          );
+        })
+        .join("");
+      if (badge) badge.textContent = "Actualizado hace unos segundos";
+    } catch {
+      grid.innerHTML =
+        '<div class="blood-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #bc002d;">Error al cargar datos del stock</div>';
+    }
+  }
+
+  function initYearSelect() {
+    if (!yearSelect) return;
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let y = currentYear; y >= currentYear - 4; y--) years.push(y);
+    yearSelect.innerHTML = years
+      .map(function (y) {
+        return '<option value="' + y + '">Año ' + y + "</option>";
+      })
+      .join("");
+    yearSelect.value = String(currentYear);
+  }
+
+  async function loadChart(year: number | string) {
+    if (!chartBars) return;
+    try {
+      const data = await apiGet<any[]>("/donations/stats/monthly?year=" + year);
+      const byMonth: Record<number, number> = {};
+      data.forEach(function (d: any) {
+        byMonth[d.mesNumero] = d.totalDonaciones;
+      });
+
+      let maxVal = 1;
+      for (let i = 1; i <= 12; i++) {
+        if ((byMonth[i] || 0) > maxVal) maxVal = byMonth[i] || 1;
+      }
+
+      let barsHtml = "";
+      for (let i = 1; i <= 12; i++) {
+        const val = byMonth[i] || 0;
+        const pct = Math.max(4, (val / maxVal) * 100);
+        barsHtml +=
+          '<div class="bar" style="height:' +
+          pct +
+          '%" title="' +
+          monthShort[i - 1] +
+          ": " +
+          val +
+          ' donaciones"></div>';
+      }
+      chartBars.innerHTML = barsHtml;
+
+      if (chartLabels) {
+        chartLabels.innerHTML = monthShort
+          .map(function (m) {
+            return "<span>" + m + "</span>";
+          })
+          .join("");
+      }
+    } catch {
+      chartBars.innerHTML =
+        '<div style="grid-column:1/-1;text-align:center;color:#bc002d;padding:2rem;">Error al cargar gráfico</div>';
+    }
+  }
+
+  async function loadCampaigns() {
+    if (!campaignList) return;
+    try {
+      const data = await apiGet<any[]>("/campaigns/top");
+      if (!data || data.length === 0) {
+        campaignList.innerHTML =
+          '<div class="campaign-item" style="justify-content:center;color:#9ca3af;">No hay campañas con donaciones</div>';
+        return;
+      }
+      campaignList.innerHTML = data
+        .slice(0, 3)
+        .map(function (c: any, i: number) {
+          const rank = i + 1;
+          const rankClass = "campaign-rank--" + rank;
+          return (
+            '<div class="campaign-item">' +
+            '<div class="campaign-rank ' +
+            rankClass +
+            '">' +
+            rank +
+            "</div>" +
+            '<div class="campaign-info">' +
+            '<span class="campaign-name">' +
+            c.nombre +
+            "</span>" +
+            '<span class="campaign-units">' +
+            c.totalDonaciones +
+            " unidades colectadas</span>" +
+            "</div>" +
+            "</div>"
+          );
+        })
+        .join("");
+    } catch {
+      campaignList.innerHTML =
+        '<div class="campaign-item" style="justify-content:center;color:#bc002d;">Error al cargar campañas</div>';
+    }
+  }
+
+  async function loadRecurringDonors() {
+    if (!recurrentTbody) return;
+    try {
+      const data = await apiGet<any[]>("/donations/stats/recurring-donors");
+      if (!data || data.length === 0) {
+        recurrentTbody.innerHTML =
+          '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:2rem;">No hay donantes recurrentes</td></tr>';
+        return;
+      }
+      
+      recurrentTbody.innerHTML = data
+        .map(function (d: any, i: number) {
+          return (
+            "<tr>" +
+            '<td><div class="donor-cell">' +
+            '<div class="donor-info"><span class="donor-name">' +
+            d.nombre +
+            " " +
+            d.apellido +
+            "</span></div>" +
+            "</div></td>" +
+            '<td><span class="blood-badge">N/A</span></td>' +
+            "<td>—</td>" +
+            '<td class="td-bold">' +
+            d.totalDonaciones +
+            "</td>" +
+            '<td><span class="status-dot status-dot--apto"></span> Apto</td>' +
+            "</tr>"
+          );
+        })
+        .join("");
+    } catch {
+      recurrentTbody.innerHTML =
+        '<tr><td colspan="6" style="text-align:center;color:#bc002d;padding:2rem;">Error al cargar donantes recurrentes</td></tr>';
+    }
+  }
+
+  loadStock();
+  setInterval(loadStock, 30000);
+
+  initYearSelect();
+  loadChart(yearSelect ? yearSelect.value : new Date().getFullYear());
+
+  yearSelect?.addEventListener("change", function () {
+    loadChart(this.value);
+  });
+
+  loadCampaigns();
+  loadRecurringDonors();
+</script>
+
+<style>
+  .dashboard-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .stock-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+
+  .updated-badge {
+    font-size: 0.8125rem;
+    color: #bc002d;
+    font-weight: 500;
+    white-space: nowrap;
+    margin-top: 0.25rem;
+  }
+
+  :global(.blood-stock-grid) {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0.75rem;
+  }
+
+  :global(.blood-card) {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid #f1d3d2;
+    text-align: center;
+  }
+
+  :global(.blood-label) {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    font-weight: 500;
+  }
+
+  :global(.blood-count) {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1;
+  }
+
+  :global(.blood-count--critico) {
+    color: #bc002d;
+  }
+
+  :global(.blood-status) {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  :global(.blood-status--saludable) {
+    color: #16a34a;
+  }
+
+  :global(.blood-status--bajo) {
+    color: #ea580c;
+  }
+
+  :global(.blood-status--critico) {
+    color: #bc002d;
+    text-transform: uppercase;
+  }
+
+  .middle-section {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+  }
+
+  .chart-panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #f1d3d2;
+    padding: 1.5rem;
+  }
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .panel-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .panel-subtitle {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    margin-top: 0.125rem;
+  }
+
+  .year-select {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    color: #374151;
+    background: #fff;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
+  }
+
+  .chart-placeholder {
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    height: 220px;
+    padding: 0 0.5rem;
+  }
+
+  :global(.bar) {
+    flex: 1;
+    background: #bc002d;
+    border-radius: 4px 4px 0 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  :global(.bar):hover {
+    opacity: 1;
+  }
+
+  .chart-labels {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f1d3d2;
+    margin-top: 0.5rem;
+  }
+
+  :global(.chart-labels span) {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    font-weight: 500;
+  }
+
+  .campaigns-panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #f1d3d2;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .campaigns-panel .panel-title {
+    margin-bottom: 1.25rem;
+  }
+
+  .campaign-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  :global(.campaign-item) {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    background: #fff8f7;
+    border-radius: 10px;
+    border: 1px solid #fde8e7;
+  }
+
+  :global(.campaign-rank) {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  :global(.campaign-rank--1) {
+    background: #bc002d;
+  }
+
+  :global(.campaign-rank--2) {
+    background: #ea580c;
+  }
+
+  :global(.campaign-rank--3) {
+    background: #d97706;
+  }
+
+  :global(.campaign-info) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  :global(.campaign-name) {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.3;
+  }
+
+  :global(.campaign-units) {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .campaign-growth {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #16a34a;
+    white-space: nowrap;
+  }
+
+  .view-all-link {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #bc002d;
+    text-decoration: none;
+  }
+
+  .view-all-link:hover {
+    text-decoration: underline;
+  }
+
+  .recurrent-panel {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #f1d3d2;
+    padding: 1.5rem;
+  }
+
+  .recurrent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+  }
+
+  .btn-download {
+    padding: 0.625rem 1.25rem;
+    background: #fff;
+    color: #bc002d;
+    border: 1.5px solid #bc002d;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-download:hover {
+    background: #bc002d;
+    color: #fff;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1d3d2;
+  }
+
+  :global(.data-table td) {
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: #374151;
+    border-bottom: 1px solid #f9fafb;
+    vertical-align: middle;
+  }
+
+  :global(.data-table tbody tr):hover {
+    background: #fff8f7;
+  }
+
+  :global(.donor-cell) {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  :global(.avatar-circle) {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  :global(.donor-info) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(.donor-name) {
+    font-weight: 600;
+    color: #1f2937;
+  }
+
+  :global(.blood-badge) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  :global(.td-bold) {
+    font-weight: 700;
+  }
+
+  :global(.status-dot) {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  :global(.status-dot)::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  :global(.status-dot--apto)::before {
+    background: #16a34a;
+  }
+
+  :global(.status-dot--apto) {
+    color: #16a34a;
+  }
+
+  :global(.status-dot--espera)::before {
+    background: #ea580c;
+  }
+
+  :global(.status-dot--espera) {
+    color: #ea580c;
+  }
+
+  :global(.menu-btn) {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+  }
+
+  :global(.menu-btn):hover {
+    color: #374151;
+  }
+
+  @media (max-width: 1200px) {
+    :global(.blood-stock-grid) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .middle-section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    :global(.blood-stock-grid) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stock-header {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .recurrent-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+</style>

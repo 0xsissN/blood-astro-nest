@@ -1,7 +1,8 @@
 ---
-import '../styles/global.css';
-import PublicHeader from '../components/public/public-header.astro';
-import PublicFooter from '../components/public/public-footer.astro';
+import "../styles/global.css";
+import PublicHeader from "../components/public/public-header.astro";
+import PublicFooter from "../components/public/public-footer.astro";
+import logo from "../images/logo.webp";
 
 interface Props {
   title?: string;
@@ -9,8 +10,8 @@ interface Props {
 }
 
 const {
-  title = 'Hemocentro - Sistema de Gestión de Donación de Sangre',
-  description = 'Sistema de gestión de donación de sangre del Hemocentro. Salva vidas donando sangre.',
+  title = "BancoVida - Sistema de Gestión de Donación de Sangre",
+  description = "Sistema de gestión de donación de sangre del BancoVida. Salva vidas donando sangre.",
 } = Astro.props;
 ---
 
@@ -18,14 +19,17 @@ const {
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={logo.src} />
+    <link rel="icon" href={logo.src} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <title>{title}</title>
   </head>
   <body>
@@ -36,5 +40,3 @@ const {
     <PublicFooter />
   </body>
 </html>
-
-
