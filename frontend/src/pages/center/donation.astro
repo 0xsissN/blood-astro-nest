@@ -91,8 +91,10 @@ import DonationModal from "../../components/donations/donation-modal.astro";
 
     // Select elements
     const donorSelect = document.getElementById("donor-select");
-    const bloodTypeSelect = document.getElementById("blood-type-select");
+    const bloodTypeHidden = document.getElementById("blood-type-hidden");
+    const bloodTypeDisplay = document.getElementById("blood-type-display");
     const campaignSelect = document.getElementById("campaign-select");
+    let loadedDonors = [];
 
     // Stats elements
     const statTotal = document.getElementById("stat-total");
@@ -159,6 +161,7 @@ import DonationModal from "../../components/donations/donation-modal.astro";
     async function loadDonors() {
       try {
         const donors = await apiGet("/donors");
+        loadedDonors = donors;
         if (donorSelect) {
           donorSelect.innerHTML = '<option value="">Seleccione un donante</option>';
           donors.forEach(function (d) {
@@ -173,20 +176,20 @@ import DonationModal from "../../components/donations/donation-modal.astro";
       }
     }
 
-    async function loadBloodTypes() {
-      try {
-        const types = await apiGet("/donors/blood-types");
-        if (bloodTypeSelect) {
-          bloodTypeSelect.innerHTML = '<option value="">Seleccione tipo de sangre</option>';
-          types.forEach(function (t) {
-            const opt = document.createElement("option");
-            opt.value = t.id;
-            opt.textContent = t.grupo + t.factorRh;
-            bloodTypeSelect.appendChild(opt);
-          });
-        }
-      } catch (e) {
-        console.error("Error loading blood types:", e);
+    function onDonorChange() {
+      const donorId = donorSelect ? donorSelect.value : "";
+      if (!donorId || !bloodTypeHidden || !bloodTypeDisplay) {
+        if (bloodTypeDisplay) bloodTypeDisplay.value = "";
+        if (bloodTypeHidden) bloodTypeHidden.value = "";
+        return;
+      }
+      const donor = loadedDonors.find(function (d) { return String(d.id) === donorId; });
+      if (donor && donor.tipoSangre) {
+        bloodTypeHidden.value = donor.tipoSangre.id;
+        bloodTypeDisplay.value = donor.tipoSangre.grupo + donor.tipoSangre.factorRh;
+      } else {
+        bloodTypeHidden.value = "";
+        bloodTypeDisplay.value = "";
       }
     }
 
@@ -300,6 +303,8 @@ import DonationModal from "../../components/donations/donation-modal.astro";
       filterByEstado(this.value);
     });
 
+    donorSelect?.addEventListener("change", onDonorChange);
+
     // --- Form submission ---
     form?.addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -359,7 +364,6 @@ import DonationModal from "../../components/donations/donation-modal.astro";
 
     // --- Initial load ---
     loadDonors();
-    loadBloodTypes();
     loadCampaigns();
     loadDonations();
   })();

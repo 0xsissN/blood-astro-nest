@@ -27,10 +27,9 @@ import Button from "../ui/button.astro";
         </div>
 
         <div class="form-group">
-          <label for="blood-type-select" class="input-label">Tipo de Sangre *</label>
-          <select id="blood-type-select" name="idTipoSangre" class="form-select" required>
-            <option value="">Seleccione tipo de sangre</option>
-          </select>
+          <label for="blood-type-display" class="input-label">Tipo de Sangre *</label>
+          <input type="hidden" name="idTipoSangre" id="blood-type-hidden">
+          <input type="text" id="blood-type-display" class="form-select" value="" placeholder="Seleccione un donante primero" readonly style="background:#f3f4f6; cursor:not-allowed;">
         </div>
 
         <div class="form-group">
