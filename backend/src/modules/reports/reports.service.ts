@@ -248,7 +248,11 @@ export class ReportsService {
       );
       y += 30;
 
-      doc.moveTo(leftX, y).lineTo(leftX + pageWidth, y).strokeColor('#d32f2f').stroke();
+      doc
+        .moveTo(leftX, y)
+        .lineTo(leftX + pageWidth, y)
+        .strokeColor('#d32f2f')
+        .stroke();
       y += 20;
 
       doc.fontSize(14).font('Helvetica-Bold').fillColor('#333');
@@ -256,14 +260,22 @@ export class ReportsService {
       y += 20;
 
       doc.fontSize(11).font('Helvetica').fillColor('#333');
-      doc.text(`Total de unidades disponibles: ${data.totalUnidades}`, leftX + 20, y);
+      doc.text(
+        `Total de unidades disponibles: ${data.totalUnidades}`,
+        leftX + 20,
+        y,
+      );
       y += 16;
       doc.text(`Grupos críticos: ${data.gruposCriticos}`, leftX + 20, y);
       y += 16;
       doc.text(`Grupos con stock bajo: ${data.gruposBajo}`, leftX + 20, y);
       y += 30;
 
-      doc.moveTo(leftX, y).lineTo(leftX + pageWidth, y).strokeColor('#ccc').stroke();
+      doc
+        .moveTo(leftX, y)
+        .lineTo(leftX + pageWidth, y)
+        .strokeColor('#ccc')
+        .stroke();
       y += 15;
 
       doc.fontSize(14).font('Helvetica-Bold').fillColor('#333');
@@ -295,7 +307,10 @@ export class ReportsService {
         doc.text(String(item.unidades), colUnidades, y + 2);
         doc.text(String(item.nivelCritico), colUmbral, y + 2);
 
-        doc.fontSize(9).font('Helvetica-Bold').fillColor(statusColor(item.estado));
+        doc
+          .fontSize(9)
+          .font('Helvetica-Bold')
+          .fillColor(statusColor(item.estado));
         const estadoLabel =
           item.estado === 'critico'
             ? 'CRÍTICO'
@@ -313,7 +328,11 @@ export class ReportsService {
         y = 50;
       }
 
-      doc.moveTo(leftX, y).lineTo(leftX + pageWidth, y).strokeColor('#d32f2f').stroke();
+      doc
+        .moveTo(leftX, y)
+        .lineTo(leftX + pageWidth, y)
+        .strokeColor('#d32f2f')
+        .stroke();
       y += 15;
 
       doc.fontSize(9).font('Helvetica').fillColor('#999');
@@ -356,7 +375,11 @@ export class ReportsService {
       );
       y += 25;
 
-      doc.moveTo(leftX, y).lineTo(leftX + pageWidth, y).strokeColor('#d32f2f').stroke();
+      doc
+        .moveTo(leftX, y)
+        .lineTo(leftX + pageWidth, y)
+        .strokeColor('#d32f2f')
+        .stroke();
       y += 20;
 
       doc.fontSize(14).font('Helvetica-Bold').fillColor('#333');
@@ -376,7 +399,11 @@ export class ReportsService {
       }
       y += 15;
 
-      doc.moveTo(leftX, y).lineTo(leftX + pageWidth, y).strokeColor('#ccc').stroke();
+      doc
+        .moveTo(leftX, y)
+        .lineTo(leftX + pageWidth, y)
+        .strokeColor('#ccc')
+        .stroke();
       y += 15;
 
       doc.fontSize(14).font('Helvetica-Bold').fillColor('#333');
