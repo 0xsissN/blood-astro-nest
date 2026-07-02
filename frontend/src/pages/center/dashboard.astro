@@ -1,20 +1,25 @@
 ---
 import DashboardLayout from "../../layouts/dashboard-layout.astro";
+import { apiGet } from "../../scripts/api";
 ---
 
 <DashboardLayout title="Dashboard" activeSection="dashboard">
   <div class="dashboard-page">
-
     <div class="stock-header">
       <div>
         <h1 class="page-title">Estado del Stock Regional</h1>
-        <p class="page-subtitle">Monitoreo en tiempo real de unidades disponibles por grupo sanguíneo.</p>
+        <p class="page-subtitle">
+          Monitoreo en tiempo real de unidades disponibles por grupo sanguíneo.
+        </p>
       </div>
       <span class="updated-badge" id="updated-badge">Cargando...</span>
     </div>
 
     <div class="blood-stock-grid" id="blood-stock-grid">
-      <div class="blood-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #9ca3af;">
+      <div
+        class="blood-card"
+        style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #9ca3af;"
+      >
         Cargando datos del stock...
       </div>
     </div>
@@ -24,10 +29,11 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         <div class="panel-header">
           <div>
             <h2 class="panel-title">Donaciones Mensuales</h2>
-            <p class="panel-subtitle">Histórico de unidades colectadas (Últimos 12 meses)</p>
+            <p class="panel-subtitle">
+              Histórico de unidades colectadas (Últimos 12 meses)
+            </p>
           </div>
-          <select class="year-select" id="year-select">
-          </select>
+          <select class="year-select" id="year-select"> </select>
         </div>
         <div class="chart-placeholder">
           <div class="chart-bars" id="chart-bars">
@@ -80,7 +86,9 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
             <span class="campaign-growth">+2%</span>
           </div>
         </div>
-        <a href="/center/campaigns" class="view-all-link">Ver todas las campañas</a>
+        <a href="/center/campaigns" class="view-all-link"
+          >Ver todas las campañas</a
+        >
       </div>
     </div>
 
@@ -88,7 +96,9 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
       <div class="recurrent-header">
         <div>
           <h2 class="panel-title">Donantes más Recurrentes</h2>
-          <p class="panel-subtitle">Nuestros héroes más constantes del último período.</p>
+          <p class="panel-subtitle">
+            Nuestros héroes más constantes del último período.
+          </p>
         </div>
         <button class="btn-download">Descargar Reporte</button>
       </div>
@@ -101,7 +111,6 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
               <th>ÚLTIMA DONACIÓN</th>
               <th>DONACIONES TOTALES</th>
               <th>ESTATUS</th>
-              <th>ACCIÓN</th>
             </tr>
           </thead>
           <tbody>
@@ -150,7 +159,8 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
               <td><span class="blood-badge blood-badge--negative">B-</span></td>
               <td>22 Sep, 2023</td>
               <td class="td-bold">8</td>
-              <td><span class="status-dot status-dot--espera"></span> Espera</td>
+              <td><span class="status-dot status-dot--espera"></span> Espera</td
+              >
               <td><button class="menu-btn">⋮</button></td>
             </tr>
             <tr>
@@ -163,7 +173,8 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
                   </div>
                 </div>
               </td>
-              <td><span class="blood-badge blood-badge--positive">AB+</span></td>
+              <td><span class="blood-badge blood-badge--positive">AB+</span></td
+              >
               <td>10 Nov, 2023</td>
               <td class="td-bold">7</td>
               <td><span class="status-dot status-dot--apto"></span> Apto</td>
@@ -189,193 +200,240 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         </table>
       </div>
     </div>
-
   </div>
 </DashboardLayout>
 
-<script is:inline>
-  (function () {
-    var API_URL = "http://localhost:3000";
-    var grid = document.getElementById("blood-stock-grid");
-    var badge = document.getElementById("updated-badge");
-    var chartBars = document.getElementById("chart-bars");
-    var chartLabels = document.getElementById("chart-labels");
-    var yearSelect = document.getElementById("year-select");
-    var campaignList = document.querySelector(".campaign-list");
-    var recurrentTbody = document.querySelector(".recurrent-panel .data-table tbody");
+<script>
+  import { apiGet } from "../../scripts/api";
 
-    function getAuthHeaders() {
-      var token = localStorage.getItem("token");
-      return {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: "Bearer " + token } : {}),
-      };
+  const grid = document.getElementById("blood-stock-grid");
+  const badge = document.getElementById("updated-badge");
+  const chartBars = document.getElementById("chart-bars");
+  const chartLabels = document.getElementById("chart-labels");
+  const yearSelect = document.getElementById(
+    "year-select",
+  ) as HTMLSelectElement;
+  const campaignList = document.querySelector(".campaign-list");
+  const recurrentTbody = document.querySelector(
+    ".recurrent-panel .data-table tbody",
+  );
+
+  const monthShort = [
+    "ENE",
+    "FEB",
+    "MAR",
+    "ABR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AGO",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DIC",
+  ];
+
+  function getEstadoClass(estado: string) {
+    if (estado === "critico") return "blood-card--critico";
+    if (estado === "bajo") return "blood-card--bajo";
+    return "blood-card--saludable";
+  }
+
+  function getCountClass(estado: string) {
+    return estado === "critico" ? "blood-count--critico" : "";
+  }
+
+  function getStatusClass(estado: string) {
+    if (estado === "critico") return "blood-status--critico";
+    if (estado === "bajo") return "blood-status--bajo";
+    return "blood-status--saludable";
+  }
+
+  function getStatusLabel(estado: string) {
+    if (estado === "critico") return "CRÍTICO";
+    if (estado === "bajo") return "Bajo";
+    return "Saludable";
+  }
+
+  async function loadStock() {
+    if (!grid) return;
+    try {
+      const data = await apiGet<any[]>("/blood-stock");
+      grid.innerHTML = data
+        .map(function (s: any) {
+          const label = s.tipoSangre.grupo + s.tipoSangre.factorRh;
+          const estado = s.estadoStock || "normal";
+          return (
+            '<div class="blood-card ' +
+            getEstadoClass(estado) +
+            '">' +
+            '<span class="blood-label">' +
+            label +
+            "</span>" +
+            '<span class="blood-count ' +
+            getCountClass(estado) +
+            '">' +
+            s.cantidadUnidades +
+            "</span>" +
+            '<span class="blood-status ' +
+            getStatusClass(estado) +
+            '">' +
+            getStatusLabel(estado) +
+            "</span>" +
+            "</div>"
+          );
+        })
+        .join("");
+      if (badge) badge.textContent = "Actualizado hace unos segundos";
+    } catch {
+      grid.innerHTML =
+        '<div class="blood-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #bc002d;">Error al cargar datos del stock</div>';
     }
+  }
 
-    async function apiGet(path) {
-      var res = await fetch(API_URL + path, { headers: getAuthHeaders() });
-      if (!res.ok) throw new Error("Error " + res.status);
-      return res.json();
-    }
+  function initYearSelect() {
+    if (!yearSelect) return;
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let y = currentYear; y >= currentYear - 4; y--) years.push(y);
+    yearSelect.innerHTML = years
+      .map(function (y) {
+        return '<option value="' + y + '">Año ' + y + "</option>";
+      })
+      .join("");
+    yearSelect.value = String(currentYear);
+  }
 
-    var monthShort = ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
+  async function loadChart(year: number | string) {
+    if (!chartBars) return;
+    try {
+      const data = await apiGet<any[]>("/donations/stats/monthly?year=" + year);
+      const byMonth: Record<number, number> = {};
+      data.forEach(function (d: any) {
+        byMonth[d.mesNumero] = d.totalDonaciones;
+      });
 
-    // --- Blood Stock Grid ---
-    function getEstadoClass(estado) {
-      if (estado === "critico") return "blood-card--critico";
-      if (estado === "bajo") return "blood-card--bajo";
-      return "blood-card--saludable";
-    }
-
-    function getCountClass(estado) {
-      return estado === "critico" ? "blood-count--critico" : "";
-    }
-
-    function getStatusClass(estado) {
-      if (estado === "critico") return "blood-status--critico";
-      if (estado === "bajo") return "blood-status--bajo";
-      return "blood-status--saludable";
-    }
-
-    function getStatusLabel(estado) {
-      if (estado === "critico") return "CRÍTICO";
-      if (estado === "bajo") return "Bajo";
-      return "Saludable";
-    }
-
-    async function loadStock() {
-      if (!grid) return;
-      try {
-        var data = await apiGet("/blood-stock");
-        grid.innerHTML = data.map(function (s) {
-          var label = s.tipoSangre.grupo + s.tipoSangre.factorRh;
-          var estado = s.estadoStock || "normal";
-          return '<div class="blood-card ' + getEstadoClass(estado) + '">' +
-            '<span class="blood-label">' + label + '</span>' +
-            '<span class="blood-count ' + getCountClass(estado) + '">' + s.cantidadUnidades + '</span>' +
-            '<span class="blood-status ' + getStatusClass(estado) + '">' + getStatusLabel(estado) + '</span>' +
-          '</div>';
-        }).join("");
-        if (badge) badge.textContent = "Actualizado hace unos segundos";
-      } catch (e) {
-        grid.innerHTML = '<div class="blood-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #bc002d;">Error al cargar datos del stock</div>';
+      let maxVal = 1;
+      for (let i = 1; i <= 12; i++) {
+        if ((byMonth[i] || 0) > maxVal) maxVal = byMonth[i] || 1;
       }
-    }
 
-    // --- Chart ---
-    function initYearSelect() {
-      if (!yearSelect) return;
-      var currentYear = new Date().getFullYear();
-      var years = [];
-      for (var y = currentYear; y >= currentYear - 4; y--) years.push(y);
-      yearSelect.innerHTML = years.map(function (y) {
-        return '<option value="' + y + '">Año ' + y + '</option>';
-      }).join("");
-      yearSelect.value = String(currentYear);
-    }
-
-    async function loadChart(year) {
-      if (!chartBars) return;
-      try {
-        var data = await apiGet("/donations/stats/monthly?year=" + year);
-        var byMonth = {};
-        data.forEach(function (d) { byMonth[d.mesNumero] = d.totalDonaciones; });
-
-        var maxVal = 1;
-        for (var i = 1; i <= 12; i++) {
-          if ((byMonth[i] || 0) > maxVal) maxVal = byMonth[i] || 1;
-        }
-
-        var barsHtml = "";
-        for (var i = 1; i <= 12; i++) {
-          var val = byMonth[i] || 0;
-          var pct = Math.max(4, (val / maxVal) * 100);
-          barsHtml += '<div class="bar" style="height:' + pct + '%" title="' + monthShort[i-1] + ': ' + val + ' donaciones"></div>';
-        }
-        chartBars.innerHTML = barsHtml;
-
-        if (chartLabels) {
-          chartLabels.innerHTML = monthShort.map(function (m) { return '<span>' + m + '</span>'; }).join("");
-        }
-      } catch (e) {
-        chartBars.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#bc002d;padding:2rem;">Error al cargar gráfico</div>';
+      let barsHtml = "";
+      for (let i = 1; i <= 12; i++) {
+        const val = byMonth[i] || 0;
+        const pct = Math.max(4, (val / maxVal) * 100);
+        barsHtml +=
+          '<div class="bar" style="height:' +
+          pct +
+          '%" title="' +
+          monthShort[i - 1] +
+          ": " +
+          val +
+          ' donaciones"></div>';
       }
-    }
+      chartBars.innerHTML = barsHtml;
 
-    // --- Campaigns ---
-    async function loadCampaigns() {
-      if (!campaignList) return;
-      try {
-        var data = await apiGet("/campaigns/top");
-        if (!data || data.length === 0) {
-          campaignList.innerHTML = '<div class="campaign-item" style="justify-content:center;color:#9ca3af;">No hay campañas con donaciones</div>';
-          return;
-        }
-        campaignList.innerHTML = data.map(function (c, i) {
-          var rank = i + 1;
-          var rankClass = "campaign-rank--" + rank;
-          return '<div class="campaign-item">' +
-            '<div class="campaign-rank ' + rankClass + '">' + rank + '</div>' +
+      if (chartLabels) {
+        chartLabels.innerHTML = monthShort
+          .map(function (m) {
+            return "<span>" + m + "</span>";
+          })
+          .join("");
+      }
+    } catch {
+      chartBars.innerHTML =
+        '<div style="grid-column:1/-1;text-align:center;color:#bc002d;padding:2rem;">Error al cargar gráfico</div>';
+    }
+  }
+
+  async function loadCampaigns() {
+    if (!campaignList) return;
+    try {
+      const data = await apiGet<any[]>("/campaigns/top");
+      if (!data || data.length === 0) {
+        campaignList.innerHTML =
+          '<div class="campaign-item" style="justify-content:center;color:#9ca3af;">No hay campañas con donaciones</div>';
+        return;
+      }
+      campaignList.innerHTML = data
+        .slice(0, 3)
+        .map(function (c: any, i: number) {
+          const rank = i + 1;
+          const rankClass = "campaign-rank--" + rank;
+          return (
+            '<div class="campaign-item">' +
+            '<div class="campaign-rank ' +
+            rankClass +
+            '">' +
+            rank +
+            "</div>" +
             '<div class="campaign-info">' +
-              '<span class="campaign-name">' + c.nombre + '</span>' +
-              '<span class="campaign-units">' + c.totalDonaciones + ' unidades colectadas</span>' +
-            '</div>' +
-          '</div>';
-        }).join("");
-      } catch (e) {
-        campaignList.innerHTML = '<div class="campaign-item" style="justify-content:center;color:#bc002d;">Error al cargar campañas</div>';
-      }
+            '<span class="campaign-name">' +
+            c.nombre +
+            "</span>" +
+            '<span class="campaign-units">' +
+            c.totalDonaciones +
+            " unidades colectadas</span>" +
+            "</div>" +
+            "</div>"
+          );
+        })
+        .join("");
+    } catch {
+      campaignList.innerHTML =
+        '<div class="campaign-item" style="justify-content:center;color:#bc002d;">Error al cargar campañas</div>';
     }
+  }
 
-    // --- Recurring Donors ---
-    async function loadRecurringDonors() {
-      if (!recurrentTbody) return;
-      try {
-        var data = await apiGet("/donations/stats/recurring-donors");
-        if (!data || data.length === 0) {
-          recurrentTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:2rem;">No hay donantes recurrentes</td></tr>';
-          return;
-        }
-        var initials = ["RM","AS","LG","CR","JM","MT","PV","GH","RL","DF"];
-        var colors = ["red","blue","green","purple","orange","red","blue","green","purple","orange"];
-        recurrentTbody.innerHTML = data.map(function (d, i) {
-          var ini = initials[i % initials.length];
-          var col = colors[i % colors.length];
-          var avatarBg = ["#fca5a5","#93c5fd","#86efac","#c4b5fd","#fdba74"][i % 5];
-          var avatarColor = ["#991b1b","#1e40af","#166534","#5b21b6","#9a3412"][i % 5];
-          return '<tr>' +
+  async function loadRecurringDonors() {
+    if (!recurrentTbody) return;
+    try {
+      const data = await apiGet<any[]>("/donations/stats/recurring-donors");
+      if (!data || data.length === 0) {
+        recurrentTbody.innerHTML =
+          '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:2rem;">No hay donantes recurrentes</td></tr>';
+        return;
+      }
+      
+      recurrentTbody.innerHTML = data
+        .map(function (d: any, i: number) {
+          return (
+            "<tr>" +
             '<td><div class="donor-cell">' +
-              '<div class="avatar-circle" style="background:' + avatarBg + ';color:' + avatarColor + ';">' + ini + '</div>' +
-              '<div class="donor-info">' +
-                '<span class="donor-name">' + d.nombre + ' ' + d.apellido + '</span>' +
-              '</div>' +
-            '</div></td>' +
+            '<div class="donor-info"><span class="donor-name">' +
+            d.nombre +
+            " " +
+            d.apellido +
+            "</span></div>" +
+            "</div></td>" +
             '<td><span class="blood-badge">N/A</span></td>' +
-            '<td>—</td>' +
-            '<td class="td-bold">' + d.totalDonaciones + '</td>' +
+            "<td>—</td>" +
+            '<td class="td-bold">' +
+            d.totalDonaciones +
+            "</td>" +
             '<td><span class="status-dot status-dot--apto"></span> Apto</td>' +
-            '<td><button class="menu-btn">⋮</button></td>' +
-          '</tr>';
-        }).join("");
-      } catch (e) {
-        recurrentTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#bc002d;padding:2rem;">Error al cargar donantes recurrentes</td></tr>';
-      }
+            "</tr>"
+          );
+        })
+        .join("");
+    } catch {
+      recurrentTbody.innerHTML =
+        '<tr><td colspan="6" style="text-align:center;color:#bc002d;padding:2rem;">Error al cargar donantes recurrentes</td></tr>';
     }
+  }
 
-    // --- Init ---
-    loadStock();
-    setInterval(loadStock, 30000);
+  loadStock();
+  setInterval(loadStock, 30000);
 
-    initYearSelect();
-    loadChart(yearSelect ? yearSelect.value : new Date().getFullYear());
+  initYearSelect();
+  loadChart(yearSelect ? yearSelect.value : new Date().getFullYear());
 
-    yearSelect?.addEventListener("change", function () {
-      loadChart(this.value);
-    });
+  yearSelect?.addEventListener("change", function () {
+    loadChart(this.value);
+  });
 
-    loadCampaigns();
-    loadRecurringDonors();
-  })();
+  loadCampaigns();
+  loadRecurringDonors();
 </script>
 
 <style>

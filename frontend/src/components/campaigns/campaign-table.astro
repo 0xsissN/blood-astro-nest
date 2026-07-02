@@ -8,7 +8,6 @@
       <tr>
         <th>CAMPAÑA / LUGAR</th>
         <th>FECHA</th>
-        <th>RECOLECTADO</th>
         <th>ESTADO</th>
         <th>ACCIONES</th>
       </tr>
@@ -265,12 +264,6 @@
           "</div>" +
           "</td>" +
           "<td>" +
-          '<div class="recolectado-info">' +
-          '<span class="recolectado-number">0 </span>' +
-          '<span class="recolectado-label">Unidades</span>' +
-          "</div>" +
-          "</td>" +
-          "<td>" +
           estado +
           "</td>" +
           '<td class="td-actions">' +
@@ -306,9 +299,10 @@
     const end = Math.min(currentPage * itemsPerPage, total);
 
     if (paginationInfo) {
-      paginationInfo.textContent = total > 0
-        ? "Mostrando " + start + "-" + end + " de " + total
-        : "Mostrando 0 de 0";
+      paginationInfo.textContent =
+        total > 0
+          ? "Mostrando " + start + "-" + end + " de " + total
+          : "Mostrando 0 de 0";
     }
 
     if (!paginationButtons) return;
@@ -318,21 +312,49 @@
     }
 
     let html = "";
-    html += '<button class="page-btn" data-page="' + (currentPage - 1) + '"' + (currentPage === 1 ? " disabled" : "") + ">&laquo;</button>";
+    html +=
+      '<button class="page-btn" data-page="' +
+      (currentPage - 1) +
+      '"' +
+      (currentPage === 1 ? " disabled" : "") +
+      ">&laquo;</button>";
 
     for (let i = 1; i <= totalPages; i++) {
       if (totalPages > 7) {
-        if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-          html += '<button class="page-btn' + (i === currentPage ? " page-btn--active" : "") + '" data-page="' + i + '">' + i + "</button>";
+        if (
+          i === 1 ||
+          i === totalPages ||
+          (i >= currentPage - 1 && i <= currentPage + 1)
+        ) {
+          html +=
+            '<button class="page-btn' +
+            (i === currentPage ? " page-btn--active" : "") +
+            '" data-page="' +
+            i +
+            '">' +
+            i +
+            "</button>";
         } else if (i === currentPage - 2 || i === currentPage + 2) {
           html += '<button class="page-btn" disabled>...</button>';
         }
       } else {
-        html += '<button class="page-btn' + (i === currentPage ? " page-btn--active" : "") + '" data-page="' + i + '">' + i + "</button>";
+        html +=
+          '<button class="page-btn' +
+          (i === currentPage ? " page-btn--active" : "") +
+          '" data-page="' +
+          i +
+          '">' +
+          i +
+          "</button>";
       }
     }
 
-    html += '<button class="page-btn" data-page="' + (currentPage + 1) + '"' + (currentPage === totalPages ? " disabled" : "") + ">&raquo;</button>";
+    html +=
+      '<button class="page-btn" data-page="' +
+      (currentPage + 1) +
+      '"' +
+      (currentPage === totalPages ? " disabled" : "") +
+      ">&raquo;</button>";
     paginationButtons.innerHTML = html;
   }
 
