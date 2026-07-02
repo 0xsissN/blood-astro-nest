@@ -362,6 +362,13 @@ import DonationModal from "../../components/donations/donation-modal.astro";
     loadBloodTypes();
     loadCampaigns();
     loadDonations();
+
+    // --- Auto-open modal from sidebar button ---
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("open") === "1") {
+      openModal();
+      window.history.replaceState({}, "", "/center/donation");
+    }
   })();
 </script>
 
