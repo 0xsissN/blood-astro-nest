@@ -175,7 +175,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
       </nav>
 
       <div class="sidebar-footer">
-        <button class="new-donation-btn">
+        <a href="/center/donation?open=1" class="new-donation-btn">
           <svg
             width="18"
             height="18"
@@ -190,7 +190,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
           Nueva Donación
-        </button>
+        </a>
       </div>
     </aside>
 
@@ -439,6 +439,7 @@ const { title = "Hemocentro", activeSection = "campañas" } = Astro.props;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.15s ease;
+    text-decoration: none;
   }
 
   .new-donation-btn:hover {
