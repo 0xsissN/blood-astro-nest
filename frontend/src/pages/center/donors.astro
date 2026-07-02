@@ -1,18 +1,29 @@
 ---
 import DashboardLayout from "../../layouts/dashboard-layout.astro";
 import DonorModal from "../../components/donors/donor-modal.astro";
+import { apiGet, apiPost, apiPatch, apiDelete } from "../../scripts/api";
 ---
 
 <DashboardLayout title="Donantes" activeSection="donantes">
   <div class="donors-page">
-
     <div class="page-header">
       <div>
         <h1 class="page-title">Gestión de Donantes</h1>
-        <p class="page-subtitle">Administre la base de datos nacional de donantes voluntarios.</p>
+        <p class="page-subtitle">
+          Administre la base de datos nacional de donantes voluntarios.
+        </p>
       </div>
       <button class="btn-register" id="open-modal-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="8.5" cy="7" r="4"></circle>
           <line x1="20" y1="8" x2="20" y2="14"></line>
@@ -46,19 +57,6 @@ import DonorModal from "../../components/donors/donor-modal.astro";
           <span class="stat-label">Donantes Activos</span>
           <span class="stat-value stat-value--active" id="stat-active">-</span>
         </div>
-        <button class="filter-icon-btn" title="Filtros avanzados">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="21" x2="4" y2="14"></line>
-            <line x1="4" y1="10" x2="4" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12" y2="3"></line>
-            <line x1="20" y1="21" x2="20" y2="16"></line>
-            <line x1="20" y1="12" x2="20" y2="3"></line>
-            <line x1="1" y1="14" x2="7" y2="14"></line>
-            <line x1="9" y1="8" x2="15" y2="8"></line>
-            <line x1="17" y1="16" x2="23" y2="16"></line>
-          </svg>
-        </button>
       </div>
     </div>
 
@@ -82,219 +80,601 @@ import DonorModal from "../../components/donors/donor-modal.astro";
           </tbody>
         </table>
       </div>
-      <div class="pagination-bar">
-        <span class="pagination-info" id="pagination-info">Cargando...</span>
-        <div class="pagination-buttons" id="pagination-buttons">
-        </div>
-      </div>
     </div>
-
   </div>
 
   <DonorModal />
+
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Editar Donante</h2>
+        <button
+          class="modal-close"
+          id="edit-modal-close"
+          type="button"
+          aria-label="Cerrar"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="edit-form" novalidate>
+        <div id="edit-form-alert"></div>
+        <div class="modal-fields">
+          <input type="hidden" name="id" id="edit-id" />
+          <div class="field">
+            <label class="field-label" for="edit-nombre">Nombre</label>
+            <input
+              type="text"
+              class="field-input"
+              name="nombre"
+              id="edit-nombre"
+              required
+            />
+          </div>
+          <div class="field">
+            <label class="field-label" for="edit-apellido">Apellido</label>
+            <input
+              type="text"
+              class="field-input"
+              name="apellido"
+              id="edit-apellido"
+              required
+            />
+          </div>
+          <div class="field">
+            <label class="field-label" for="edit-ci">Cédula Identidad</label>
+            <input
+              type="text"
+              class="field-input"
+              name="ci"
+              id="edit-ci"
+              required
+            />
+          </div>
+          <div class="field">
+            <label class="field-label" for="edit-telefono">Teléfono</label>
+            <input
+              type="text"
+              class="field-input"
+              name="telefono"
+              id="edit-telefono"
+            />
+          </div>
+          <div class="field">
+            <label class="field-label" for="edit-fechaNacimiento"
+              >Fecha de Nacimiento</label
+            >
+            <input
+              type="date"
+              class="field-input"
+              name="fechaNacimiento"
+              id="edit-fechaNacimiento"
+            />
+          </div>
+          <div class="field">
+            <label class="field-label" for="edit-idTipoSangre"
+              >Tipo Sanguíneo</label
+            >
+            <select
+              class="field-input"
+              name="idTipoSangre"
+              id="edit-idTipoSangre"
+              required
+            >
+              <option value="">Seleccione un tipo sanguíneo</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="edit-cancel-btn"
+            >Cancelar</button
+          >
+          <button type="submit" class="btn-save">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal modal--sm">
+      <div class="modal-header">
+        <h2 class="modal-title">Eliminar Donante</h2>
+        <button
+          class="modal-close"
+          id="delete-modal-close"
+          type="button"
+          aria-label="Cerrar"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="delete-body">
+        <p>
+          ¿Estás seguro que deseas eliminar al donante <strong
+            id="delete-donor-name"></strong>?
+        </p>
+        <p class="delete-warning">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="delete-cancel-btn"
+          >Cancelar</button
+        >
+        <button type="button" class="btn-delete" id="delete-confirm-btn"
+          >Eliminar</button
+        >
+      </div>
+    </div>
+  </div>
 </DashboardLayout>
 
-<script is:inline>
-  (function () {
-    const API_URL = "http://localhost:3000";
-    const modal = document.getElementById("donor-modal");
-    const openBtn = document.getElementById("open-modal-btn");
-    const closeBtn = document.getElementById("modal-close-btn");
-    const cancelBtn = document.getElementById("modal-cancel-btn");
-    const form = document.getElementById("donor-form");
-    const alertContainer = document.getElementById("form-alert");
-    const bloodTypeSelect = document.getElementById("idTipoSangre");
+<script>
+  import { apiGet, apiPost, apiPatch, apiDelete } from "../../scripts/api";
 
-    function openModal() {
-      modal?.classList.add("active");
-      loadBloodTypes();
+  const modal = document.getElementById("donor-modal");
+  const openBtn = document.getElementById("open-modal-btn");
+  const closeBtn = document.getElementById("modal-close-btn");
+  const cancelBtn = document.getElementById("modal-cancel-btn");
+  const form = document.getElementById("donor-form");
+  const alertContainer = document.getElementById("form-alert");
+  const bloodTypeSelect = document.getElementById("idTipoSangre");
+  const tbody = document.getElementById("donors-tbody");
+  const paginationInfo = document.getElementById("pagination-info");
+  const statTotal = document.getElementById("stat-total");
+  const statActive = document.getElementById("stat-active");
+  const bloodFilters = document.getElementById("blood-filters");
+
+  const editModal = document.getElementById("edit-modal");
+  const editForm = document.getElementById("edit-form") as HTMLFormElement;
+  const editAlert = document.getElementById("edit-form-alert");
+  const editId = document.getElementById("edit-id") as HTMLInputElement;
+  const editNombre = document.getElementById("edit-nombre") as HTMLInputElement;
+  const editApellido = document.getElementById(
+    "edit-apellido",
+  ) as HTMLInputElement;
+  const editCi = document.getElementById("edit-ci") as HTMLInputElement;
+  const editTelefono = document.getElementById(
+    "edit-telefono",
+  ) as HTMLInputElement;
+  const editFechaNacimiento = document.getElementById(
+    "edit-fechaNacimiento",
+  ) as HTMLInputElement;
+  const editIdTipoSangre = document.getElementById(
+    "edit-idTipoSangre",
+  ) as HTMLSelectElement;
+
+  const deleteModal = document.getElementById("delete-modal");
+  const deleteName = document.getElementById("delete-donor-name");
+  const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
+
+  let allDonors: any[] = [];
+  let allBloodTypes: any[] = [];
+  let deletingId: number | null = null;
+
+  function openModal() {
+    modal?.classList.add("active");
+    loadBloodTypes();
+  }
+
+  function closeModal() {
+    modal?.classList.remove("active");
+    form?.reset();
+    if (alertContainer) alertContainer.innerHTML = "";
+  }
+
+  function showAlert(
+    message: string,
+    type: "error" | "success",
+    target: HTMLElement | null = alertContainer,
+  ) {
+    if (!target) return;
+    const icon =
+      type === "error"
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    target.innerHTML =
+      '<div class="alert alert--' +
+      type +
+      '" role="alert">' +
+      '<span class="alert__icon">' +
+      icon +
+      "</span>" +
+      '<span class="alert__message">' +
+      message +
+      "</span></div>";
+  }
+
+  async function loadBloodTypes() {
+    if (!bloodTypeSelect) return;
+    try {
+      allBloodTypes = await apiGet<any[]>("/api/blood-types");
+      bloodTypeSelect.innerHTML =
+        '<option value="">Seleccione un tipo sanguíneo</option>';
+      allBloodTypes.forEach(function (t: any) {
+        const opt = document.createElement("option");
+        opt.value = t.id;
+        opt.textContent =
+          t.grupo + t.factorRh + (t.descripcion ? " - " + t.descripcion : "");
+        bloodTypeSelect.appendChild(opt);
+      });
+    } catch {
+      bloodTypeSelect.innerHTML =
+        '<option value="">Error al cargar tipos sanguíneos</option>';
     }
+  }
 
-    function closeModal() {
-      modal?.classList.remove("active");
-      form?.reset();
-      if (alertContainer) alertContainer.innerHTML = "";
-    }
-
-    function showAlert(message, type) {
-      if (!alertContainer) return;
-      const icon =
-        type === "error"
-          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
-          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
-      alertContainer.innerHTML = `
-        <div class="alert alert--${type}" role="alert">
-          <span class="alert__icon">${icon}</span>
-          <span class="alert__message">${message}</span>
-        </div>`;
-    }
-
-    async function loadBloodTypes() {
-      if (!bloodTypeSelect) return;
-      try {
-        const res = await fetch(`${API_URL}/api/blood-types`);
-        const types = await res.json();
-        bloodTypeSelect.innerHTML = '<option value="">Seleccione un tipo sanguíneo</option>';
-        types.forEach(function (t) {
-          const opt = document.createElement("option");
-          opt.value = t.id;
-          opt.textContent = t.grupo + t.factorRh + (t.descripcion ? " - " + t.descripcion : "");
-          bloodTypeSelect.appendChild(opt);
-        });
-      } catch {
-        bloodTypeSelect.innerHTML = '<option value="">Error al cargar tipos sanguíneos</option>';
-      }
-    }
-
-    openBtn?.addEventListener("click", openModal);
-    closeBtn?.addEventListener("click", closeModal);
-    cancelBtn?.addEventListener("click", closeModal);
-
-    modal?.addEventListener("click", function (e) {
-      if (e.target === modal) closeModal();
+  function populateEditBloodTypes(selectedId: number) {
+    if (!editIdTipoSangre) return;
+    editIdTipoSangre.innerHTML =
+      '<option value="">Seleccione un tipo sanguíneo</option>';
+    allBloodTypes.forEach(function (t: any) {
+      const opt = document.createElement("option");
+      opt.value = t.id;
+      opt.textContent =
+        t.grupo + t.factorRh + (t.descripcion ? " - " + t.descripcion : "");
+      if (t.id === selectedId) opt.selected = true;
+      editIdTipoSangre.appendChild(opt);
     });
+  }
 
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && modal?.classList.contains("active"))
+  openBtn?.addEventListener("click", openModal);
+  closeBtn?.addEventListener("click", closeModal);
+  cancelBtn?.addEventListener("click", closeModal);
+
+  modal?.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (modal?.classList.contains("active")) closeModal();
+      if (editModal?.classList.contains("active")) closeEditModal();
+      if (deleteModal?.classList.contains("active")) closeDeleteModal();
+    }
+  });
+
+  form?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (alertContainer) alertContainer.innerHTML = "";
+
+    const fd = new FormData(form);
+    const nombre = fd.get("nombre")?.toString().trim();
+    const apellido = fd.get("apellido")?.toString().trim();
+    const ci = fd.get("ci")?.toString().trim();
+    const telefono = fd.get("telefono")?.toString().trim() || undefined;
+    const fechaNacimiento = fd.get("fechaNacimiento")?.toString() || undefined;
+    const idTipoSangre = fd.get("idTipoSangre")?.toString();
+
+    if (!nombre || !apellido || !ci || !idTipoSangre) {
+      showAlert(
+        "Los campos nombre, apellido, CI y tipo sanguíneo son obligatorios",
+        "error",
+      );
+      return;
+    }
+
+    const submitBtn = form.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute("aria-busy", "true");
+    }
+
+    try {
+      await apiPost("/donors", {
+        nombre,
+        apellido,
+        ci,
+        telefono,
+        fechaNacimiento,
+        idTipoSangre: Number(idTipoSangre),
+      });
+
+      showAlert("Donante registrado exitosamente", "success");
+      setTimeout(function () {
         closeModal();
-    });
-
-    form?.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      if (alertContainer) alertContainer.innerHTML = "";
-
-      const fd = new FormData(form);
-      const nombre = fd.get("nombre")?.toString().trim();
-      const apellido = fd.get("apellido")?.toString().trim();
-      const ci = fd.get("ci")?.toString().trim();
-      const telefono = fd.get("telefono")?.toString().trim() || undefined;
-      const fechaNacimiento = fd.get("fechaNacimiento")?.toString() || undefined;
-      const idTipoSangre = fd.get("idTipoSangre")?.toString();
-
-      if (!nombre || !apellido || !ci || !idTipoSangre) {
-        showAlert("Los campos nombre, apellido, CI y tipo sanguíneo son obligatorios", "error");
-        return;
-      }
-
-      const submitBtn = form.querySelector('button[type="submit"]');
+        loadDonors();
+      }, 800);
+    } catch (err: any) {
+      showAlert(
+        err.message || "Error de conexión. Intente nuevamente.",
+        "error",
+      );
+    } finally {
       if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.setAttribute("aria-busy", "true");
-      }
-
-      try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/donors`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({
-            nombre,
-            apellido,
-            ci,
-            telefono,
-            fechaNacimiento,
-            idTipoSangre: Number(idTipoSangre),
-          }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          const msg = Array.isArray(data.message)
-            ? data.message.join(", ")
-            : data.message || "Error al registrar el donante";
-          showAlert(msg, "error");
-          return;
-        }
-
-        showAlert("Donante registrado exitosamente", "success");
-        setTimeout(function () {
-          closeModal();
-          window.location.reload();
-        }, 800);
-      } catch {
-        showAlert("Error de conexión. Intente nuevamente.", "error");
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.removeAttribute("aria-busy");
-        }
-      }
-    });
-
-    const tbody = document.getElementById("donors-tbody");
-    const paginationInfo = document.getElementById("pagination-info");
-    const statTotal = document.getElementById("stat-total");
-    const statActive = document.getElementById("stat-active");
-    let allDonors = [];
-
-    async function loadDonors() {
-      if (!tbody) return;
-      try {
-        const res = await fetch(`${API_URL}/donors`);
-        if (!res.ok) throw new Error();
-        allDonors = await res.json();
-        renderDonors(allDonors);
-      } catch {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#bc002d;">Error al cargar donantes</td></tr>';
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute("aria-busy");
       }
     }
+  });
 
-    function renderDonors(donors) {
-      if (!tbody) return;
-      if (donors.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#9ca3af;">No se encontraron donantes</td></tr>';
-        updateStats();
-        return;
-      }
+  async function loadDonors() {
+    if (!tbody) return;
+    try {
+      allDonors = await apiGet<any[]>("/donors");
+      renderDonors(allDonors);
+    } catch {
+      tbody.innerHTML =
+        '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#bc002d;">Error al cargar donantes</td></tr>';
+    }
+  }
 
-      tbody.innerHTML = donors.map(function (d) {
-        const label = d.tipoSangre ? d.tipoSangre.grupo + d.tipoSangre.factorRh : "N/A";
+  function renderDonors(donors: any[]) {
+    if (!tbody) return;
+    if (donors.length === 0) {
+      tbody.innerHTML =
+        '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#9ca3af;">No se encontraron donantes</td></tr>';
+      updateStats();
+      return;
+    }
+
+    tbody.innerHTML = donors
+      .map(function (d) {
+        const label = d.tipoSangre
+          ? d.tipoSangre.grupo + d.tipoSangre.factorRh
+          : "N/A";
         const isActive = d.activo;
         const fullName = d.nombre + " " + d.apellido;
-        return '<tr>' +
-          '<td>' + fullName + '</td>' +
-          '<td>' + (d.ci || "-") + '</td>' +
-          '<td><span class="blood-badge blood-badge--' + (d.tipoSangre && d.tipoSangre.factorRh === "+" ? "positive" : "negative") + '">' + label + '</span></td>' +
-          '<td>' + (d.telefono || "-") + '</td>' +
-          '<td><span class="status-tag status-tag--' + (isActive ? "activo" : "inactivo") + '">' + (isActive ? "ACTIVO" : "INACTIVO") + '</span></td>' +
-          '<td></td>' +
-        '</tr>';
-      }).join("");
+        return (
+          "<tr>" +
+          "<td>" +
+          fullName +
+          "</td>" +
+          "<td>" +
+          (d.ci || "-") +
+          "</td>" +
+          '<td><span class="blood-badge blood-badge--' +
+          (d.tipoSangre && d.tipoSangre.factorRh === "+"
+            ? "positive"
+            : "negative") +
+          '">' +
+          label +
+          "</span></td>" +
+          "<td>" +
+          (d.telefono || "-") +
+          "</td>" +
+          '<td><span class="status-tag status-tag--' +
+          (isActive ? "activo" : "inactivo") +
+          '">' +
+          (isActive ? "ACTIVO" : "INACTIVO") +
+          "</span></td>" +
+          '<td class="td-actions">' +
+          '<button class="action-btn action-btn--edit" data-id="' +
+          d.id +
+          '" title="Editar">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>' +
+          '<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>' +
+          "</svg></button>" +
+          '<button class="action-btn action-btn--delete" data-id="' +
+          d.id +
+          '" data-name="' +
+          fullName +
+          '" title="Eliminar">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<polyline points="3 6 5 6 21 6"/>' +
+          '<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>' +
+          "</svg></button>" +
+          "</td>" +
+          "</tr>"
+        );
+      })
+      .join("");
 
-      updateStats();
-    }
+    updateStats();
+  }
 
-    function updateStats() {
-      const total = allDonors.length;
-      const active = allDonors.filter(function (d) { return d.activo; }).length;
-      if (statTotal) statTotal.textContent = total.toLocaleString();
-      if (statActive) statActive.textContent = active.toLocaleString();
-    }
+  function updateStats() {
+    const total = allDonors.length;
+    const active = allDonors.filter(function (d) {
+      return d.activo;
+    }).length;
+    if (statTotal) statTotal.textContent = total.toLocaleString();
+    if (statActive) statActive.textContent = active.toLocaleString();
+  }
 
-    var bloodFilters = document.getElementById("blood-filters");
-    if (bloodFilters) {
-      bloodFilters.querySelectorAll(".blood-chip").forEach(function (chip) {
-        chip.addEventListener("click", function () {
-          bloodFilters.querySelectorAll(".blood-chip").forEach(function (c) { c.classList.remove("active"); });
-          chip.classList.add("active");
-          var tipo = chip.getAttribute("data-type");
-          var filtered = allDonors.filter(function (d) {
-            return d.tipoSangre && (d.tipoSangre.grupo + d.tipoSangre.factorRh) === tipo;
-          });
-          renderDonors(filtered);
-        });
+  function formatDateInput(dateStr: string): string {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
+  }
+
+  function openEditModal(donor: any) {
+    if (!editModal) return;
+    editId.value = String(donor.id);
+    editNombre.value = donor.nombre || "";
+    editApellido.value = donor.apellido || "";
+    editCi.value = donor.ci || "";
+    editTelefono.value = donor.telefono || "";
+    editFechaNacimiento.value = donor.fechaNacimiento
+      ? formatDateInput(donor.fechaNacimiento)
+      : "";
+    populateEditBloodTypes(donor.tipoSangre?.id);
+    if (editAlert) editAlert.innerHTML = "";
+    editModal.classList.add("active");
+  }
+
+  function closeEditModal() {
+    editModal?.classList.remove("active");
+    editForm?.reset();
+    if (editAlert) editAlert.innerHTML = "";
+  }
+
+  function openDeleteModal(id: number, name: string) {
+    deletingId = id;
+    if (deleteName) deleteName.textContent = name;
+    deleteModal?.classList.add("active");
+  }
+
+  function closeDeleteModal() {
+    deletingId = null;
+    deleteModal?.classList.remove("active");
+  }
+
+  tbody?.addEventListener("click", function (e) {
+    const target = e.target as HTMLElement;
+    const editBtn = target.closest(".action-btn--edit") as HTMLElement | null;
+    const deleteBtn = target.closest(
+      ".action-btn--delete",
+    ) as HTMLElement | null;
+
+    if (editBtn) {
+      const id = Number(editBtn.dataset.id);
+      const donor = allDonors.find(function (d) {
+        return d.id === id;
       });
+      if (donor) openEditModal(donor);
     }
 
-    loadDonors();
-  })();
+    if (deleteBtn) {
+      const id = Number(deleteBtn.dataset.id);
+      const name = deleteBtn.dataset.name || "";
+      openDeleteModal(id, name);
+    }
+  });
+
+  editForm?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (editAlert) editAlert.innerHTML = "";
+
+    const fd = new FormData(editForm);
+    const id = fd.get("id")?.toString().trim();
+    const nombre = fd.get("nombre")?.toString().trim();
+    const apellido = fd.get("apellido")?.toString().trim();
+    const ci = fd.get("ci")?.toString().trim();
+    const telefono = fd.get("telefono")?.toString().trim() || undefined;
+    const fechaNacimiento = fd.get("fechaNacimiento")?.toString() || undefined;
+    const idTipoSangre = fd.get("idTipoSangre")?.toString();
+
+    if (!nombre || !apellido || !ci || !idTipoSangre) {
+      showAlert(
+        "Los campos nombre, apellido, CI y tipo sanguíneo son obligatorios",
+        "error",
+        editAlert,
+      );
+      return;
+    }
+
+    const submitBtn = editForm.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute("aria-busy", "true");
+    }
+
+    try {
+      await apiPatch("/donors/" + id, {
+        nombre,
+        apellido,
+        ci,
+        telefono,
+        fechaNacimiento,
+        idTipoSangre: Number(idTipoSangre),
+      });
+      showAlert("Donante actualizado exitosamente", "success", editAlert);
+      setTimeout(function () {
+        closeEditModal();
+        loadDonors();
+      }, 800);
+    } catch (err: any) {
+      showAlert(err.message || "Error al actualizar", "error", editAlert);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute("aria-busy");
+      }
+    }
+  });
+
+  deleteConfirmBtn?.addEventListener("click", async function () {
+    if (deletingId === null) return;
+    const btn = deleteConfirmBtn as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = "Eliminando...";
+
+    try {
+      await apiDelete("/donors/" + deletingId);
+      closeDeleteModal();
+      loadDonors();
+    } catch (err: any) {
+      alert(err.message || "Error al eliminar");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Eliminar";
+    }
+  });
+
+  document
+    .getElementById("edit-modal-close")
+    ?.addEventListener("click", closeEditModal);
+  document
+    .getElementById("edit-cancel-btn")
+    ?.addEventListener("click", closeEditModal);
+  document
+    .getElementById("delete-modal-close")
+    ?.addEventListener("click", closeDeleteModal);
+  document
+    .getElementById("delete-cancel-btn")
+    ?.addEventListener("click", closeDeleteModal);
+
+  editModal?.addEventListener("click", function (e) {
+    if (e.target === editModal) closeEditModal();
+  });
+  deleteModal?.addEventListener("click", function (e) {
+    if (e.target === deleteModal) closeDeleteModal();
+  });
+
+  if (bloodFilters) {
+    bloodFilters.querySelectorAll(".blood-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        bloodFilters.querySelectorAll(".blood-chip").forEach(function (c) {
+          c.classList.remove("active");
+        });
+        chip.classList.add("active");
+        var tipo = chip.getAttribute("data-type");
+        var filtered = allDonors.filter(function (d) {
+          return (
+            d.tipoSangre && d.tipoSangre.grupo + d.tipoSangre.factorRh === tipo
+          );
+        });
+        renderDonors(filtered);
+      });
+    });
+  }
+
+  loadDonors();
 </script>
 
-<style>
+<style is:global>
   .donors-page {
     max-width: 1400px;
     margin: 0 auto;
@@ -696,7 +1076,7 @@ import DonorModal from "../../components/donors/donor-modal.astro";
     gap: 0.625rem;
     padding: 0.75rem 1rem;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.4;
@@ -722,5 +1102,221 @@ import DonorModal from "../../components/donors/donor-modal.astro";
 
   .alert__message {
     flex: 1;
+  }
+
+  .td-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background-color: #f3f4f6;
+    color: #6b7280;
+  }
+
+  .action-btn:hover {
+    background-color: #e5e7eb;
+    color: #1f2937;
+  }
+
+  .action-btn--edit:hover {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+
+  .action-btn--delete:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal {
+    background-color: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  }
+
+  .modal--sm {
+    max-width: 400px;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1d3d2;
+  }
+
+  .modal-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .modal-close:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+  }
+
+  #edit-form {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .modal-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .field-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  .field-input {
+    padding: 0.625rem 0.875rem;
+    font-family: "Inter", sans-serif;
+    font-size: 0.875rem;
+    color: #1f2937;
+    background-color: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .field-input:focus {
+    border-color: #bc002d;
+    box-shadow: 0 0 0 3px rgba(188, 0, 45, 0.1);
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #f1d3d2;
+  }
+
+  .btn-cancel {
+    padding: 0.625rem 1.25rem;
+    font-family: "Inter", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-cancel:hover {
+    background-color: #e5e7eb;
+    color: #1f2937;
+  }
+
+  .btn-save {
+    padding: 0.625rem 1.25rem;
+    font-family: "Inter", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #bc002d;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-save:hover {
+    background-color: #9a0025;
+  }
+
+  .btn-delete {
+    padding: 0.625rem 1.25rem;
+    font-family: "Inter", sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #dc2626;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-delete:hover {
+    background-color: #b91c1c;
+  }
+
+  .delete-body {
+    padding: 1.5rem;
+  }
+
+  .delete-body p {
+    font-size: 0.9375rem;
+    color: #374151;
+    line-height: 1.5;
+  }
+
+  .delete-warning {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem !important;
+    color: #6b7280 !important;
   }
 </style>

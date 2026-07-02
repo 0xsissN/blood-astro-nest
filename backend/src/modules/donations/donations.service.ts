@@ -265,7 +265,7 @@ export class DonationsService {
       .addGroupBy('donante.nombre')
       .addGroupBy('donante.apellido')
       .addGroupBy('donante.ci')
-      .orderBy('totalDonaciones', 'DESC')
+      .orderBy('"totalDonaciones"', 'DESC')
       .limit(10)
       .getRawMany<RecurringDonorRaw>();
 

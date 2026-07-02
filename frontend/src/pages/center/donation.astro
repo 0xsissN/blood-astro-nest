@@ -1,6 +1,7 @@
 ---
 import DashboardLayout from "../../layouts/dashboard-layout.astro";
 import DonationModal from "../../components/donations/donation-modal.astro";
+import { apiGet, apiPost } from "../../scripts/api";
 ---
 
 <DashboardLayout title="Donaciones" activeSection="donaciones">
@@ -8,10 +9,21 @@ import DonationModal from "../../components/donations/donation-modal.astro";
     <div class="page-header">
       <div>
         <h1 class="page-title">Gestión de Donaciones</h1>
-        <p class="page-subtitle">Registre, supervise y gestione cada proceso de donación de sangre.</p>
+        <p class="page-subtitle">
+          Registre, supervise y gestione cada proceso de donación de sangre.
+        </p>
       </div>
       <button class="btn-new" id="open-donation-modal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
@@ -30,7 +42,8 @@ import DonationModal from "../../components/donations/donation-modal.astro";
       </div>
       <div class="stat-card">
         <span class="stat-label">Pendientes</span>
-        <span class="stat-value stat-value--orange" id="stat-pendientes">0</span>
+        <span class="stat-value stat-value--orange" id="stat-pendientes">0</span
+        >
       </div>
       <div class="stat-card">
         <span class="stat-label">Rechazadas</span>
@@ -56,15 +69,16 @@ import DonationModal from "../../components/donations/donation-modal.astro";
             <tr>
               <th>ID</th>
               <th>Donante</th>
+              <th>Campaña</th>
               <th>Tipo Sangre</th>
               <th>Fecha</th>
-              <th>Cantidad (ml)</th>
+              <th>Cantidad</th>
               <th>Estado</th>
             </tr>
           </thead>
           <tbody id="donations-tbody">
             <tr>
-              <td colspan="6" class="td-loading">Cargando donaciones...</td>
+              <td colspan="7" class="td-loading">Cargando donaciones...</td>
             </tr>
           </tbody>
         </table>
@@ -75,308 +89,320 @@ import DonationModal from "../../components/donations/donation-modal.astro";
   <DonationModal />
 </DashboardLayout>
 
-<script is:inline>
-  (function () {
-    const API_URL = "http://localhost:3000";
+<script>
+  import { apiGet, apiPost } from "../../scripts/api";
 
-    // DOM elements
-    const modal = document.getElementById("donation-modal");
-    const openBtn = document.getElementById("open-donation-modal");
-    const closeBtn = document.getElementById("donation-modal-close");
-    const cancelBtn = document.getElementById("donation-modal-cancel");
-    const form = document.getElementById("donation-form");
-    const alertContainer = document.getElementById("donation-form-alert");
-    const tbody = document.getElementById("donations-tbody");
-    const filterEstado = document.getElementById("filter-estado");
+  const modal = document.getElementById("donation-modal");
+  const openBtn = document.getElementById("open-donation-modal");
+  const closeBtn = document.getElementById("donation-modal-close");
+  const cancelBtn = document.getElementById("donation-modal-cancel");
+  const form = document.getElementById("donation-form");
+  const alertContainer = document.getElementById("donation-form-alert");
+  const tbody = document.getElementById("donations-tbody");
+  const filterEstado = document.getElementById("filter-estado");
+  const donorSelect = document.getElementById("donor-select");
+  const bloodTypeHidden = document.getElementById("blood-type-hidden");
+  const bloodTypeDisplay = document.getElementById("blood-type-display");
+  const campaignSelect = document.getElementById("campaign-select");
+  const statTotal = document.getElementById("stat-total");
+  const statAprobadas = document.getElementById("stat-aprobadas");
+  const statPendientes = document.getElementById("stat-pendientes");
+  const statRechazadas = document.getElementById("stat-rechazadas");
 
-    // Select elements
-    const donorSelect = document.getElementById("donor-select");
-    const bloodTypeHidden = document.getElementById("blood-type-hidden");
-    const bloodTypeDisplay = document.getElementById("blood-type-display");
-    const campaignSelect = document.getElementById("campaign-select");
-    let loadedDonors = [];
+  let loadedDonors: any[] = [];
+  let allDonations: any[] = [];
 
-    // Stats elements
-    const statTotal = document.getElementById("stat-total");
-    const statAprobadas = document.getElementById("stat-aprobadas");
-    const statPendientes = document.getElementById("stat-pendientes");
-    const statRechazadas = document.getElementById("stat-rechazadas");
+  function openModal() {
+    modal?.classList.add("active");
+  }
 
-    let allDonations = [];
+  function closeModal() {
+    modal?.classList.remove("active");
+    form?.reset();
+    if (alertContainer) alertContainer.innerHTML = "";
+    if (bloodTypeHidden) (bloodTypeHidden as HTMLInputElement).value = "";
+    if (bloodTypeDisplay) (bloodTypeDisplay as HTMLInputElement).value = "";
+  }
 
-    // --- Modal functions ---
-    function openModal() {
-      modal?.classList.add("active");
-    }
+  function showAlert(message: string, type: "error" | "success") {
+    if (!alertContainer) return;
+    const icon =
+      type === "error"
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+    alertContainer.innerHTML =
+      '<div class="alert alert--' +
+      type +
+      '" role="alert">' +
+      '<span class="alert__icon">' +
+      icon +
+      "</span>" +
+      '<span class="alert__message">' +
+      message +
+      "</span></div>";
+  }
 
-    function closeModal() {
-      modal?.classList.remove("active");
-      form?.reset();
-      if (alertContainer) alertContainer.innerHTML = "";
-    }
-
-    function showAlert(message, type) {
-      if (!alertContainer) return;
-      const icon =
-        type === "error"
-          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
-          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
-      alertContainer.innerHTML = `
-        <div class="alert alert--${type}" role="alert">
-          <span class="alert__icon">${icon}</span>
-          <span class="alert__message">${message}</span>
-        </div>`;
-    }
-
-    // --- API helpers ---
-    function getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      };
-    }
-
-    async function apiGet(path) {
-      const res = await fetch(`${API_URL}${path}`, { headers: getAuthHeaders() });
-      if (!res.ok) throw new Error(`Error ${res.status}`);
-      return res.json();
-    }
-
-    async function apiPost(path, body) {
-      const res = await fetch(`${API_URL}${path}`, {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        const msg = Array.isArray(data.message) ? data.message.join(", ") : data.message || "Error al procesar";
-        throw new Error(msg);
+  async function loadDonors() {
+    try {
+      const donors = await apiGet<any[]>("/donors");
+      loadedDonors = donors;
+      if (donorSelect) {
+        donorSelect.innerHTML =
+          '<option value="">Seleccione un donante</option>';
+        donors.forEach(function (d: any) {
+          const opt = document.createElement("option");
+          opt.value = d.id;
+          opt.textContent = d.nombre + " " + d.apellido + " (CI: " + d.ci + ")";
+          donorSelect.appendChild(opt);
+        });
       }
-      return data;
+    } catch (e) {
+      console.error("Error loading donors:", e);
     }
+  }
 
-    // --- Load dropdowns ---
-    async function loadDonors() {
-      try {
-        const donors = await apiGet("/donors");
-        loadedDonors = donors;
-        if (donorSelect) {
-          donorSelect.innerHTML = '<option value="">Seleccione un donante</option>';
-          donors.forEach(function (d) {
-            const opt = document.createElement("option");
-            opt.value = d.id;
-            opt.textContent = d.nombre + " " + d.apellido + " (CI: " + d.ci + ")";
-            donorSelect.appendChild(opt);
-          });
-        }
-      } catch (e) {
-        console.error("Error loading donors:", e);
-      }
+  function onDonorChange() {
+    const donorId = donorSelect ? (donorSelect as HTMLSelectElement).value : "";
+    if (!donorId) {
+      if (bloodTypeDisplay) (bloodTypeDisplay as HTMLInputElement).value = "";
+      if (bloodTypeHidden) (bloodTypeHidden as HTMLInputElement).value = "";
+      return;
     }
-
-    function onDonorChange() {
-      const donorId = donorSelect ? donorSelect.value : "";
-      if (!donorId || !bloodTypeHidden || !bloodTypeDisplay) {
-        if (bloodTypeDisplay) bloodTypeDisplay.value = "";
-        if (bloodTypeHidden) bloodTypeHidden.value = "";
-        return;
-      }
-      const donor = loadedDonors.find(function (d) { return String(d.id) === donorId; });
-      if (donor && donor.tipoSangre) {
-        bloodTypeHidden.value = donor.tipoSangre.id;
-        bloodTypeDisplay.value = donor.tipoSangre.grupo + donor.tipoSangre.factorRh;
-      } else {
-        bloodTypeHidden.value = "";
-        bloodTypeDisplay.value = "";
-      }
+    const donor = loadedDonors.find(function (d: any) {
+      return String(d.id) === donorId;
+    });
+    if (donor && donor.tipoSangre) {
+      (bloodTypeHidden as HTMLInputElement).value = donor.tipoSangre.id;
+      (bloodTypeDisplay as HTMLInputElement).value =
+        donor.tipoSangre.grupo + donor.tipoSangre.factorRh;
+    } else {
+      (bloodTypeHidden as HTMLInputElement).value = "";
+      (bloodTypeDisplay as HTMLInputElement).value = "";
     }
+  }
 
-    async function loadCampaigns() {
-      try {
-        const campaigns = await apiGet("/campaigns");
-        if (campaignSelect) {
-          campaignSelect.innerHTML = '<option value="">Sin campaña</option>';
-          campaigns.forEach(function (c) {
-            const opt = document.createElement("option");
-            opt.value = c.id;
-            opt.textContent = c.nombre;
-            campaignSelect.appendChild(opt);
-          });
-        }
-      } catch (e) {
-        console.error("Error loading campaigns:", e);
+  async function loadCampaigns() {
+    try {
+      const campaigns = await apiGet<any[]>("/campaigns");
+      if (campaignSelect) {
+        campaignSelect.innerHTML = '<option value="">Sin campaña</option>';
+        campaigns.forEach(function (c: any) {
+          const opt = document.createElement("option");
+          opt.value = c.id;
+          opt.textContent = c.nombre;
+          campaignSelect.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      console.error("Error loading campaigns:", e);
+    }
+  }
+
+  async function loadDonations() {
+    try {
+      const donations = await apiGet<any[]>("/donations");
+      allDonations = donations;
+      renderDonations(donations);
+      updateStats(donations);
+    } catch (e) {
+      console.error("Error loading donations:", e);
+      if (tbody) {
+        tbody.innerHTML =
+          '<tr><td colspan="7" class="td-empty">Error al cargar donaciones. Verifique que el servidor esté activo.</td></tr>';
       }
     }
+  }
 
-    // --- Load donations ---
-    async function loadDonations() {
-      try {
-        const donations = await apiGet("/donations");
-        allDonations = donations;
-        renderDonations(donations);
-        updateStats(donations);
-      } catch (e) {
-        console.error("Error loading donations:", e);
-        if (tbody) {
-          tbody.innerHTML = '<tr><td colspan="6" class="td-empty">Error al cargar donaciones. Verifique que el servidor esté activo.</td></tr>';
-        }
-      }
+  function renderDonations(donations: any[]) {
+    if (!tbody) return;
+    if (!donations || donations.length === 0) {
+      tbody.innerHTML =
+        '<tr><td colspan="7" class="td-empty">No hay donaciones registradas</td></tr>';
+      return;
     }
-
-    function renderDonations(donations) {
-      if (!tbody) return;
-      if (!donations || donations.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="td-empty">No hay donaciones registradas</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = donations.map(function (d) {
-        var bloodType = d.tipoSangre ? d.tipoSangre.grupo + d.tipoSangre.factorRh : "N/A";
-        var donorName = d.donante ? d.donante.nombre + " " + d.donante.apellido : "N/A";
+    tbody.innerHTML = donations
+      .map(function (d) {
+        var bloodType = d.tipoSangre
+          ? d.tipoSangre.grupo + d.tipoSangre.factorRh
+          : "N/A";
+        var donorName = d.donante
+          ? d.donante.nombre + " " + d.donante.apellido
+          : "N/A";
+        var campaignName = d.campania ? d.campania.nombre : "—";
         var fecha = formatDate(d.fechaDonacion);
         var estadoClass = "status-tag--" + d.estado;
         var estadoLabel = capitalize(d.estado);
 
-        return '<tr>' +
-          '<td class="td-bold">DON-' + String(d.id).padStart(3, "0") + '</td>' +
-          '<td>' + donorName + '</td>' +
-          '<td><span class="blood-badge">' + bloodType + '</span></td>' +
-          '<td>' + fecha + '</td>' +
-          '<td>' + d.cantidadMl + ' ml</td>' +
-          '<td><span class="status-tag ' + estadoClass + '">' + estadoLabel + '</span></td>' +
-          '</tr>';
-      }).join("");
+        return (
+          "<tr>" +
+          '<td class="td-id">DON-' +
+          String(d.id).padStart(3, "0") +
+          "</td>" +
+          '<td class="td-donor"><span class="donor-name">' +
+          donorName +
+          "</span></td>" +
+          '<td class="td-campaign"><span class="campaign-tag">' +
+          campaignName +
+          "</span></td>" +
+          '<td><span class="blood-badge">' +
+          bloodType +
+          "</span></td>" +
+          '<td class="td-date">' +
+          fecha +
+          "</td>" +
+          '<td class="td-amount">' +
+          d.cantidadMl +
+          ' <span class="unit-label">ml</span></td>' +
+          '<td><span class="status-tag' +
+          estadoClass +
+          '">' +
+          estadoLabel +
+          "</span></td>" +
+          "</tr>"
+        );
+      })
+      .join("");
+  }
+
+  function updateStats(donations: any[]) {
+    var total = donations.length;
+    var aprobadas = donations.filter(function (d) {
+      return d.estado === "aprobada";
+    }).length;
+    var pendientes = donations.filter(function (d) {
+      return d.estado === "pendiente";
+    }).length;
+    var rechazadas = donations.filter(function (d) {
+      return d.estado === "rechazada";
+    }).length;
+    if (statTotal) statTotal.textContent = String(total);
+    if (statAprobadas) statAprobadas.textContent = String(aprobadas);
+    if (statPendientes) statPendientes.textContent = String(pendientes);
+    if (statRechazadas) statRechazadas.textContent = String(rechazadas);
+  }
+
+  function filterByEstado(estado: string) {
+    if (!estado) {
+      renderDonations(allDonations);
+      updateStats(allDonations);
+    } else {
+      var filtered = allDonations.filter(function (d) {
+        return d.estado === estado;
+      });
+      renderDonations(filtered);
+      updateStats(filtered);
+    }
+  }
+
+  function formatDate(dateStr: string) {
+    if (!dateStr) return "N/A";
+    var d = new Date(dateStr);
+    var months = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
+    return d.getDate() + " " + months[d.getMonth()] + ", " + d.getFullYear();
+  }
+
+  function capitalize(str: string) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  openBtn?.addEventListener("click", openModal);
+  closeBtn?.addEventListener("click", closeModal);
+  cancelBtn?.addEventListener("click", closeModal);
+  modal?.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && modal?.classList.contains("active")) closeModal();
+  });
+  filterEstado?.addEventListener("change", function () {
+    filterByEstado((this as HTMLSelectElement).value);
+  });
+  donorSelect?.addEventListener("change", onDonorChange);
+
+  form?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (alertContainer) alertContainer.innerHTML = "";
+
+    var fd = new FormData(form);
+    var idDonante = fd.get("idDonante")?.toString().trim();
+    var idTipoSangre = fd.get("idTipoSangre")?.toString().trim();
+    var idCampania = fd.get("idCampania")?.toString().trim();
+    var fechaDonacion = fd.get("fechaDonacion")?.toString();
+    var cantidadMl = fd.get("cantidadMl")?.toString();
+
+    if (!idDonante || !idTipoSangre || !fechaDonacion || !cantidadMl) {
+      showAlert("Todos los campos obligatorios deben ser completados", "error");
+      return;
     }
 
-    function updateStats(donations) {
-      var total = donations.length;
-      var aprobadas = donations.filter(function (d) { return d.estado === "aprobada"; }).length;
-      var pendientes = donations.filter(function (d) { return d.estado === "pendiente"; }).length;
-      var rechazadas = donations.filter(function (d) { return d.estado === "rechazada"; }).length;
-
-      if (statTotal) statTotal.textContent = total;
-      if (statAprobadas) statAprobadas.textContent = aprobadas;
-      if (statPendientes) statPendientes.textContent = pendientes;
-      if (statRechazadas) statRechazadas.textContent = rechazadas;
+    var ml = parseInt(cantidadMl, 10);
+    if (isNaN(ml) || ml < 200 || ml > 500) {
+      showAlert("La cantidad de ml debe estar entre 200 y 500", "error");
+      return;
     }
 
-    function filterByEstado(estado) {
-      if (!estado) {
-        renderDonations(allDonations);
-        updateStats(allDonations);
-      } else {
-        var filtered = allDonations.filter(function (d) { return d.estado === estado; });
-        renderDonations(filtered);
-        updateStats(filtered);
-      }
+    var submitBtn = form.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.setAttribute("aria-busy", "true");
     }
 
-    // --- Utils ---
-    function formatDate(dateStr) {
-      if (!dateStr) return "N/A";
-      var d = new Date(dateStr);
-      var months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-      return d.getDate() + " " + months[d.getMonth()] + ", " + d.getFullYear();
-    }
+    var body: Record<string, any> = {
+      idDonante: parseInt(idDonante, 10),
+      idTipoSangre: parseInt(idTipoSangre, 10),
+      fechaDonacion: fechaDonacion,
+      cantidadMl: ml,
+    };
+    if (idCampania) body.idCampania = parseInt(idCampania, 10);
 
-    function capitalize(str) {
-      if (!str) return "";
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
-
-    // --- Event listeners ---
-    openBtn?.addEventListener("click", openModal);
-    closeBtn?.addEventListener("click", closeModal);
-    cancelBtn?.addEventListener("click", closeModal);
-
-    modal?.addEventListener("click", function (e) {
-      if (e.target === modal) closeModal();
-    });
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && modal?.classList.contains("active")) closeModal();
-    });
-
-    filterEstado?.addEventListener("change", function () {
-      filterByEstado(this.value);
-    });
-
-    donorSelect?.addEventListener("change", onDonorChange);
-
-    // --- Form submission ---
-    form?.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      if (alertContainer) alertContainer.innerHTML = "";
-
-      var fd = new FormData(form);
-      var idDonante = fd.get("idDonante")?.toString().trim();
-      var idTipoSangre = fd.get("idTipoSangre")?.toString().trim();
-      var idCampania = fd.get("idCampania")?.toString().trim();
-      var fechaDonacion = fd.get("fechaDonacion")?.toString();
-      var cantidadMl = fd.get("cantidadMl")?.toString();
-
-      if (!idDonante || !idTipoSangre || !fechaDonacion || !cantidadMl) {
-        showAlert("Todos los campos obligatorios deben ser completados", "error");
-        return;
-      }
-
-      var ml = parseInt(cantidadMl, 10);
-      if (isNaN(ml) || ml < 200 || ml > 500) {
-        showAlert("La cantidad de ml debe estar entre 200 y 500", "error");
-        return;
-      }
-
-      var submitBtn = form.querySelector('button[type="submit"]');
+    try {
+      await apiPost("/donations", body);
+      showAlert("Donación registrada exitosamente", "success");
+      setTimeout(function () {
+        closeModal();
+        loadDonations();
+      }, 800);
+    } catch (err: any) {
+      showAlert(
+        err.message || "Error de conexión. Intente nuevamente.",
+        "error",
+      );
+    } finally {
       if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.setAttribute("aria-busy", "true");
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute("aria-busy");
       }
-
-      var body = {
-        idDonante: parseInt(idDonante, 10),
-        idTipoSangre: parseInt(idTipoSangre, 10),
-        fechaDonacion: fechaDonacion,
-        cantidadMl: ml,
-      };
-
-      if (idCampania) {
-        body.idCampania = parseInt(idCampania, 10);
-      }
-
-      try {
-        await apiPost("/donations", body);
-        showAlert("Donación registrada exitosamente", "success");
-        setTimeout(function () {
-          closeModal();
-          loadDonations();
-        }, 800);
-      } catch (err) {
-        showAlert(err.message || "Error de conexión. Intente nuevamente.", "error");
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.removeAttribute("aria-busy");
-        }
-      }
-    });
-
-    // --- Initial load ---
-    loadDonors();
-    loadCampaigns();
-    loadDonations();
-
-    // --- Auto-open modal from sidebar button ---
-    var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("open") === "1") {
-      openModal();
-      window.history.replaceState({}, "", "/center/donation");
     }
-  })();
+  });
+
+  loadDonors();
+  loadCampaigns();
+  loadDonations();
+
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("open") === "1") {
+    openModal();
+    window.history.replaceState({}, "", "/center/donation");
+  }
 </script>
 
-<style>
+<style is:global>
   .donations-page {
     max-width: 1400px;
     margin: 0 auto;
@@ -454,9 +480,15 @@ import DonationModal from "../../components/donations/donation-modal.astro";
     line-height: 1.2;
   }
 
-  .stat-value--green { color: #16a34a; }
-  .stat-value--orange { color: #ea580c; }
-  .stat-value--red { color: #dc2626; }
+  .stat-value--green {
+    color: #16a34a;
+  }
+  .stat-value--orange {
+    color: #ea580c;
+  }
+  .stat-value--red {
+    color: #dc2626;
+  }
 
   .table-card {
     background: #fff;
@@ -496,66 +528,109 @@ import DonationModal from "../../components/donations/donation-modal.astro";
   .data-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 750px;
   }
 
   .data-table th {
-    text-align: left;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #9ca3af;
+    text-align: center;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #6b7280;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.875rem 1.5rem;
-    background: #fff8f7;
+    letter-spacing: 0.06em;
+    padding: 0.875rem 1.25rem;
+    background: #f9fafb;
     border-bottom: 1px solid #f1d3d2;
   }
 
   .data-table td {
-    padding: 1rem 1.5rem;
+    padding: 0.875rem 1.25rem;
     font-size: 0.875rem;
     color: #374151;
-    border-bottom: 1px solid #f9fafb;
+    border-bottom: 1px solid #f3f4f6;
     vertical-align: middle;
+  }
+
+  .data-table tbody tr {
+    transition: background-color 0.12s ease;
   }
 
   .data-table tbody tr:hover {
     background: #fff8f7;
   }
 
-  .td-bold {
-    font-weight: 700;
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .td-donor,
+  .td-campaign,
+  .td-id,
+  .td-date,
+  .td-amount,
+  td {
+    padding: 1rem 1.25rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  th {
+    padding: 1rem 1.25rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .td-donor .donor-name {
+    font-weight: 600;
     color: #1f2937;
   }
 
-  .td-loading,
-  .td-empty {
-    text-align: center;
-    color: #9ca3af;
-    font-style: italic;
-    padding: 2rem 1.5rem;
+  .td-campaign .campaign-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    color: #4b5563;
   }
 
   .blood-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    background: #fee2e2;
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
     color: #991b1b;
+    letter-spacing: -0.02em;
+    box-shadow: 0 1px 3px rgba(188, 0, 45, 0.12);
+  }
+
+  .td-date {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    white-space: nowrap;
+  }
+
+  .td-amount {
+    font-weight: 600;
+    color: #1f2937;
   }
 
   .status-tag {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
+    justify-content: center;
+    gap: 0.375rem;
+    padding: 0.4rem 0.9rem;
     border-radius: 20px;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     font-weight: 700;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .status-tag--aprobada {
@@ -571,6 +646,13 @@ import DonationModal from "../../components/donations/donation-modal.astro";
   .status-tag--rechazada {
     background: #fee2e2;
     color: #991b1b;
+  }
+
+  .td-id {
+    font-weight: 700;
+    color: #1f2937;
+    font-size: 0.8125rem;
+    font-family: "Inter", monospace;
   }
 
   @media (max-width: 768px) {
