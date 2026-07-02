@@ -26,27 +26,25 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
             <h2 class="panel-title">Donaciones Mensuales</h2>
             <p class="panel-subtitle">Histórico de unidades colectadas (Últimos 12 meses)</p>
           </div>
-          <select class="year-select">
-            <option>Año 2023-2024</option>
-            <option>Año 2022-2023</option>
+          <select class="year-select" id="year-select">
           </select>
         </div>
         <div class="chart-placeholder">
-          <div class="chart-bars">
-            <div class="bar" style="height:40%"></div>
-            <div class="bar" style="height:55%"></div>
-            <div class="bar" style="height:35%"></div>
-            <div class="bar" style="height:65%"></div>
-            <div class="bar" style="height:50%"></div>
-            <div class="bar" style="height:70%"></div>
-            <div class="bar" style="height:60%"></div>
-            <div class="bar" style="height:45%"></div>
-            <div class="bar" style="height:55%"></div>
-            <div class="bar" style="height:75%"></div>
-            <div class="bar" style="height:80%"></div>
-            <div class="bar" style="height:65%"></div>
+          <div class="chart-bars" id="chart-bars">
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
+            <div class="bar" style="height:10%"></div>
           </div>
-          <div class="chart-labels">
+          <div class="chart-labels" id="chart-labels">
             <span>ENE</span><span>FEB</span><span>MAR</span><span>ABR</span>
             <span>MAY</span><span>JUN</span><span>JUL</span><span>AGO</span>
             <span>SEP</span><span>OCT</span><span>NOV</span><span>DIC</span>
@@ -197,10 +195,32 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
 <script is:inline>
   (function () {
-    const API_URL = "http://localhost:3000";
+    var API_URL = "http://localhost:3000";
     var grid = document.getElementById("blood-stock-grid");
     var badge = document.getElementById("updated-badge");
+    var chartBars = document.getElementById("chart-bars");
+    var chartLabels = document.getElementById("chart-labels");
+    var yearSelect = document.getElementById("year-select");
+    var campaignList = document.querySelector(".campaign-list");
+    var recurrentTbody = document.querySelector(".recurrent-panel .data-table tbody");
 
+    function getAuthHeaders() {
+      var token = localStorage.getItem("token");
+      return {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: "Bearer " + token } : {}),
+      };
+    }
+
+    async function apiGet(path) {
+      var res = await fetch(API_URL + path, { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error("Error " + res.status);
+      return res.json();
+    }
+
+    var monthShort = ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
+
+    // --- Blood Stock Grid ---
     function getEstadoClass(estado) {
       if (estado === "critico") return "blood-card--critico";
       if (estado === "bajo") return "blood-card--bajo";
@@ -226,10 +246,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     async function loadStock() {
       if (!grid) return;
       try {
-        var res = await fetch(API_URL + "/blood-stock");
-        if (!res.ok) throw new Error();
-        var data = await res.json();
-
+        var data = await apiGet("/blood-stock");
         grid.innerHTML = data.map(function (s) {
           var label = s.tipoSangre.grupo + s.tipoSangre.factorRh;
           var estado = s.estadoStock || "normal";
@@ -239,17 +256,125 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
             '<span class="blood-status ' + getStatusClass(estado) + '">' + getStatusLabel(estado) + '</span>' +
           '</div>';
         }).join("");
-
-        if (badge) {
-          badge.textContent = "Actualizado hace unos segundos";
-        }
+        if (badge) badge.textContent = "Actualizado hace unos segundos";
       } catch (e) {
         grid.innerHTML = '<div class="blood-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #bc002d;">Error al cargar datos del stock</div>';
       }
     }
 
+    // --- Chart ---
+    function initYearSelect() {
+      if (!yearSelect) return;
+      var currentYear = new Date().getFullYear();
+      var years = [];
+      for (var y = currentYear; y >= currentYear - 4; y--) years.push(y);
+      yearSelect.innerHTML = years.map(function (y) {
+        return '<option value="' + y + '">Año ' + y + '</option>';
+      }).join("");
+      yearSelect.value = String(currentYear);
+    }
+
+    async function loadChart(year) {
+      if (!chartBars) return;
+      try {
+        var data = await apiGet("/donations/stats/monthly?year=" + year);
+        var byMonth = {};
+        data.forEach(function (d) { byMonth[d.mesNumero] = d.totalDonaciones; });
+
+        var maxVal = 1;
+        for (var i = 1; i <= 12; i++) {
+          if ((byMonth[i] || 0) > maxVal) maxVal = byMonth[i] || 1;
+        }
+
+        var barsHtml = "";
+        for (var i = 1; i <= 12; i++) {
+          var val = byMonth[i] || 0;
+          var pct = Math.max(4, (val / maxVal) * 100);
+          barsHtml += '<div class="bar" style="height:' + pct + '%" title="' + monthShort[i-1] + ': ' + val + ' donaciones"></div>';
+        }
+        chartBars.innerHTML = barsHtml;
+
+        if (chartLabels) {
+          chartLabels.innerHTML = monthShort.map(function (m) { return '<span>' + m + '</span>'; }).join("");
+        }
+      } catch (e) {
+        chartBars.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#bc002d;padding:2rem;">Error al cargar gráfico</div>';
+      }
+    }
+
+    // --- Campaigns ---
+    async function loadCampaigns() {
+      if (!campaignList) return;
+      try {
+        var data = await apiGet("/campaigns/top");
+        if (!data || data.length === 0) {
+          campaignList.innerHTML = '<div class="campaign-item" style="justify-content:center;color:#9ca3af;">No hay campañas con donaciones</div>';
+          return;
+        }
+        campaignList.innerHTML = data.map(function (c, i) {
+          var rank = i + 1;
+          var rankClass = "campaign-rank--" + rank;
+          return '<div class="campaign-item">' +
+            '<div class="campaign-rank ' + rankClass + '">' + rank + '</div>' +
+            '<div class="campaign-info">' +
+              '<span class="campaign-name">' + c.nombre + '</span>' +
+              '<span class="campaign-units">' + c.totalDonaciones + ' unidades colectadas</span>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+      } catch (e) {
+        campaignList.innerHTML = '<div class="campaign-item" style="justify-content:center;color:#bc002d;">Error al cargar campañas</div>';
+      }
+    }
+
+    // --- Recurring Donors ---
+    async function loadRecurringDonors() {
+      if (!recurrentTbody) return;
+      try {
+        var data = await apiGet("/donations/stats/recurring-donors");
+        if (!data || data.length === 0) {
+          recurrentTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:2rem;">No hay donantes recurrentes</td></tr>';
+          return;
+        }
+        var initials = ["RM","AS","LG","CR","JM","MT","PV","GH","RL","DF"];
+        var colors = ["red","blue","green","purple","orange","red","blue","green","purple","orange"];
+        recurrentTbody.innerHTML = data.map(function (d, i) {
+          var ini = initials[i % initials.length];
+          var col = colors[i % colors.length];
+          var avatarBg = ["#fca5a5","#93c5fd","#86efac","#c4b5fd","#fdba74"][i % 5];
+          var avatarColor = ["#991b1b","#1e40af","#166534","#5b21b6","#9a3412"][i % 5];
+          return '<tr>' +
+            '<td><div class="donor-cell">' +
+              '<div class="avatar-circle" style="background:' + avatarBg + ';color:' + avatarColor + ';">' + ini + '</div>' +
+              '<div class="donor-info">' +
+                '<span class="donor-name">' + d.nombre + ' ' + d.apellido + '</span>' +
+              '</div>' +
+            '</div></td>' +
+            '<td><span class="blood-badge">N/A</span></td>' +
+            '<td>—</td>' +
+            '<td class="td-bold">' + d.totalDonaciones + '</td>' +
+            '<td><span class="status-dot status-dot--apto"></span> Apto</td>' +
+            '<td><button class="menu-btn">⋮</button></td>' +
+          '</tr>';
+        }).join("");
+      } catch (e) {
+        recurrentTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#bc002d;padding:2rem;">Error al cargar donantes recurrentes</td></tr>';
+      }
+    }
+
+    // --- Init ---
     loadStock();
     setInterval(loadStock, 30000);
+
+    initYearSelect();
+    loadChart(yearSelect ? yearSelect.value : new Date().getFullYear());
+
+    yearSelect?.addEventListener("change", function () {
+      loadChart(this.value);
+    });
+
+    loadCampaigns();
+    loadRecurringDonors();
   })();
 </script>
 
@@ -400,7 +525,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     padding: 0 0.5rem;
   }
 
-  .bar {
+  :global(.bar) {
     flex: 1;
     background: #bc002d;
     border-radius: 4px 4px 0 0;
@@ -408,7 +533,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     transition: opacity 0.2s;
   }
 
-  .bar:hover {
+  :global(.bar):hover {
     opacity: 1;
   }
 
@@ -420,7 +545,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     margin-top: 0.5rem;
   }
 
-  .chart-labels span {
+  :global(.chart-labels span) {
     font-size: 0.75rem;
     color: #9ca3af;
     font-weight: 500;
@@ -446,7 +571,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     flex: 1;
   }
 
-  .campaign-item {
+  :global(.campaign-item) {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -456,7 +581,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     border: 1px solid #fde8e7;
   }
 
-  .campaign-rank {
+  :global(.campaign-rank) {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -469,33 +594,33 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     flex-shrink: 0;
   }
 
-  .campaign-rank--1 {
+  :global(.campaign-rank--1) {
     background: #bc002d;
   }
 
-  .campaign-rank--2 {
+  :global(.campaign-rank--2) {
     background: #ea580c;
   }
 
-  .campaign-rank--3 {
+  :global(.campaign-rank--3) {
     background: #d97706;
   }
 
-  .campaign-info {
+  :global(.campaign-info) {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-width: 0;
   }
 
-  .campaign-name {
+  :global(.campaign-name) {
     font-size: 0.875rem;
     font-weight: 600;
     color: #1f2937;
     line-height: 1.3;
   }
 
-  .campaign-units {
+  :global(.campaign-units) {
     font-size: 0.75rem;
     color: #6b7280;
   }
@@ -574,7 +699,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     border-bottom: 1px solid #f1d3d2;
   }
 
-  .data-table td {
+  :global(.data-table td) {
     padding: 1rem;
     font-size: 0.875rem;
     color: #374151;
@@ -582,17 +707,17 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     vertical-align: middle;
   }
 
-  .data-table tbody tr:hover {
+  :global(.data-table tbody tr):hover {
     background: #fff8f7;
   }
 
-  .donor-cell {
+  :global(.donor-cell) {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
 
-  .avatar-circle {
+  :global(.avatar-circle) {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -605,47 +730,17 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     flex-shrink: 0;
   }
 
-  .avatar-circle--red {
-    background: #fca5a5;
-    color: #991b1b;
-  }
-
-  .avatar-circle--blue {
-    background: #93c5fd;
-    color: #1e40af;
-  }
-
-  .avatar-circle--green {
-    background: #86efac;
-    color: #166534;
-  }
-
-  .avatar-circle--purple {
-    background: #c4b5fd;
-    color: #5b21b6;
-  }
-
-  .avatar-circle--orange {
-    background: #fdba74;
-    color: #9a3412;
-  }
-
-  .donor-info {
+  :global(.donor-info) {
     display: flex;
     flex-direction: column;
   }
 
-  .donor-name {
+  :global(.donor-name) {
     font-weight: 600;
     color: #1f2937;
   }
 
-  .donor-email {
-    font-size: 0.75rem;
-    color: #9ca3af;
-  }
-
-  .blood-badge {
+  :global(.blood-badge) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -655,21 +750,11 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     font-weight: 700;
   }
 
-  .blood-badge--positive {
-    background: #dcfce7;
-    color: #166534;
-  }
-
-  .blood-badge--negative {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-
-  .td-bold {
+  :global(.td-bold) {
     font-weight: 700;
   }
 
-  .status-dot {
+  :global(.status-dot) {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
@@ -677,30 +762,30 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     font-weight: 500;
   }
 
-  .status-dot::before {
+  :global(.status-dot)::before {
     content: "";
     width: 8px;
     height: 8px;
     border-radius: 50%;
   }
 
-  .status-dot--apto::before {
+  :global(.status-dot--apto)::before {
     background: #16a34a;
   }
 
-  .status-dot--apto {
+  :global(.status-dot--apto) {
     color: #16a34a;
   }
 
-  .status-dot--espera::before {
+  :global(.status-dot--espera)::before {
     background: #ea580c;
   }
 
-  .status-dot--espera {
+  :global(.status-dot--espera) {
     color: #ea580c;
   }
 
-  .menu-btn {
+  :global(.menu-btn) {
     background: none;
     border: none;
     font-size: 1.25rem;
@@ -710,7 +795,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     line-height: 1;
   }
 
-  .menu-btn:hover {
+  :global(.menu-btn):hover {
     color: #374151;
   }
 
