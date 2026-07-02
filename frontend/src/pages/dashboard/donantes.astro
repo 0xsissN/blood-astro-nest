@@ -1,5 +1,5 @@
 ---
-import DashboardLayout from '../../layouts/dashboard-layout.astro';
+import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
 interface Donor {
   id: number;
@@ -15,17 +15,113 @@ interface Donor {
   direccion: string;
 }
 
-const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
 const donors: Donor[] = [
-  { id: 1, nombre: 'Alejandro', apellido: 'Rodríguez', email: 'alejandro.rod@email.com', ci: '1.234.567-8', tipo_sangre: 'O+', ultima_donacion: '15 May 2023', activo: true, telefono: '809-555-0101', fecha_nacimiento: '1990-05-12', direccion: 'Calle 1, Santo Domingo' },
-  { id: 2, nombre: 'Lucía', apellido: 'Martínez', email: 'l.martinez@email.com', ci: '4.567.890-1', tipo_sangre: 'A-', ultima_donacion: '02 Feb 2023', activo: true, telefono: '809-555-0102', fecha_nacimiento: '1985-11-23', direccion: 'Av. 2, Santiago' },
-  { id: 3, nombre: 'Carlos', apellido: 'García', email: 'cgarcia.ph@email.com', ci: '3.421.987-5', tipo_sangre: 'B+', ultima_donacion: '12 Dic 2022', activo: false, telefono: '809-555-0103', fecha_nacimiento: '1992-07-08', direccion: 'Calle 3, La Vega' },
-  { id: 4, nombre: 'Mariana', apellido: 'Villalba', email: 'mariana.v@email.com', ci: '2.983.412-0', tipo_sangre: 'AB+', ultima_donacion: '28 Jun 2023', activo: true, telefono: '809-555-0104', fecha_nacimiento: '1994-03-17', direccion: 'Av. 4, Santo Domingo' },
-  { id: 5, nombre: 'Pedro', apellido: 'López', email: 'pedro.l@email.com', ci: '5.678.901-2', tipo_sangre: 'O-', ultima_donacion: '10 Ene 2023', activo: true, telefono: '809-555-0105', fecha_nacimiento: '1988-09-25', direccion: 'Calle 5, Puerto Plata' },
-  { id: 6, nombre: 'Ana', apellido: 'Ramírez', email: 'ana.ramirez@email.com', ci: '6.789.012-3', tipo_sangre: 'A+', ultima_donacion: '05 Mar 2023', activo: true, telefono: '809-555-0106', fecha_nacimiento: '1991-12-02', direccion: 'Calle 6, Santiago' },
-  { id: 7, nombre: 'Luis', apellido: 'Fernández', email: 'l.fernandez@email.com', ci: '7.890.123-4', tipo_sangre: 'B-', ultima_donacion: '20 Ago 2022', activo: false, telefono: '809-555-0107', fecha_nacimiento: '1983-04-15', direccion: 'Av. 7, La Romana' },
-  { id: 8, nombre: 'Sofía', apellido: 'Díaz', email: 'sofia.diaz@email.com', ci: '8.901.234-5', tipo_sangre: 'AB-', ultima_donacion: '14 Mar 2023', activo: true, telefono: '809-555-0108', fecha_nacimiento: '1996-08-30', direccion: 'Calle 8, Santo Domingo' },
+  {
+    id: 1,
+    nombre: "Alejandro",
+    apellido: "Rodríguez",
+    email: "alejandro.rod@email.com",
+    ci: "1.234.567-8",
+    tipo_sangre: "O+",
+    ultima_donacion: "15 May 2023",
+    activo: true,
+    telefono: "809-555-0101",
+    fecha_nacimiento: "1990-05-12",
+    direccion: "Calle 1, Santo Domingo",
+  },
+  {
+    id: 2,
+    nombre: "Lucía",
+    apellido: "Martínez",
+    email: "l.martinez@email.com",
+    ci: "4.567.890-1",
+    tipo_sangre: "A-",
+    ultima_donacion: "02 Feb 2023",
+    activo: true,
+    telefono: "809-555-0102",
+    fecha_nacimiento: "1985-11-23",
+    direccion: "Av. 2, Santiago",
+  },
+  {
+    id: 3,
+    nombre: "Carlos",
+    apellido: "García",
+    email: "cgarcia.ph@email.com",
+    ci: "3.421.987-5",
+    tipo_sangre: "B+",
+    ultima_donacion: "12 Dic 2022",
+    activo: false,
+    telefono: "809-555-0103",
+    fecha_nacimiento: "1992-07-08",
+    direccion: "Calle 3, La Vega",
+  },
+  {
+    id: 4,
+    nombre: "Mariana",
+    apellido: "Villalba",
+    email: "mariana.v@email.com",
+    ci: "2.983.412-0",
+    tipo_sangre: "AB+",
+    ultima_donacion: "28 Jun 2023",
+    activo: true,
+    telefono: "809-555-0104",
+    fecha_nacimiento: "1994-03-17",
+    direccion: "Av. 4, Santo Domingo",
+  },
+  {
+    id: 5,
+    nombre: "Pedro",
+    apellido: "López",
+    email: "pedro.l@email.com",
+    ci: "5.678.901-2",
+    tipo_sangre: "O-",
+    ultima_donacion: "10 Ene 2023",
+    activo: true,
+    telefono: "809-555-0105",
+    fecha_nacimiento: "1988-09-25",
+    direccion: "Calle 5, Puerto Plata",
+  },
+  {
+    id: 6,
+    nombre: "Ana",
+    apellido: "Ramírez",
+    email: "ana.ramirez@email.com",
+    ci: "6.789.012-3",
+    tipo_sangre: "A+",
+    ultima_donacion: "05 Mar 2023",
+    activo: true,
+    telefono: "809-555-0106",
+    fecha_nacimiento: "1991-12-02",
+    direccion: "Calle 6, Santiago",
+  },
+  {
+    id: 7,
+    nombre: "Luis",
+    apellido: "Fernández",
+    email: "l.fernandez@email.com",
+    ci: "7.890.123-4",
+    tipo_sangre: "B-",
+    ultima_donacion: "20 Ago 2022",
+    activo: false,
+    telefono: "809-555-0107",
+    fecha_nacimiento: "1983-04-15",
+    direccion: "Av. 7, La Romana",
+  },
+  {
+    id: 8,
+    nombre: "Sofía",
+    apellido: "Díaz",
+    email: "sofia.diaz@email.com",
+    ci: "8.901.234-5",
+    tipo_sangre: "AB-",
+    ultima_donacion: "14 Mar 2023",
+    activo: true,
+    telefono: "809-555-0108",
+    fecha_nacimiento: "1996-08-30",
+    direccion: "Calle 8, Santo Domingo",
+  },
 ];
 
 const activeCount = donors.filter((d) => d.activo).length;
@@ -33,15 +129,38 @@ const totalCount = donors.length;
 const newThisMonth = 3;
 ---
 
-<DashboardLayout title="Gestión de Donantes - Hemocentro" currentSection="donantes">
+<DashboardLayout
+  title="Gestión de Donantes - BancoVida"
+  currentSection="donantes"
+>
   <!-- Header -->
   <div class="page-header">
     <div>
       <h1 class="page-header__title">Gestión de Donantes</h1>
-      <p class="page-header__subtitle">Administre la base de datos nacional de donantes voluntarios.</p>
+      <p class="page-header__subtitle">
+        Administre la base de datos nacional de donantes voluntarios.
+      </p>
     </div>
-    <button class="btn-primary" id="open-create-modal" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <button
+      class="btn-primary"
+      id="open-create-modal"
+      style="display: inline-flex; align-items: center; gap: 0.5rem;"
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        ><line x1="12" y1="5" x2="12" y2="19"></line><line
+          x1="5"
+          y1="12"
+          x2="19"
+          y2="12"></line></svg
+      >
       Registrar Nuevo Donante
     </button>
   </div>
@@ -51,9 +170,13 @@ const newThisMonth = 3;
     <div class="filter-card">
       <span class="filter-card__label">Filtrar por Tipo Sanguíneo</span>
       <div class="filter-card__pills" id="blood-type-filters">
-        {bloodTypes.map((bt) => (
-          <button class="pill" data-blood={bt} type="button">{bt}</button>
-        ))}
+        {
+          bloodTypes.map((bt) => (
+            <button class="pill" data-blood={bt} type="button">
+              {bt}
+            </button>
+          ))
+        }
       </div>
     </div>
     <div class="stats-card">
@@ -63,14 +186,44 @@ const newThisMonth = 3;
       </div>
       <div class="stat-item stat-item--bordered">
         <span class="stat-item__label">Donantes Activos</span>
-        <span class="stat-item__value stat-item__value--primary">{activeCount}</span>
+        <span class="stat-item__value stat-item__value--primary"
+          >{activeCount}</span
+        >
       </div>
       <div class="stat-item stat-item--bordered">
         <span class="stat-item__label">Nuevos este mes</span>
-        <span class="stat-item__value stat-item__value--secondary">+{newThisMonth}</span>
+        <span class="stat-item__value stat-item__value--secondary"
+          >+{newThisMonth}</span
+        >
       </div>
       <button class="stats-card__filter-btn" aria-label="Filtros avanzados">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c403f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#5c403f"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><line x1="4" y1="21" x2="4" y2="14"></line><line
+            x1="4"
+            y1="10"
+            x2="4"
+            y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line
+            x1="12"
+            y1="8"
+            x2="12"
+            y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line
+            x1="20"
+            y1="12"
+            x2="20"
+            y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line
+            x1="9"
+            y1="8"
+            x2="15"
+            y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg
+        >
       </button>
     </div>
   </div>
@@ -89,61 +242,155 @@ const newThisMonth = 3;
         </tr>
       </thead>
       <tbody id="donor-table-body">
-        {donors.map((donor) => {
-          const initials = (donor.nombre.charAt(0) + donor.apellido.charAt(0)).toUpperCase();
-          return (
-            <tr class="donor-row" data-id={donor.id} data-blood={donor.tipo_sangre} data-activo={donor.activo}>
-              <td>
-                <div class="donor-cell">
-                  <div class="donor-avatar">{initials}</div>
-                  <div>
-                    <p class="donor-name">{donor.nombre} {donor.apellido}</p>
-                    <p class="donor-email">{donor.email}</p>
+        {
+          donors.map((donor) => {
+            const initials = (
+              donor.nombre.charAt(0) + donor.apellido.charAt(0)
+            ).toUpperCase();
+            return (
+              <tr
+                class="donor-row"
+                data-id={donor.id}
+                data-blood={donor.tipo_sangre}
+                data-activo={donor.activo}
+              >
+                <td>
+                  <div class="donor-cell">
+                    <div class="donor-avatar">{initials}</div>
+                    <div>
+                      <p class="donor-name">
+                        {donor.nombre} {donor.apellido}
+                      </p>
+                      <p class="donor-email">{donor.email}</p>
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="donor-ci">{donor.ci}</td>
-              <td>
-                <span class="blood-badge">{donor.tipo_sangre}</span>
-              </td>
-              <td class="donor-phone">{donor.telefono}</td>
-              <td>
-                <span class:list={['status-badge', donor.activo ? 'status-badge--active' : 'status-badge--inactive']}>
-                  {donor.activo ? 'Activo' : 'Inactivo'}
-                </span>
-              </td>
-              <td class="text-right">
-                <div class="action-btns">
-                  <button class="action-btn" title="Editar" data-action="edit" data-id={donor.id}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                  </button>
-                  <button class="action-btn" title="Historial" data-action="history" data-id={donor.id}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  </button>
-                  <button class="action-btn action-btn--danger" title={donor.activo ? 'Desactivar' : 'Eliminar'} data-action="delete" data-id={donor.id}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+                </td>
+                <td class="donor-ci">{donor.ci}</td>
+                <td>
+                  <span class="blood-badge">{donor.tipo_sangre}</span>
+                </td>
+                <td class="donor-phone">{donor.telefono}</td>
+                <td>
+                  <span
+                    class:list={[
+                      "status-badge",
+                      donor.activo
+                        ? "status-badge--active"
+                        : "status-badge--inactive",
+                    ]}
+                  >
+                    {donor.activo ? "Activo" : "Inactivo"}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <div class="action-btns">
+                    <button
+                      class="action-btn"
+                      title="Editar"
+                      data-action="edit"
+                      data-id={donor.id}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <>
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </>
+                      </svg>
+                    </button>
+                    <button
+                      class="action-btn"
+                      title="Historial"
+                      data-action="history"
+                      data-id={donor.id}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <>
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </>
+                      </svg>
+                    </button>
+                    <button
+                      class="action-btn action-btn--danger"
+                      title={donor.activo ? "Desactivar" : "Eliminar"}
+                      data-action="delete"
+                      data-id={donor.id}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <>
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })
+        }
       </tbody>
     </table>
     <!-- Pagination -->
     <div class="pagination">
-      <span class="pagination__info">Mostrando 1-{donors.length} de {donors.length} donantes</span>
+      <span class="pagination__info"
+        >Mostrando 1-{donors.length} de {donors.length} donantes</span
+      >
       <div class="pagination__btns">
-        <button class="pagination__btn pagination__btn--active" type="button">1</button>
+        <button class="pagination__btn pagination__btn--active" type="button"
+          >1</button
+        >
       </div>
     </div>
   </div>
 
   <!-- Empty state (hidden by default) -->
   <div class="empty-state" id="empty-state" hidden>
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e4bdbc" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#e4bdbc"
+      stroke-width="1"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      ><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle
+        cx="9"
+        cy="7"
+        r="4"></circle><line x1="23" y1="11" x2="17" y2="11"></line></svg
+    >
     <h3 class="empty-state__title">No se encontraron donantes</h3>
-    <p class="empty-state__desc">Intenta ajustar los filtros o registra un nuevo donante.</p>
+    <p class="empty-state__desc">
+      Intenta ajustar los filtros o registra un nuevo donante.
+    </p>
   </div>
 
   <!-- Modal: Create / Edit Donor -->
@@ -152,7 +399,21 @@ const newThisMonth = 3;
       <div class="modal__header">
         <h2 class="modal__title" id="modal-title">Registrar Nuevo Donante</h2>
         <button class="modal__close" id="modal-close" aria-label="Cerrar">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><line x1="18" y1="6" x2="6" y2="18"></line><line
+              x1="6"
+              y1="6"
+              x2="18"
+              y2="18"></line></svg
+          >
         </button>
       </div>
       <form class="modal__form" id="donor-form" novalidate>
@@ -160,48 +421,94 @@ const newThisMonth = 3;
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="donor-nombre">Nombre</label>
-            <input class="form-input" type="text" id="donor-nombre" placeholder="Nombre" required />
+            <input
+              class="form-input"
+              type="text"
+              id="donor-nombre"
+              placeholder="Nombre"
+              required
+            />
           </div>
           <div class="form-group">
             <label class="form-label" for="donor-apellido">Apellido</label>
-            <input class="form-input" type="text" id="donor-apellido" placeholder="Apellido" required />
+            <input
+              class="form-input"
+              type="text"
+              id="donor-apellido"
+              placeholder="Apellido"
+              required
+            />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="donor-ci">Cédula de Identidad</label>
-            <input class="form-input" type="text" id="donor-ci" placeholder="000.000.000-0" required />
+            <input
+              class="form-input"
+              type="text"
+              id="donor-ci"
+              placeholder="000.000.000-0"
+              required
+            />
           </div>
           <div class="form-group">
-            <label class="form-label" for="donor-fecha-nac">Fecha de Nacimiento</label>
-            <input class="form-input" type="date" id="donor-fecha-nac" required />
+            <label class="form-label" for="donor-fecha-nac"
+              >Fecha de Nacimiento</label
+            >
+            <input
+              class="form-input"
+              type="date"
+              id="donor-fecha-nac"
+              required
+            />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="donor-telefono">Teléfono</label>
-            <input class="form-input" type="tel" id="donor-telefono" placeholder="809-555-0000" required />
+            <input
+              class="form-input"
+              type="tel"
+              id="donor-telefono"
+              placeholder="809-555-0000"
+              required
+            />
           </div>
           <div class="form-group">
-            <label class="form-label" for="donor-tipo-sangre">Tipo Sanguíneo</label>
+            <label class="form-label" for="donor-tipo-sangre"
+              >Tipo Sanguíneo</label
+            >
             <select class="form-input" id="donor-tipo-sangre" required>
               <option value="">Seleccionar...</option>
-              {bloodTypes.map((bt) => (<option value={bt}>{bt}</option>))}
+              {bloodTypes.map((bt) => <option value={bt}>{bt}</option>)}
             </select>
           </div>
         </div>
         <div class="form-group">
           <label class="form-label" for="donor-email">Email</label>
-          <input class="form-input" type="email" id="donor-email" placeholder="correo@ejemplo.com" />
+          <input
+            class="form-input"
+            type="email"
+            id="donor-email"
+            placeholder="correo@ejemplo.com"
+          />
         </div>
         <div class="form-group">
           <label class="form-label" for="donor-direccion">Dirección</label>
-          <textarea class="form-input form-textarea" id="donor-direccion" placeholder="Dirección completa..." rows="3"></textarea>
+          <textarea
+            class="form-input form-textarea"
+            id="donor-direccion"
+            placeholder="Dirección completa..."
+            rows="3"></textarea>
         </div>
         <div class="modal__error hidden" id="form-error"></div>
         <div class="modal__actions">
-          <button class="btn-cancel" type="button" id="modal-cancel">Cancelar</button>
-          <button class="btn-primary" type="submit" id="modal-submit">Guardar Donante</button>
+          <button class="btn-cancel" type="button" id="modal-cancel"
+            >Cancelar</button
+          >
+          <button class="btn-primary" type="submit" id="modal-submit"
+            >Guardar Donante</button
+          >
         </div>
       </form>
     </div>
@@ -212,57 +519,194 @@ const newThisMonth = 3;
     <div class="modal modal--sm">
       <div class="modal__header">
         <h2 class="modal__title">Confirmar acción</h2>
-        <button class="modal__close" id="delete-modal-close" aria-label="Cerrar">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button
+          class="modal__close"
+          id="delete-modal-close"
+          aria-label="Cerrar"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><line x1="18" y1="6" x2="6" y2="18"></line><line
+              x1="6"
+              y1="6"
+              x2="18"
+              y2="18"></line></svg
+          >
         </button>
       </div>
       <div class="delete-content">
         <div class="delete-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#bc002d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#bc002d"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><circle cx="12" cy="12" r="10"></circle><line
+              x1="12"
+              y1="8"
+              x2="12"
+              y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"
+            ></line></svg
+          >
         </div>
-        <p class="delete-text" id="delete-message">¿Estás seguro de que deseas desactivar este donante?</p>
-        <p class="delete-note" id="delete-note">Este donante posee donaciones registradas, solo podrá desactivarse.</p>
+        <p class="delete-text" id="delete-message">
+          ¿Estás seguro de que deseas desactivar este donante?
+        </p>
+        <p class="delete-note" id="delete-note">
+          Este donante posee donaciones registradas, solo podrá desactivarse.
+        </p>
       </div>
       <div class="modal__actions">
-        <button class="btn-cancel" type="button" id="delete-cancel">Cancelar</button>
-        <button class="btn-danger" type="button" id="delete-confirm">Confirmar</button>
+        <button class="btn-cancel" type="button" id="delete-cancel"
+          >Cancelar</button
+        >
+        <button class="btn-danger" type="button" id="delete-confirm"
+          >Confirmar</button
+        >
       </div>
     </div>
   </div>
 </DashboardLayout>
 
 <script>
-  (function() {
+  (function () {
     const donors = [
-      { id: 1, nombre: 'Alejandro', apellido: 'Rodríguez', email: 'alejandro.rod@email.com', ci: '1.234.567-8', tipo_sangre: 'O+', ultima_donacion: '15 May 2023', activo: true, telefono: '809-555-0101', fecha_nacimiento: '1990-05-12', direccion: 'Calle 1, Santo Domingo' },
-      { id: 2, nombre: 'Lucía', apellido: 'Martínez', email: 'l.martinez@email.com', ci: '4.567.890-1', tipo_sangre: 'A-', ultima_donacion: '02 Feb 2023', activo: true, telefono: '809-555-0102', fecha_nacimiento: '1985-11-23', direccion: 'Av. 2, Santiago' },
-      { id: 3, nombre: 'Carlos', apellido: 'García', email: 'cgarcia.ph@email.com', ci: '3.421.987-5', tipo_sangre: 'B+', ultima_donacion: '12 Dic 2022', activo: false, telefono: '809-555-0103', fecha_nacimiento: '1992-07-08', direccion: 'Calle 3, La Vega' },
-      { id: 4, nombre: 'Mariana', apellido: 'Villalba', email: 'mariana.v@email.com', ci: '2.983.412-0', tipo_sangre: 'AB+', ultima_donacion: '28 Jun 2023', activo: true, telefono: '809-555-0104', fecha_nacimiento: '1994-03-17', direccion: 'Av. 4, Santo Domingo' },
-      { id: 5, nombre: 'Pedro', apellido: 'López', email: 'pedro.l@email.com', ci: '5.678.901-2', tipo_sangre: 'O-', ultima_donacion: '10 Ene 2023', activo: true, telefono: '809-555-0105', fecha_nacimiento: '1988-09-25', direccion: 'Calle 5, Puerto Plata' },
-      { id: 6, nombre: 'Ana', apellido: 'Ramírez', email: 'ana.ramirez@email.com', ci: '6.789.012-3', tipo_sangre: 'A+', ultima_donacion: '05 Mar 2023', activo: true, telefono: '809-555-0106', fecha_nacimiento: '1991-12-02', direccion: 'Calle 6, Santiago' },
-      { id: 7, nombre: 'Luis', apellido: 'Fernández', email: 'l.fernandez@email.com', ci: '7.890.123-4', tipo_sangre: 'B-', ultima_donacion: '20 Ago 2022', activo: false, telefono: '809-555-0107', fecha_nacimiento: '1983-04-15', direccion: 'Av. 7, La Romana' },
-      { id: 8, nombre: 'Sofía', apellido: 'Díaz', email: 'sofia.diaz@email.com', ci: '8.901.234-5', tipo_sangre: 'AB-', ultima_donacion: '14 Mar 2023', activo: true, telefono: '809-555-0108', fecha_nacimiento: '1996-08-30', direccion: 'Calle 8, Santo Domingo' },
+      {
+        id: 1,
+        nombre: "Alejandro",
+        apellido: "Rodríguez",
+        email: "alejandro.rod@email.com",
+        ci: "1.234.567-8",
+        tipo_sangre: "O+",
+        ultima_donacion: "15 May 2023",
+        activo: true,
+        telefono: "809-555-0101",
+        fecha_nacimiento: "1990-05-12",
+        direccion: "Calle 1, Santo Domingo",
+      },
+      {
+        id: 2,
+        nombre: "Lucía",
+        apellido: "Martínez",
+        email: "l.martinez@email.com",
+        ci: "4.567.890-1",
+        tipo_sangre: "A-",
+        ultima_donacion: "02 Feb 2023",
+        activo: true,
+        telefono: "809-555-0102",
+        fecha_nacimiento: "1985-11-23",
+        direccion: "Av. 2, Santiago",
+      },
+      {
+        id: 3,
+        nombre: "Carlos",
+        apellido: "García",
+        email: "cgarcia.ph@email.com",
+        ci: "3.421.987-5",
+        tipo_sangre: "B+",
+        ultima_donacion: "12 Dic 2022",
+        activo: false,
+        telefono: "809-555-0103",
+        fecha_nacimiento: "1992-07-08",
+        direccion: "Calle 3, La Vega",
+      },
+      {
+        id: 4,
+        nombre: "Mariana",
+        apellido: "Villalba",
+        email: "mariana.v@email.com",
+        ci: "2.983.412-0",
+        tipo_sangre: "AB+",
+        ultima_donacion: "28 Jun 2023",
+        activo: true,
+        telefono: "809-555-0104",
+        fecha_nacimiento: "1994-03-17",
+        direccion: "Av. 4, Santo Domingo",
+      },
+      {
+        id: 5,
+        nombre: "Pedro",
+        apellido: "López",
+        email: "pedro.l@email.com",
+        ci: "5.678.901-2",
+        tipo_sangre: "O-",
+        ultima_donacion: "10 Ene 2023",
+        activo: true,
+        telefono: "809-555-0105",
+        fecha_nacimiento: "1988-09-25",
+        direccion: "Calle 5, Puerto Plata",
+      },
+      {
+        id: 6,
+        nombre: "Ana",
+        apellido: "Ramírez",
+        email: "ana.ramirez@email.com",
+        ci: "6.789.012-3",
+        tipo_sangre: "A+",
+        ultima_donacion: "05 Mar 2023",
+        activo: true,
+        telefono: "809-555-0106",
+        fecha_nacimiento: "1991-12-02",
+        direccion: "Calle 6, Santiago",
+      },
+      {
+        id: 7,
+        nombre: "Luis",
+        apellido: "Fernández",
+        email: "l.fernandez@email.com",
+        ci: "7.890.123-4",
+        tipo_sangre: "B-",
+        ultima_donacion: "20 Ago 2022",
+        activo: false,
+        telefono: "809-555-0107",
+        fecha_nacimiento: "1983-04-15",
+        direccion: "Av. 7, La Romana",
+      },
+      {
+        id: 8,
+        nombre: "Sofía",
+        apellido: "Díaz",
+        email: "sofia.diaz@email.com",
+        ci: "8.901.234-5",
+        tipo_sangre: "AB-",
+        ultima_donacion: "14 Mar 2023",
+        activo: true,
+        telefono: "809-555-0108",
+        fecha_nacimiento: "1996-08-30",
+        direccion: "Calle 8, Santo Domingo",
+      },
     ];
 
     let nextId = 9;
     let editingId = null;
     let deletingId = null;
 
-    const tbody = document.getElementById('donor-table-body');
-    const emptyState = document.getElementById('empty-state');
-    const tableWrap = document.querySelector('.table-wrap');
+    const tbody = document.getElementById("donor-table-body");
+    const emptyState = document.getElementById("empty-state");
+    const tableWrap = document.querySelector(".table-wrap");
 
-    const modal = document.getElementById('donor-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const donorForm = document.getElementById('donor-form');
-    const formError = document.getElementById('form-error');
-    const donorIdInput = document.getElementById('donor-id');
+    const modal = document.getElementById("donor-modal");
+    const modalTitle = document.getElementById("modal-title");
+    const donorForm = document.getElementById("donor-form");
+    const formError = document.getElementById("form-error");
+    const donorIdInput = document.getElementById("donor-id");
 
-    const deleteModal = document.getElementById('delete-modal');
-    const deleteMessage = document.getElementById('delete-message');
-    const deleteNote = document.getElementById('delete-note');
+    const deleteModal = document.getElementById("delete-modal");
+    const deleteMessage = document.getElementById("delete-message");
+    const deleteNote = document.getElementById("delete-note");
 
-    const searchInput = document.getElementById('global-search');
+    const searchInput = document.getElementById("global-search");
 
     let activeBloodFilter = null;
 
@@ -272,19 +716,22 @@ const newThisMonth = 3;
 
     function renderTable(list) {
       if (list.length === 0) {
-        tableWrap.style.display = 'none';
+        tableWrap.style.display = "none";
         emptyState.hidden = false;
         return;
       }
-      tableWrap.style.display = '';
+      tableWrap.style.display = "";
       emptyState.hidden = true;
 
-      tbody.innerHTML = list.map((d) => {
-        const initials = getInitials(d.nombre, d.apellido);
-        const statusClass = d.activo ? 'status-badge--active' : 'status-badge--inactive';
-        const statusText = d.activo ? 'Activo' : 'Inactivo';
-        const deleteLabel = d.activo ? 'Desactivar' : 'Eliminar';
-        return `
+      tbody.innerHTML = list
+        .map((d) => {
+          const initials = getInitials(d.nombre, d.apellido);
+          const statusClass = d.activo
+            ? "status-badge--active"
+            : "status-badge--inactive";
+          const statusText = d.activo ? "Activo" : "Inactivo";
+          const deleteLabel = d.activo ? "Desactivar" : "Eliminar";
+          return `
           <tr class="donor-row" data-id="${d.id}" data-blood="${d.tipo_sangre}" data-activo="${d.activo}">
             <td>
               <div class="donor-cell">
@@ -313,7 +760,8 @@ const newThisMonth = 3;
               </div>
             </td>
           </tr>`;
-      }).join('');
+        })
+        .join("");
 
       attachRowEvents();
     }
@@ -327,11 +775,12 @@ const newThisMonth = 3;
 
       const query = searchInput.value.trim().toLowerCase();
       if (query) {
-        filtered = filtered.filter((d) =>
-          d.nombre.toLowerCase().includes(query) ||
-          d.apellido.toLowerCase().includes(query) ||
-          d.ci.includes(query) ||
-          d.tipo_sangre.toLowerCase().includes(query)
+        filtered = filtered.filter(
+          (d) =>
+            d.nombre.toLowerCase().includes(query) ||
+            d.apellido.toLowerCase().includes(query) ||
+            d.ci.includes(query) ||
+            d.tipo_sangre.toLowerCase().includes(query),
         );
       }
 
@@ -340,7 +789,7 @@ const newThisMonth = 3;
 
     function attachRowEvents() {
       document.querySelectorAll('[data-action="edit"]').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener("click", (e) => {
           e.stopPropagation();
           const id = parseInt(btn.dataset.id);
           openEditModal(id);
@@ -348,7 +797,7 @@ const newThisMonth = 3;
       });
 
       document.querySelectorAll('[data-action="delete"]').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener("click", (e) => {
           e.stopPropagation();
           const id = parseInt(btn.dataset.id);
           openDeleteModal(id);
@@ -356,9 +805,9 @@ const newThisMonth = 3;
       });
 
       document.querySelectorAll('[data-action="history"]').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          alert('Historial de donaciones - Funcionalidad próxima.');
+          alert("Historial de donaciones - Funcionalidad próxima.");
         });
       });
     }
@@ -367,29 +816,29 @@ const newThisMonth = 3;
       const donor = donors.find((d) => d.id === id);
       if (!donor) return;
       editingId = id;
-      modalTitle.textContent = 'Editar Donante';
-      document.getElementById('modal-submit').textContent = 'Guardar Cambios';
+      modalTitle.textContent = "Editar Donante";
+      document.getElementById("modal-submit").textContent = "Guardar Cambios";
       donorIdInput.value = id;
-      document.getElementById('donor-nombre').value = donor.nombre;
-      document.getElementById('donor-apellido').value = donor.apellido;
-      document.getElementById('donor-ci').value = donor.ci;
-      document.getElementById('donor-fecha-nac').value = donor.fecha_nacimiento;
-      document.getElementById('donor-telefono').value = donor.telefono;
-      document.getElementById('donor-tipo-sangre').value = donor.tipo_sangre;
-      document.getElementById('donor-email').value = donor.email;
-      document.getElementById('donor-direccion').value = donor.direccion;
-      formError.classList.add('hidden');
-      modal.classList.remove('hidden');
+      document.getElementById("donor-nombre").value = donor.nombre;
+      document.getElementById("donor-apellido").value = donor.apellido;
+      document.getElementById("donor-ci").value = donor.ci;
+      document.getElementById("donor-fecha-nac").value = donor.fecha_nacimiento;
+      document.getElementById("donor-telefono").value = donor.telefono;
+      document.getElementById("donor-tipo-sangre").value = donor.tipo_sangre;
+      document.getElementById("donor-email").value = donor.email;
+      document.getElementById("donor-direccion").value = donor.direccion;
+      formError.classList.add("hidden");
+      modal.classList.remove("hidden");
     }
 
     function openCreateModal() {
       editingId = null;
-      modalTitle.textContent = 'Registrar Nuevo Donante';
-      document.getElementById('modal-submit').textContent = 'Guardar Donante';
+      modalTitle.textContent = "Registrar Nuevo Donante";
+      document.getElementById("modal-submit").textContent = "Guardar Donante";
       donorForm.reset();
-      donorIdInput.value = '';
-      formError.classList.add('hidden');
-      modal.classList.remove('hidden');
+      donorIdInput.value = "";
+      formError.classList.add("hidden");
+      modal.classList.remove("hidden");
     }
 
     function openDeleteModal(id) {
@@ -397,88 +846,118 @@ const newThisMonth = 3;
       if (!donor) return;
       deletingId = id;
       deleteMessage.textContent = donor.activo
-        ? '¿Estás seguro de que deseas desactivar este donante?'
-        : '¿Estás seguro de que deseas eliminar este donante?';
-      deleteNote.style.display = donor.activo ? '' : 'none';
-      deleteModal.classList.remove('hidden');
+        ? "¿Estás seguro de que deseas desactivar este donante?"
+        : "¿Estás seguro de que deseas eliminar este donante?";
+      deleteNote.style.display = donor.activo ? "" : "none";
+      deleteModal.classList.remove("hidden");
     }
 
     // Blood type filter pills
-    document.querySelectorAll('.pill').forEach((pill) => {
-      pill.addEventListener('click', () => {
+    document.querySelectorAll(".pill").forEach((pill) => {
+      pill.addEventListener("click", () => {
         const bt = pill.dataset.blood;
         if (activeBloodFilter === bt) {
           activeBloodFilter = null;
-          pill.classList.remove('pill--active');
+          pill.classList.remove("pill--active");
         } else {
-          document.querySelectorAll('.pill').forEach((p) => p.classList.remove('pill--active'));
+          document
+            .querySelectorAll(".pill")
+            .forEach((p) => p.classList.remove("pill--active"));
           activeBloodFilter = bt;
-          pill.classList.add('pill--active');
+          pill.classList.add("pill--active");
         }
         filterDonors();
       });
     });
 
     // Search
-    searchInput.addEventListener('input', filterDonors);
+    searchInput.addEventListener("input", filterDonors);
 
     // Open create modal
-    document.getElementById('open-create-modal').addEventListener('click', openCreateModal);
+    document
+      .getElementById("open-create-modal")
+      .addEventListener("click", openCreateModal);
 
     // Modal close
     function closeModals() {
-      modal.classList.add('hidden');
-      deleteModal.classList.add('hidden');
+      modal.classList.add("hidden");
+      deleteModal.classList.add("hidden");
     }
 
-    document.getElementById('modal-close').addEventListener('click', closeModals);
-    document.getElementById('modal-cancel').addEventListener('click', closeModals);
-    document.getElementById('delete-modal-close').addEventListener('click', closeModals);
-    document.getElementById('delete-cancel').addEventListener('click', closeModals);
+    document
+      .getElementById("modal-close")
+      .addEventListener("click", closeModals);
+    document
+      .getElementById("modal-cancel")
+      .addEventListener("click", closeModals);
+    document
+      .getElementById("delete-modal-close")
+      .addEventListener("click", closeModals);
+    document
+      .getElementById("delete-cancel")
+      .addEventListener("click", closeModals);
 
-    modal.addEventListener('click', (e) => {
+    modal.addEventListener("click", (e) => {
       if (e.target === modal) closeModals();
     });
-    deleteModal.addEventListener('click', (e) => {
+    deleteModal.addEventListener("click", (e) => {
       if (e.target === deleteModal) closeModals();
     });
 
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModals();
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModals();
     });
 
     // Form submit (create/update)
-    donorForm.addEventListener('submit', (e) => {
+    donorForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      formError.classList.add('hidden');
+      formError.classList.add("hidden");
 
-      const nombre = document.getElementById('donor-nombre').value.trim();
-      const apellido = document.getElementById('donor-apellido').value.trim();
-      const ci = document.getElementById('donor-ci').value.trim();
-      const fecha_nacimiento = document.getElementById('donor-fecha-nac').value;
-      const telefono = document.getElementById('donor-telefono').value.trim();
-      const tipo_sangre = document.getElementById('donor-tipo-sangre').value;
+      const nombre = document.getElementById("donor-nombre").value.trim();
+      const apellido = document.getElementById("donor-apellido").value.trim();
+      const ci = document.getElementById("donor-ci").value.trim();
+      const fecha_nacimiento = document.getElementById("donor-fecha-nac").value;
+      const telefono = document.getElementById("donor-telefono").value.trim();
+      const tipo_sangre = document.getElementById("donor-tipo-sangre").value;
 
-      if (!nombre || !apellido || !ci || !fecha_nacimiento || !telefono || !tipo_sangre) {
-        formError.textContent = 'Todos los campos obligatorios deben ser completados.';
-        formError.classList.remove('hidden');
+      if (
+        !nombre ||
+        !apellido ||
+        !ci ||
+        !fecha_nacimiento ||
+        !telefono ||
+        !tipo_sangre
+      ) {
+        formError.textContent =
+          "Todos los campos obligatorios deben ser completados.";
+        formError.classList.remove("hidden");
         return;
       }
 
       const ciExists = donors.some((d) => d.ci === ci && d.id !== editingId);
       if (ciExists) {
-        formError.textContent = 'El número de cédula ya está registrado.';
-        formError.classList.remove('hidden');
+        formError.textContent = "El número de cédula ya está registrado.";
+        formError.classList.remove("hidden");
         return;
       }
 
-      const email = document.getElementById('donor-email').value.trim();
-      const direccion = document.getElementById('donor-direccion').value.trim();
+      const email = document.getElementById("donor-email").value.trim();
+      const direccion = document.getElementById("donor-direccion").value.trim();
 
       if (editingId) {
         const idx = donors.findIndex((d) => d.id === editingId);
         if (idx !== -1) {
-          donors[idx] = { ...donors[idx], nombre, apellido, ci, fecha_nacimiento, telefono, tipo_sangre, email, direccion };
+          donors[idx] = {
+            ...donors[idx],
+            nombre,
+            apellido,
+            ci,
+            fecha_nacimiento,
+            telefono,
+            tipo_sangre,
+            email,
+            direccion,
+          };
         }
       } else {
         donors.push({
@@ -488,7 +967,7 @@ const newThisMonth = 3;
           email,
           ci,
           tipo_sangre,
-          ultima_donacion: 'Nunca',
+          ultima_donacion: "Nunca",
           activo: true,
           telefono,
           fecha_nacimiento,
@@ -501,7 +980,7 @@ const newThisMonth = 3;
     });
 
     // Delete confirm
-    document.getElementById('delete-confirm').addEventListener('click', () => {
+    document.getElementById("delete-confirm").addEventListener("click", () => {
       const donor = donors.find((d) => d.id === deletingId);
       if (!donor) return;
 
@@ -592,12 +1071,15 @@ const newThisMonth = 3;
     border: 1px solid #e4bdbc;
     border-radius: 9999px;
     background: none;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.75rem;
     font-weight: 700;
     color: #5c403f;
     cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
   }
 
   .pill:hover {
@@ -751,7 +1233,7 @@ const newThisMonth = 3;
 
   .donor-ci,
   .donor-phone {
-    font-family: 'Inter', monospace;
+    font-family: "Inter", monospace;
     font-size: 0.875rem;
   }
 
@@ -814,7 +1296,9 @@ const newThisMonth = 3;
     border-radius: 0.5rem;
     cursor: pointer;
     color: #5c403f;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
 
   .action-btn:hover {
@@ -852,7 +1336,7 @@ const newThisMonth = 3;
     border: 1px solid #e4bdbc;
     border-radius: 0.5rem;
     background: none;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.8125rem;
     color: #5c403f;
     cursor: pointer;
@@ -990,14 +1474,16 @@ const newThisMonth = 3;
 
   .form-input {
     padding: 0.625rem 0.875rem;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.875rem;
     color: #281717;
     background-color: #fff8f7;
     border: 1px solid #e4bdbc;
     border-radius: 0.5rem;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
     width: 100%;
   }
 
@@ -1037,7 +1523,7 @@ const newThisMonth = 3;
     border: 1px solid #e4bdbc;
     border-radius: 0.5rem;
     background: none;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.8125rem;
     font-weight: 600;
     color: #5c403f;
@@ -1055,7 +1541,7 @@ const newThisMonth = 3;
     border-radius: 0.5rem;
     background-color: #bc002d;
     color: #ffffff;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 0.8125rem;
     font-weight: 600;
     cursor: pointer;

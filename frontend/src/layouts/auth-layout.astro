@@ -1,22 +1,27 @@
 ---
+import logo from "../images/logo.webp";
+
 interface Props {
   title?: string;
 }
 
-const { title = 'Iniciar Sesión - Hemocentro' } = Astro.props;
+const { title = "Iniciar Sesión - BancoVida" } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href={logo.src} />
+    <link rel="icon" href={logo.src} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>{title}</title>
   </head>
   <body class="auth-body">
@@ -24,11 +29,8 @@ const { title = 'Iniciar Sesión - Hemocentro' } = Astro.props;
       <div class="auth-card">
         <div class="auth-header">
           <div class="auth-logo">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="20" cy="20" r="20" fill="#bc002d" />
-              <path d="M20 8C15.58 8 12 11.58 12 16C12 22 20 32 20 32C20 32 28 22 28 16C28 11.58 24.42 8 20 8Z" fill="white" />
-            </svg>
-            <span class="auth-brand">Hemocentro</span>
+            <img src={logo.src} alt="BancoVida Logo" class="auth-logo-img" />
+            <span class="auth-brand">BancoVida</span>
           </div>
           <p class="auth-subtitle">Salvando vidas a través de la precisión</p>
         </div>
@@ -48,7 +50,7 @@ const { title = 'Iniciar Sesión - Hemocentro' } = Astro.props;
   }
 
   body.auth-body {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     background-color: #fff8f7;
     min-height: 100vh;
     display: flex;
@@ -68,7 +70,9 @@ const { title = 'Iniciar Sesión - Hemocentro' } = Astro.props;
     background-color: #ffffff;
     border-radius: 12px;
     padding: 2.5rem 2rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.06),
+      0 1px 2px rgba(0, 0, 0, 0.04);
   }
 
   .auth-header {
@@ -82,6 +86,13 @@ const { title = 'Iniciar Sesión - Hemocentro' } = Astro.props;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 0.5rem;
+  }
+
+  .auth-logo-img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    border-radius: 12px;
   }
 
   .auth-brand {

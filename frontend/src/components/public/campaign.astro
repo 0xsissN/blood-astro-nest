@@ -7,9 +7,30 @@ try {
   campaigns = await apiGet<CampaignResponseDto[]>("/campaigns");
 } catch {
   campaigns = [
-    { "id": 1, "nombre": "Campaña Universidad Central", "lugar": "Plaza de las Américas, Sede Norte", "fechaInicio": "2025-10-25", "fechaFin": "2025-10-27", "activa": true },
-    { "id": 2, "nombre": "Jornada Empresarial Tech Hub", "lugar": "Auditorio Principal Edificio Quantum", "fechaInicio": "2025-10-28", "fechaFin": "2025-10-30", "activa": true },
-    { "id": 3, "nombre": "Feria de Salud Parque Metropolitano", "lugar": "Zona de Eventos B, Puerta 4", "fechaInicio": "2025-11-01", "fechaFin": "2025-11-05", "activa": true },
+    {
+      id: 1,
+      nombre: "Campaña Universidad Central",
+      lugar: "Plaza de las Américas, Sede Norte",
+      fechaInicio: "2025-10-25",
+      fechaFin: "2025-10-27",
+      activa: true,
+    },
+    {
+      id: 2,
+      nombre: "Jornada Empresarial Tech Hub",
+      lugar: "Auditorio Principal Edificio Quantum",
+      fechaInicio: "2025-10-28",
+      fechaFin: "2025-10-30",
+      activa: true,
+    },
+    {
+      id: 3,
+      nombre: "Feria de Salud Parque Metropolitano",
+      lugar: "Zona de Eventos B, Puerta 4",
+      fechaInicio: "2025-11-01",
+      fechaFin: "2025-11-05",
+      activa: true,
+    },
   ] as CampaignResponseDto[];
 }
 ---
@@ -19,7 +40,7 @@ try {
     <div class="campaigns__header">
       <div>
         <h2 class="section-title">Próximas Campañas</h2>
-        <p class="section-subtitle">Llevamos el Hemocentro a tu comunidad.</p>
+        <p class="section-subtitle">Llevamos el BancoVida a tu comunidad.</p>
       </div>
     </div>
     <div class="campaigns__scroll hide-scrollbar">

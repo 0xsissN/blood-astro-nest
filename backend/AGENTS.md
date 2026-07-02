@@ -85,36 +85,6 @@ export class CreateDonorDto {
 }
 ```
 
----
-
-## 🔐 Authentication & Authorization
-
-- Use JWT strategy (Passport.js)
-- Store tokens in HTTP-only cookies
-- Implement role-based access control (RBAC)
-
-### Roles:
-
-- ADMIN → full system access
-- MEDICO → manage donors and donations
-- LABORATORISTA → manage tests and inventory
-- RECEPCIONISTA → register donors
-
-### Rules:
-
-- Protect all routes using Guards
-- Use `@Roles()` decorator for access control
-
-Example:
-
-```ts id="auth001"
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ADMIN')
-@Get('admin')
-```
-
----
-
 ## 🗄️ Database Rules (PostgreSQL)
 
 - Use snake_case for tables and columns
