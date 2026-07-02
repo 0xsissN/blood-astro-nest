@@ -11,7 +11,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
         <h1 class="page-title">Gestión de Reportes</h1>
         <p class="page-subtitle">Analice la eficiencia del sistema, supervise los niveles críticos de stock y documente cada flujo de donación para el cumplimiento institucional.</p>
       </div>
-      <button class="btn-history">
+      <button class="btn-history" id="btn-view-all-reports">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
@@ -37,7 +37,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
                 <p class="card-subtitle">Filtros dinámicos de captación (HU-20)</p>
               </div>
             </div>
-            <button class="btn-generate-pdf">
+            <button class="btn-generate-pdf" id="btn-generate-donation-pdf">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
@@ -48,43 +48,38 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
           <div class="filters-form">
             <div class="form-group">
-              <label class="form-label">Rango de Fecha</label>
-              <input type="date" class="form-input" />
+              <label class="form-label">Fecha Inicio</label>
+              <input type="date" class="form-input" id="filter-date-start" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha Fin</label>
+              <input type="date" class="form-input" id="filter-date-end" />
             </div>
             <div class="form-group">
               <label class="form-label">Tipo de Sangre</label>
-              <select class="form-select">
-                <option>Todos los tipos</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>AB+</option>
-                <option>AB-</option>
-                <option>O+</option>
-                <option>O-</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Sede / Centro</label>
-              <select class="form-select">
-                <option>Todas las sedes</option>
-                <option>Sede Central</option>
-                <option>Sede Norte</option>
-                <option>Sede Sur</option>
+              <select class="form-select" id="filter-blood-type">
+                <option value="">Todos los tipos</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
               </select>
             </div>
           </div>
 
-          <div class="chart-preview">
-            <div class="chart-placeholder-content">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4a0a0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <div class="donations-table-container" id="donations-container">
+            <div class="loading-state">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4a0a0" stroke-width="1.5">
                 <line x1="18" y1="20" x2="18" y2="10"></line>
                 <line x1="12" y1="20" x2="12" y2="4"></line>
                 <line x1="6" y1="20" x2="6" y2="14"></line>
               </svg>
-              <p class="chart-text">Previsualización del gráfico de tendencias de donación</p>
-              <p class="chart-hint">Seleccione filtros para cargar la analítica visual en tiempo real</p>
+              <p class="chart-text">Seleccione filtros para cargar el historial de donaciones</p>
+              <p class="chart-hint">Las donaciones se mostrarán en la tabla a continuación</p>
             </div>
           </div>
         </div>
@@ -98,7 +93,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
               </svg>
               <h2 class="panel-title">Reportes Generados Recientemente</h2>
             </div>
-            <span class="recent-count">Mostrando últimos 5</span>
+            <span class="recent-count" id="reports-count">Mostrando últimos 5</span>
           </div>
 
           <div class="table-container">
@@ -108,71 +103,15 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
                   <th>NOMBRE DEL REPORTE</th>
                   <th>TIPO</th>
                   <th>FECHA GENERACIÓN</th>
-                  <th>USUARIO</th>
                   <th>ACCIONES</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="reports-tbody">
                 <tr>
-                  <td class="td-bold">Consolidado_Mensual_Julio_2024.pdf</td>
-                  <td><span class="type-tag type-tag--donaciones">DONACIONES</span></td>
-                  <td>01/08/2024 - 08:30 AM</td>
-                  <td>
-                    <div class="user-cell">
-                      <div class="mini-avatar">AH</div>
-                      <span>Admin Hemocentro</span>
-                    </div>
-                  </td>
-                  <td><button class="download-btn" title="Descargar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                  </button></td>
-                </tr>
-                <tr>
-                  <td class="td-bold">Stock_Crítico_SedeCentral_Q3.pdf</td>
-                  <td><span class="type-tag type-tag--inventario">INVENTARIO</span></td>
-                  <td>30/07/2024 - 04:45 PM</td>
-                  <td>
-                    <div class="user-cell">
-                      <div class="mini-avatar mini-avatar--green">LM</div>
-                      <span>L. Martínez</span>
-                    </div>
-                  </td>
-                  <td><button class="download-btn" title="Descargar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                  </button></td>
-                </tr>
-                <tr>
-                  <td class="td-bold">Eficiencia_Captacion_Movil_B.pdf</td>
-                  <td><span class="type-tag type-tag--campana">CAMPAÑA</span></td>
-                  <td>28/07/2024 - 11:20 AM</td>
-                  <td>
-                    <div class="user-cell">
-                      <div class="mini-avatar">AH</div>
-                      <span>Admin Hemocentro</span>
-                    </div>
-                  </td>
-                  <td><button class="download-btn" title="Descargar">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                  </button></td>
+                  <td colspan="4" class="loading-cell">Cargando reportes...</td>
                 </tr>
               </tbody>
             </table>
-          </div>
-
-          <div class="load-more-bar">
-            <button class="load-more-btn">Cargar registros anteriores...</button>
           </div>
         </div>
       </div>
@@ -193,44 +132,14 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
           <div class="alert-filter-row">
             <span class="filter-label">Filtros de Alerta</span>
-            <span class="alert-badge">ALERTA CADUCIDAD ACTIVA</span>
+            <span class="alert-badge" id="alert-badge">CARGANDO...</span>
           </div>
 
-          <select class="form-select full-width">
-            <option>Todos los Grupos Críticos</option>
-            <option>O Negativo</option>
-            <option>A Negativo</option>
-            <option>B Negativo</option>
-          </select>
-
-          <div class="critical-list">
-            <div class="critical-item critical-item--warning">
-              <div class="critical-badge">O-</div>
-              <div class="critical-info">
-                <span class="critical-name">O Negativo</span>
-                <span class="critical-detail critical-detail--warning">▲ 12 unidades por vencer</span>
-              </div>
-              <span class="critical-units">45u</span>
-            </div>
-            <div class="critical-item critical-item--ok">
-              <div class="critical-badge">A+</div>
-              <div class="critical-info">
-                <span class="critical-name">A Positivo</span>
-                <span class="critical-detail critical-detail--ok">Estado: Óptimo</span>
-              </div>
-              <span class="critical-units">128u</span>
-            </div>
-            <div class="critical-item critical-item--danger">
-              <div class="critical-badge critical-badge--danger">B-</div>
-              <div class="critical-info">
-                <span class="critical-name">B Negativo</span>
-                <span class="critical-detail critical-detail--danger">▲ Stock mínimo</span>
-              </div>
-              <span class="critical-units critical-units--danger">08u</span>
-            </div>
+          <div class="critical-list" id="stock-list">
+            <div class="loading-state-small">Cargando stock...</div>
           </div>
 
-          <button class="btn-export">
+          <button class="btn-export" id="btn-export-inventory">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
@@ -242,15 +151,381 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
       </div>
     </div>
 
-    <button class="fab-btn" title="Nuevo reporte">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-    </button>
-
   </div>
 </DashboardLayout>
+
+<script>
+  const API_BASE = "http://localhost:3000";
+
+  function getToken() {
+    return localStorage.getItem('token');
+  }
+
+  function getAuthHeaders() {
+    const token = getToken();
+    return {
+      "Content-Type": "application/json",
+      ...(token ? { "Authorization": `Bearer ${token}` } : {}),
+    };
+  }
+
+  interface BloodStock {
+    id: number;
+    tipoSangre: { id: number; grupo: string; factorRh: string; };
+    cantidadUnidades: number;
+    estadoStock: string | null;
+  }
+
+  interface Donation {
+    id: number;
+    donante: { id: number; nombre: string; apellido: string; ci: string; };
+    tipoSangre: { id: number; grupo: string; factorRh: string; };
+    fechaDonacion: string;
+    cantidadMl: number;
+    estado: string;
+  }
+
+  interface Report {
+    id: number;
+    periodo: string;
+    totalDonaciones: number;
+    fechaGeneracion: string;
+  }
+
+  // ==================== STOCK DE SANGRE ====================
+  async function fetchBloodStock(): Promise<BloodStock[]> {
+    try {
+      const res = await fetch(`${API_BASE}/blood-stock`, {
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Error fetching stock");
+      return await res.json();
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  }
+
+  function renderBloodStock(stocks: BloodStock[]) {
+    const container = document.getElementById('stock-list');
+    const badge = document.getElementById('alert-badge');
+    if (!container) return;
+
+    const criticalCount = stocks.filter(s => s.estadoStock === 'critico' || s.estadoStock === 'bajo').length;
+
+    if (badge) {
+      badge.textContent = criticalCount > 0 ? `ALERTA: ${criticalCount} CRÍTICOS` : 'TODO NORMAL';
+      badge.className = `alert-badge ${criticalCount > 0 ? 'alert-badge--danger' : 'alert-badge--ok'}`;
+    }
+
+    if (stocks.length === 0) {
+      container.innerHTML = '<div class="loading-state-small">No hay datos de stock</div>';
+      return;
+    }
+
+    container.innerHTML = stocks.map(stock => {
+      const tipo = `${stock.tipoSangre.grupo}${stock.tipoSangre.factorRh}`;
+      const isNegative = stock.tipoSangre.factorRh === '-';
+      const isCritical = stock.estadoStock === 'critico' || stock.cantidadUnidades <= 5;
+      const isWarning = stock.estadoStock === 'bajo' || stock.cantidadUnidades <= 15;
+
+      let itemClass = 'critical-item--ok';
+      let detailClass = 'critical-detail--ok';
+      let detailText = 'Estado: Óptimo';
+      let badgeClass = '';
+
+      if (isCritical) {
+        itemClass = 'critical-item--danger';
+        detailClass = 'critical-detail--danger';
+        detailText = '▲ Stock mínimo';
+        badgeClass = 'critical-badge--danger';
+      } else if (isWarning) {
+        itemClass = 'critical-item--warning';
+        detailClass = 'critical-detail--warning';
+        detailText = `▲ ${stock.cantidadUnidades} unidades`;
+      }
+
+      return `
+        <div class="critical-item ${itemClass}">
+          <div class="critical-badge ${badgeClass}">${tipo}</div>
+          <div class="critical-info">
+            <span class="critical-name">${stock.tipoSangre.grupo} ${isNegative ? 'Negativo' : 'Positivo'}</span>
+            <span class="critical-detail ${detailClass}">${detailText}</span>
+          </div>
+          <span class="critical-units ${isCritical ? 'critical-units--danger' : ''}">${String(stock.cantidadUnidades).padStart(2, '0')}u</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ==================== HISTORIAL DE DONACIONES ====================
+  async function fetchDonations(fechaInicio?: string, fechaFin?: string, tipoSangre?: string): Promise<Donation[]> {
+    try {
+      let url = `${API_BASE}/donations?`;
+      if (fechaInicio) url += `fechaInicio=${fechaInicio}&`;
+      if (fechaFin) url += `fechaFin=${fechaFin}&`;
+
+      const res = await fetch(url, {
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Error fetching donations");
+      let donations = await res.json();
+
+      if (tipoSangre) {
+        donations = donations.filter((d: Donation) => {
+          const tipo = `${d.tipoSangre.grupo}${d.tipoSangre.factorRh}`;
+          return tipo === tipoSangre;
+        });
+      }
+
+      return donations;
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  }
+
+  function renderDonations(donations: Donation[]) {
+    const container = document.getElementById('donations-container');
+    if (!container) return;
+
+    if (donations.length === 0) {
+      container.innerHTML = `
+        <div class="loading-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4a0a0" stroke-width="1.5">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <p class="chart-text">No se encontraron donaciones</p>
+          <p class="chart-hint">Ajuste los filtros para ver resultados</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="donations-table-wrapper">
+        <table class="donations-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>DONANTE</th>
+              <th>TIPO SANGRE</th>
+              <th>FECHA</th>
+              <th>CANTIDAD (ML)</th>
+              <th>ESTADO</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${donations.map(d => `
+              <tr>
+                <td>#${d.id}</td>
+                <td>
+                  <div class="donor-cell">
+                    <div class="mini-avatar">${d.donante.nombre.charAt(0)}${d.donante.apellido.charAt(0)}</div>
+                    <span>${d.donante.nombre} ${d.donante.apellido}</span>
+                  </div>
+                </td>
+                <td><span class="blood-badge-sm">${d.tipoSangre.grupo}${d.tipoSangre.factorRh}</span></td>
+                <td>${new Date(d.fechaDonacion).toLocaleDateString('es-BO')}</td>
+                <td>${d.cantidadMl} ml</td>
+                <td><span class="status-tag status-tag--${d.estado}">${d.estado.toUpperCase()}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  // ==================== REPORTES GENERADOS ====================
+  async function fetchReports(): Promise<Report[]> {
+    try {
+      const res = await fetch(`${API_BASE}/reports?limit=5`, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  }
+
+  function renderReports(reports: Report[]) {
+    const tbody = document.getElementById('reports-tbody');
+    const countEl = document.getElementById('reports-count');
+    if (!tbody) return;
+
+    if (reports.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="loading-cell">No hay reportes generados aún</td>
+        </tr>
+      `;
+      return;
+    }
+
+    if (countEl) countEl.textContent = `Mostrando ${reports.length} reportes`;
+
+    tbody.innerHTML = reports.slice(0, 5).map(report => `
+      <tr>
+        <td class="td-bold">Reporte_${report.periodo.replace(/\s/g, '_').replace(/[:\/]/g, '-')}.pdf</td>
+        <td><span class="type-tag type-tag--donaciones">DONACIONES</span></td>
+        <td>${new Date(report.fechaGeneracion).toLocaleString('es-BO')}</td>
+        <td>
+          <button class="download-btn" title="Descargar" onclick="downloadReport(${report.id})">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  (window as any).downloadReport = async function(reportId: number) {
+    try {
+      const res = await fetch(`${API_BASE}/reports/pdf`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        credentials: "include",
+        body: JSON.stringify({}),
+      });
+      if (!res.ok) {
+        alert('Error al descargar el reporte.');
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `reporte-${reportId}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading:", error);
+      alert('Error de conexión al descargar reporte.');
+    }
+  };
+
+  // ==================== EXPORTAR INVENTARIO ====================
+  (window as any).exportInventoryPdf = async function() {
+    const btn = document.getElementById('btn-export-inventory') as HTMLButtonElement;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Exportando...';
+    }
+    try {
+      const res = await fetch(`${API_BASE}/reports/inventory/pdf`, {
+        headers: getAuthHeaders(),
+        credentials: "include",
+      });
+      if (!res.ok) {
+        alert('Error al exportar inventario. Verifique que el backend esté corriendo.');
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'reporte-inventario.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error exporting:", error);
+      alert('Error de conexión al exportar inventario.');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Exportar Inventario PDF`;
+      }
+    }
+  };
+
+  // ==================== GENERAR REPORTE DONACIONES ====================
+  (window as any).generateDonationPdf = async function() {
+    const btn = document.getElementById('btn-generate-donation-pdf') as HTMLButtonElement;
+    const fechaInicio = (document.getElementById('filter-date-start') as HTMLInputElement)?.value;
+    const fechaFin = (document.getElementById('filter-date-end') as HTMLInputElement)?.value;
+    const tipoSangre = (document.getElementById('filter-blood-type') as HTMLSelectElement)?.value;
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Generando...';
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/reports/pdf`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        credentials: "include",
+        body: JSON.stringify({ fechaInicio, fechaFin, tipo: tipoSangre || undefined }),
+      });
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("PDF error:", errText);
+        alert('Error al generar el PDF. Verifique que el backend esté corriendo.');
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `reporte-donaciones-${new Date().toISOString().split('T')[0]}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert('Error de conexión al generar PDF. Verifique que el backend esté corriendo en localhost:3000.');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> Generar Reporte PDF`;
+      }
+    }
+  };
+
+  // ==================== INIT ====================
+  async function init() {
+    const stocks = await fetchBloodStock();
+    renderBloodStock(stocks);
+
+    const reports = await fetchReports();
+    renderReports(reports);
+
+    document.getElementById('filter-date-start')?.addEventListener('change', applyFilters);
+    document.getElementById('filter-date-end')?.addEventListener('change', applyFilters);
+    document.getElementById('filter-blood-type')?.addEventListener('change', applyFilters);
+
+    document.getElementById('btn-generate-donation-pdf')?.addEventListener('click', () => {
+      (window as any).generateDonationPdf();
+    });
+
+    document.getElementById('btn-export-inventory')?.addEventListener('click', () => {
+      (window as any).exportInventoryPdf();
+    });
+  }
+
+  async function applyFilters() {
+    const fechaInicio = (document.getElementById('filter-date-start') as HTMLInputElement)?.value;
+    const fechaFin = (document.getElementById('filter-date-end') as HTMLInputElement)?.value;
+    const tipoSangre = (document.getElementById('filter-blood-type') as HTMLSelectElement)?.value;
+
+    const donations = await fetchDonations(fechaInicio || undefined, fechaFin || undefined, tipoSangre || undefined);
+    renderDonations(donations);
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
 
 <style>
   .reports-page {
@@ -330,9 +605,10 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
   .report-filters-card {
     background: #fff;
-    border: 1px solid #f1d3d2;
-    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
     padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .card-header-row {
@@ -351,7 +627,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   .card-icon {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -359,7 +635,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   }
 
   .card-icon--red {
-    background: #fee2e2;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
     color: #bc002d;
   }
 
@@ -379,7 +655,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     align-items: center;
     gap: 0.5rem;
     padding: 0.625rem 1rem;
-    background: #bc002d;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -387,12 +663,14 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     font-size: 0.8125rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.2s;
     white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
   }
 
   .btn-generate-pdf:hover {
-    background: #a30027;
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+    transform: translateY(-1px);
   }
 
   .filters-form {
@@ -424,29 +702,30 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     color: #374151;
     background: #fff;
     width: 100%;
+    transition: all 0.2s;
   }
 
   .form-input:focus,
   .form-select:focus {
     outline: none;
     border-color: #bc002d;
-    box-shadow: 0 0 0 2px rgba(188, 0, 45, 0.1);
+    box-shadow: 0 0 0 3px rgba(188, 0, 45, 0.1);
   }
 
-  .chart-preview {
-    border: 2px dashed #e5e7eb;
-    border-radius: 12px;
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .chart-placeholder-content {
+  .loading-state,
+  .loading-state-small {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
+    padding: 2rem;
+    color: #9ca3af;
+  }
+
+  .loading-state-small {
+    padding: 1rem;
+    font-size: 0.875rem;
   }
 
   .chart-text {
@@ -460,11 +739,60 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     color: #9ca3af;
   }
 
+  .donations-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+  }
+
+  .donations-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .donations-table th {
+    text-align: left;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.875rem 1rem;
+    background: linear-gradient(135deg, #fdf2f2 0%, #fef2f2 100%);
+    border-bottom: 2px solid #fecaca;
+  }
+
+  .donations-table td {
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .donations-table tbody tr:hover {
+    background: #fef2f2;
+  }
+
+  .blood-badge-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
   .recent-reports-card {
     background: #fff;
-    border: 1px solid #f1d3d2;
-    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .recent-header {
@@ -472,7 +800,8 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     align-items: center;
     justify-content: space-between;
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #f1d3d2;
+    border-bottom: 1px solid #f3f4f6;
+    background: linear-gradient(135deg, #fdf2f2 0%, #fef2f2 100%);
   }
 
   .recent-header-left {
@@ -504,24 +833,24 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   .data-table th {
     text-align: left;
     font-size: 0.6875rem;
-    font-weight: 600;
-    color: #9ca3af;
+    font-weight: 700;
+    color: #6b7280;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid #f1d3d2;
+    border-bottom: 1px solid #f3f4f6;
   }
 
   .data-table td {
     padding: 1rem 1.25rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: #374151;
-    border-bottom: 1px solid #f9fafb;
+    border-bottom: 1px solid #f3f4f6;
     vertical-align: middle;
   }
 
   .data-table tbody tr:hover {
-    background: #fff8f7;
+    background: #fef2f2;
   }
 
   .td-bold {
@@ -532,51 +861,16 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   .type-tag {
     display: inline-flex;
     align-items: center;
-    padding: 0.2rem 0.625rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
     font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.03em;
   }
 
   .type-tag--donaciones {
-    background: #dbeafe;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     color: #1e40af;
-  }
-
-  .type-tag--inventario {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-
-  .type-tag--campana {
-    background: #d1fae5;
-    color: #065f46;
-  }
-
-  .user-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .mini-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #e0e7ff;
-    color: #3730a3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .mini-avatar--green {
-    background: #dcfce7;
-    color: #166534;
   }
 
   .download-btn {
@@ -584,36 +878,23 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     border: none;
     color: #bc002d;
     cursor: pointer;
-    padding: 0.25rem;
+    padding: 0.375rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
-    transition: background 0.15s;
+    border-radius: 6px;
+    transition: all 0.2s;
   }
 
   .download-btn:hover {
-    background: #fee2e2;
+    background: #fef2f2;
+    transform: scale(1.1);
   }
 
-  .load-more-bar {
-    padding: 0.875rem;
+  .loading-cell {
     text-align: center;
-    border-top: 1px solid #f1d3d2;
-  }
-
-  .load-more-btn {
-    background: none;
-    border: none;
-    font-family: "Inter", sans-serif;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #bc002d;
-    cursor: pointer;
-  }
-
-  .load-more-btn:hover {
-    text-decoration: underline;
+    color: #9ca3af;
+    padding: 2rem !important;
   }
 
   .side-column {
@@ -624,9 +905,10 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
 
   .stock-critico-card {
     background: #fff;
-    border: 1px solid #f1d3d2;
-    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
     padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
   .stock-header-row {
@@ -639,8 +921,8 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   .stock-icon {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
-    background: #fee2e2;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
     color: #bc002d;
     display: flex;
     align-items: center;
@@ -663,7 +945,7 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.625rem;
+    margin-bottom: 0.75rem;
   }
 
   .filter-label {
@@ -675,21 +957,24 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
   .alert-badge {
     font-size: 0.6875rem;
     font-weight: 700;
-    color: #bc002d;
-    background: #fee2e2;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
   }
 
-  .full-width {
-    width: 100%;
-    margin-bottom: 1rem;
+  .alert-badge--danger {
+    color: #dc2626;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  }
+
+  .alert-badge--ok {
+    color: #16a34a;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   }
 
   .critical-list {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.625rem;
     margin-bottom: 1rem;
   }
 
@@ -698,29 +983,34 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    border-radius: 8px;
+    border-radius: 10px;
+    transition: all 0.2s;
+  }
+
+  .critical-item:hover {
+    transform: translateX(2px);
   }
 
   .critical-item--warning {
-    background: #fffbeb;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
     border: 1px solid #fde68a;
   }
 
   .critical-item--ok {
-    background: #f0fdf4;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
     border: 1px solid #bbf7d0;
   }
 
   .critical-item--danger {
-    background: #fef2f2;
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
     border: 1px solid #fecaca;
   }
 
   .critical-badge {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
-    border: 2px solid #d1d5db;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -728,11 +1018,12 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     font-weight: 700;
     color: #374151;
     flex-shrink: 0;
+    background: #fff;
   }
 
   .critical-badge--danger {
-    border-color: #bc002d;
-    color: #bc002d;
+    border-color: #dc2626;
+    color: #dc2626;
   }
 
   .critical-info {
@@ -753,17 +1044,9 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     font-weight: 500;
   }
 
-  .critical-detail--warning {
-    color: #d97706;
-  }
-
-  .critical-detail--ok {
-    color: #16a34a;
-  }
-
-  .critical-detail--danger {
-    color: #dc2626;
-  }
+  .critical-detail--warning { color: #d97706; }
+  .critical-detail--ok { color: #16a34a; }
+  .critical-detail--danger { color: #dc2626; }
 
   .critical-units {
     font-size: 1.125rem;
@@ -783,43 +1066,66 @@ import DashboardLayout from "../../layouts/dashboard-layout.astro";
     gap: 0.5rem;
     width: 100%;
     padding: 0.75rem;
-    background: #bc002d;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: "Inter", sans-serif;
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
   }
 
   .btn-export:hover {
-    background: #a30027;
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+    transform: translateY(-1px);
   }
 
-  .fab-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    background: #bc002d;
-    color: #fff;
-    border: none;
+  .donor-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mini-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    color: #3730a3;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(188, 0, 45, 0.3);
-    transition: background 0.15s, transform 0.15s;
-    z-index: 10;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    flex-shrink: 0;
   }
 
-  .fab-btn:hover {
-    background: #a30027;
-    transform: scale(1.05);
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .status-tag--aprobada {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    color: #15803d;
+  }
+
+  .status-tag--pendiente {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+  }
+
+  .status-tag--rechazada {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    color: #b91c1c;
   }
 
   @media (max-width: 1100px) {

@@ -83,6 +83,13 @@ export class ReportsService {
     private readonly bloodStockRepository: Repository<BloodStock>,
   ) {}
 
+  async findRecent(limit = 5): Promise<DashboardReport[]> {
+    return this.reportRepository.find({
+      order: { fechaGeneracion: 'DESC' },
+      take: limit,
+    });
+  }
+
   async generateReport(dto: GenerateReportDto): Promise<ReportData> {
     const fechaInicio = dto.fechaInicio || this.getFirstDayOfMonth();
     const fechaFin = dto.fechaFin || this.getLastDayOfMonth();
